@@ -1,0 +1,66 @@
+% ===============================
+%
+%    Postfix
+%
+
+POSTFIX=.mat
+POSTFIX2=.txt
+
+% ===============================
+%
+%    Extension
+%
+
+FLOAT_FLAG_FIX=_flag
+FLOAT_FLAG_LOCA=_localisation
+
+% ===============================
+%
+%    Source Path
+%
+%FLOAT_SOURCE_NETCDF=/export/home1/ccabanes/data/FTP_ARGO/
+FLOAT_SOURCE_NETCDF=/home/coriolis_exp/spool/co05/co0508/dac/
+%FLOAT_SOURCE_WMOBOX=/home5/pharos/argo/DMARGO/OW/VERSION_LAST/data/climatology/historical_ctd/
+
+% 9 mars 2016
+% pour retraitements flotteurs Catarina avec introduction
+%des données HYdro Catarina en interne LOPS (fait par Cecile en mars 2016)
+FLOAT_SOURCE_WMOBOX=/home5/pharos/argo/DMARGO/OW/VERSION_1_1_5_geovide/data/climatology/historical_ctd/
+
+CAMPAGNE_DIRECTORY=/home/lpo5/HYDROCEAN/MLT_NC/LPO/OVIDE/
+
+% ===============================
+%
+%    Save Path
+%
+DACNAME=coriolis
+DATA_DIRECTORY=/home5/pharos/argo/QCARGO/TRAITEMENT/data/
+OUT_DIRECTORY=/home1/homedir5/perso/ccabanes/dvlpRD/Argo/TD/CHECK_DEEP/PROG_QC2015/DATA/
+
+% ===============================
+%
+%    Figure Path
+%
+
+FLOAT_FLAG_DIRECTORY=/export/home1/ccabanes/data/QCARGO/TRAITEMENT/plot/verif_flag/
+PRELIM_DIRECTORY=/export/home1/ccabanes/data/QCARGO/TRAITEMENT/plot/preliminaire/
+PROF1_DIRECTORY=/export/home1/ccabanes/data/QCARGO/TRAITEMENT/plot/verif_profil1/
+
+% ===============================
+%
+%    Campagne Name File
+%
+
+CAMPAGNE_FILE=ovid10_PRES.nc
+CAMPAGNE_SAVE=ovid10
+CAMPAGNE_MAT=ovid10
+camp_name=ovid10
+ZOOM=500
+MAX_PROF=10
+% ===============================
+%
+%    Map
+%
+
+MAP_HR=/home5/pharos/argo/QCARGO/TRAITEMENT/data/AN_smithsandwell
+MAP_LR=/home5/pharos/argo/QCARGO/TRAITEMENT/data/AN_smithsandwell_lowres

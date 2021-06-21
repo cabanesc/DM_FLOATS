@@ -1,0 +1,40 @@
+8
+
+dir
+39
+https://forge.ifremer.fr/svn/cora-update/Lib/ObsInSitu/General/RWtxt
+https://forge.ifremer.fr/svn/cora-update
+
+
+
+2010-12-14T14:13:49.021449Z
+3
+fp06053
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+cb1457fe-4480-6a9a-804d-fe11422b7ddd
+
+get_txtfile_col.m
+file
+
+
+
+
+2011-03-14T08:51:52.000000Z
+51e65b530f4bfc7eee40c9122a385325
+2010-12-14T14:13:49.021449Z
+3
+fp06053
+

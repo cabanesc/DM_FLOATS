@@ -1,0 +1,993 @@
+
+function plot_diagnostics_ow( pn_float_dir, pn_float_name, po_system_configuration )
+
+%
+% Annie Wong, 14 June 2011
+% Breck Owens, October 2006
+%--------------------------------------------------------------------------
+
+%pn_float_dir='uw/';
+%pn_float_name='R5902134';
+%po_system_configuration = load_configuration( 'ow_config.txt' );
+
+
+close all
+
+% modify pn_float_name for title if the name contains '_' ------------
+
+ii=find(pn_float_name=='_');
+if(isempty(ii)==0)
+    title_floatname = strcat( pn_float_name(1:ii-1), '\_', pn_float_name(ii+1:length(pn_float_name)));
+else
+    title_floatname = pn_float_name;
+end
+
+
+% load data from /float_source, /float_mapped, /float_calib, and config --------------
+
+lo_float_source_data = load(fullfile( po_system_configuration.FLOAT_SOURCE_DIRECTORY, pn_float_dir, ...
+    strcat( pn_float_name, po_system_configuration.FLOAT_SOURCE_POSTFIX ) ) );
+
+PROFILE_NO = lo_float_source_data.PROFILE_NO;
+LAT  = lo_float_source_data.LAT;
+LONG = lo_float_source_data.LONG;
+PRES = lo_float_source_data.PRES;
+TEMP = lo_float_source_data.TEMP;
+PTMP = lo_float_source_data.PTMP;
+SAL  = lo_float_source_data.SAL;
+
+if(isempty(find(isnan(PRES)==0))==0) % if no data exists, terminate here, no plots will be produced
+    
+    lo_float_mapped_data = load( fullfile( po_system_configuration.FLOAT_MAPPED_DIRECTORY, pn_float_dir, ...
+        strcat( po_system_configuration.FLOAT_MAPPED_PREFIX, pn_float_name, po_system_configuration.FLOAT_MAPPED_POSTFIX ) ) ) ;
+    
+    mapped_sal  = lo_float_mapped_data.la_mapped_sal;
+    mapsalerrors = lo_float_mapped_data.la_mapsalerrors;
+    la_ptmp = lo_float_mapped_data.la_ptmp;
+    selected_hist =lo_float_mapped_data.selected_hist;
+    
+    if(isempty(find(isnan(mapped_sal)==0))==0) % if mapping exists, terminate here, no plots will be produced
+        
+        lo_float_calib_data = load( fullfile( po_system_configuration.FLOAT_CALIB_DIRECTORY, pn_float_dir, ...
+            strcat( po_system_configuration.FLOAT_CALIB_PREFIX, pn_float_name, po_system_configuration.FLOAT_CALIB_POSTFIX ) ) );
+        
+        cal_SAL = lo_float_calib_data.cal_SAL;
+        cal_SAL_err = lo_float_calib_data.cal_SAL_err;
+        pcond_factor = lo_float_calib_data.pcond_factor;
+        pcond_factor_err = lo_float_calib_data.pcond_factor_err;
+        
+        lo_float_calseries = load( fullfile( po_system_configuration.FLOAT_CALIB_DIRECTORY, pn_float_dir, ...
+            strcat( po_system_configuration.FLOAT_CALSERIES_PREFIX , pn_float_name, po_system_configuration.FLOAT_MAPPED_POSTFIX ) ) );
+        
+        use_theta_gt = lo_float_calseries.use_theta_gt;
+        use_theta_lt = lo_float_calseries.use_theta_lt;
+        use_pres_gt = lo_float_calseries.use_pres_gt;
+        use_pres_lt = lo_float_calseries.use_pres_lt;
+        use_percent_gt = lo_float_calseries.use_percent_gt;
+        
+        % load the station by station fits
+        load(fullfile( po_system_configuration.FLOAT_CALIB_DIRECTORY, pn_float_dir,...
+            strcat( po_system_configuration.FLOAT_CALIB_PREFIX, pn_float_name, po_system_configuration.FLOAT_CALIB_POSTFIX ) ),'-regexp','^sta')
+        
+        
+        % plot the float locations (figure 1) -----------------------
+        
+        load( fullfile( po_system_configuration.CONFIG_DIRECTORY, po_system_configuration.CONFIG_COASTLINES ), 'coastdata_x', 'coastdata_y' );
+        
+        [m,n] = size(PRES);
+        
+        figure
+        set(gcf,'defaultaxeslinewidth',2)
+        set(gcf,'defaultlinelinewidth',2)
+        set(gcf,'defaultaxesfontsize',16)
+        
+        colormap(jet(n));
+        c=colormap;
+        
+        x=[];
+        y=[];
+        if(isempty(selected_hist)==0)
+            x=selected_hist(:,1);
+            y=selected_hist(:,2);
+        end
+        
+        if( max(LONG)+30>360 | min(LONG)-30<0 ) % if there are float data within 30 deg lon of the prime meridian
+            if( isempty( find(LAT<-50&LONG>250&LONG<285) )==0 )
+                jj=find(LONG<LONG(1)-30); % and if there are float data west of the Drake Passage
+                LONG(jj)=LONG(jj)+360;    % then use the first float location point minus 30 deg lon
+                kk=find(x<LONG(1)-30);    % as the western edge of the map
+                x(kk)=x(kk)+360;
+                mm=find(coastdata_x<LONG(1)-30);
+                coastdata_x(mm)=coastdata_x(mm)+360;
+                nn=find(coastdata_x<LONG(1)-30+1|coastdata_x>LONG(1)-30+360-1); %remove coastline wraparound
+                coastdata_x(nn)=NaN;
+            else
+                jj=find(LONG<250);     % or else if there are no float data west of the Drake Passage
+                LONG(jj)=LONG(jj)+360; % then use 250 deg lon as the western edge of the map
+                kk=find(x<250);
+                x(kk)=x(kk)+360;
+                mm=find(coastdata_x<250);
+                coastdata_x(mm)=coastdata_x(mm)+360;
+                nn=find(coastdata_x<251|coastdata_x>609); %remove coastline wraparound
+                coastdata_x(nn)=NaN;
+            end
+        end
+        
+        
+        plot(LONG,LAT,'r-');
+        hold on
+        plot(x,y,'b.')
+        plot(coastdata_x,coastdata_y,'k.-');
+
+        
+        for i=1:n
+            h=plot(LONG(i),LAT(i),'+');
+            set(h,'color',c(i,:));
+            j=text(LONG(i),LAT(i),int2str(PROFILE_NO(i)));
+            set(j,'color',c(i,:),'fontsize',12,'hor','cen');
+        end
+        axis([min(LONG)-10, max(LONG)+10, min(LAT)-10, max(LAT)+10])
+        set(gca,'FontSize',12)
+        
+        % Legend moved here by T. Reynaud: 21.09.20
+        leg1=legend('float','historical points','Location','Best');
+
+        xlabel('Longitude');
+        ylabel('Latitude');
+        title( strcat(title_floatname, ' profile locations with historical data' ) );
+        
+        h=gca;
+        xticks=get(h,'XTick');
+        xticklabels=get(h,'XTickLabel');
+        ii=find(xticks>360);
+        xticks(ii)=xticks(ii)-360;
+        for j=1:length(ii)
+            enough=num2str(ones(3,1));
+            c=char(num2str(xticks(ii(j))),enough');
+            xticklabels(ii(j),:)=c(1,:);
+        end
+        set(gca,'XTickLabel',xticklabels);
+        axis([min(LONG)-10, max(LONG)+10, min(LAT)-10, max(LAT)+10])
+
+        drawnow
+        %set(gcf,'papertype','usletter','paperunits','inches','paperorientation','portrait','paperposition',[.25,.75,8,9.5]);
+        print('-depsc', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_1.eps'));
+        print('-dpdf', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_1.pdf'));
+        
+        
+        figure
+        set(gcf,'defaultaxeslinewidth',2)
+        set(gcf,'defaultlinelinewidth',2)
+        set(gcf,'defaultaxesfontsize',16)
+        
+        colormap(jet(n));
+        c=colormap;
+        
+        
+        plot(LONG,LAT,'r-');
+        hold on
+
+        plot(coastdata_x,coastdata_y,'k.-');
+        for i=[1:n]
+            h=plot(LONG(i),LAT(i),'.');
+            set(h,'color',c(i,:));
+            j=text(LONG(i),LAT(i),int2str(PROFILE_NO(i)));
+            set(j,'color',c(i,:),'fontsize',11,'hor','cen','VerticalAlignment','cap','Fontweight','bold');
+        end
+        % for i=[1:5:n]
+        %   j=text(LONG(i),LAT(i),int2str(PROFILE_NO(i)));
+        %   set(j,'color',c(i,:),'fontsize',12,'hor','cen','VerticalAlignment','cap','Fontweight','bold');
+        % end
+        axis([min(LONG)-2, max(LONG)+2, min(LAT)-2, max(LAT)+2])
+        set(gca,'FontSize',12)
+        
+        % Legend moved here by T. Reynaud: 21.09.20
+        ileg2=legend('float','Location','Best');
+
+        
+        xlabel('Longitude');
+        ylabel('Latitude');
+        grid on
+        title( strcat(title_floatname, ' profile locations ' ) );
+        
+        h=gca;
+        xticks=get(h,'XTick');
+        xticklabels=get(h,'XTickLabel');
+        ii=find(xticks>360);
+        xticks(ii)=xticks(ii)-360;
+        for j=1:length(ii)
+            enough=num2str(ones(3,1));
+            c=char(num2str(xticks(ii(j))),enough');
+            xticklabels(ii(j),:)=c(1,:);
+        end
+        set(gca,'XTickLabel',xticklabels);
+        
+        drawnow
+        %set(gcf,'papertype','usletter','paperunits','inches','paperorientation','portrait','paperposition',[.25,.75,8,9.5]);
+        print('-depsc', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_0.eps'));
+        print('-dpdf', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_0.pdf'));
+        
+        
+        % plot the uncalibrated theta-S curves from the float (figure 2) --------
+        
+        figure;
+        set(gcf,'defaultaxeslinewidth',2)
+        set(gcf,'defaultlinelinewidth',2)
+        set(gcf,'defaultaxesfontsize',14)
+        
+        jj=[1:ceil(n/30):n]; % the legend can only fit 30 profiles
+        ok = [];
+        for k=1:length(jj)
+            if ~isempty(find(isfinite(SAL(:,jj(k)))))
+                ok = [ok jj(k)];
+            end
+        end
+        jj = ok;
+        
+        colormap(jet(n));
+        c=colormap;
+        qq = plot(PTMP(:,jj), SAL(:,jj));
+        for i=1:length(jj)
+            set(qq(i),'color',c(jj(i),:)) ;
+        end
+        hold on
+       
+        for i=1:n % plot all remaining profiles
+            qq = plot( PTMP(:,i), SAL(:,i) );
+            set(qq,'color',c(i,:)) ;
+        end
+        
+        [tlevels, plevels, index, var_s_Thetalevels, Thetalevels] = find_10thetas( SAL, PTMP, PRES, la_ptmp, use_theta_gt, use_theta_lt, use_pres_gt, use_pres_lt, use_percent_gt);
+       %[tlevels, plevels, index, var_s_Thetalevels, Thetalevels] = find_10thetas( mapped_sal, PTMP, PRES, la_ptmp, use_theta_gt, use_theta_lt, use_pres_gt, use_pres_lt, use_percent_gt);
+        min_map=999;
+       max_map=-999;
+        for i=1:n
+            b = find( isnan(index(:,i))==0 );
+            a = index(b,i);
+            if ~isempty(a)
+                h = errorbar( la_ptmp(a,i), mapped_sal(a,i), mapsalerrors(a,i), 'o', 'color', c(i,:) );
+                plot(la_ptmp(a,i), mapped_sal(a,i),'.w','MarkerSize',2)
+                min_map=min(min_map,min(mapped_sal(a,i)-mapsalerrors(a,i)));
+                max_map=max(max_map,max(mapped_sal(a,i)-mapsalerrors(a,i)));
+            end
+            
+        end
+        
+        view([90 -90]);
+        set(gca,'FontSize',12)
+        
+        leg3=legend(int2str([PROFILE_NO(jj)]'), 'Location', 'NorthEastOutside');
+        ylabel('Salinity (PSS-78)');
+        xlabel('\theta ^{\circ} C');
+        
+        max_s=max([max(SAL),max(mapped_sal)])+.1;
+        min_s=min([min(SAL),min(mapped_sal)])-.1;
+        max_t=max(max(PTMP))+1;
+        min_t=min(min(PTMP))-1;
+        axis([min_t,max_t,min_s,max_s]);
+       
+        drawnow
+        title( strcat( title_floatname, ' uncalibrated float data (-) and mapped salinity (o) with objective errors' ) );
+        %set(gcf,'papertype','usletter','paperunits','inches','paperorientation','portrait','paperposition',[.25,.75,8,9.5]);
+        print('-depsc', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_2.eps'));
+        print('-dpdf', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_2.pdf'));
+
+        axis([floor(min(tlevels))-0.5,ceil(max(tlevels))+0.5,floor(min_map*10)/10,ceil(max_map*10)/10]);
+        print('-depsc', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_2zoom.eps'));
+        print('-dpdf', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_2zoom.pdf'));
+        if n>1
+        p=nan*zeros(10,n);
+        for k=1:10
+            for j=1:n
+                u=index(k,j);
+                if ~isnan(u)
+                    p(k,j)=PRES(index(k,j));
+                end
+            end
+        end
+               
+        figure
+        pcolor(p)
+        colorbar
+        xlabel('profile number')
+        title('pressure of float measurements for the 10 theta levels')
+        print('-depsc', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_2bis.eps'));
+        print('-dpdf', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_2bis.pdf'));
+        end
+        % calibration curve (figure 3) --------------------------
+        
+        if(isempty(find(isnan(cal_SAL)==0))==0) % if no cal exists, terminate here, no plot will be produced
+            
+            Soffset=cal_SAL-SAL;
+            avg_Soffset=NaN.*ones(1,n);
+            avg_Soffset_err=NaN.*ones(1,n);
+            Staoffset=sta_SAL-SAL;
+            avg_Staoffset=NaN.*ones(1,n);
+            avg_Staoffset_err=NaN.*ones(1,n);
+            
+            for i=1:n
+                ii=[];
+                ii=find(isnan(Soffset(:,i))==0);
+                if ~isempty(ii)
+                    avg_Soffset(i)=mean(Soffset(ii,i));
+                    avg_Soffset_err(i)=mean(cal_SAL_err(ii,i));
+                else
+                    avg_Soffset(i) = NaN;
+                    avg_Soffset_err(i) = NaN;
+                end
+                ii=find(isnan(Staoffset(:,i))==0);
+                if ~isempty(ii)
+                    avg_Staoffset(i)=mean(Staoffset(ii,i));
+                    avg_Staoffset_err(i)=mean(sta_SAL_err(ii,i));
+                else
+                    avg_Staoffset(i) = NaN;
+                    avg_Staoffset_err(i) = NaN;
+                end
+            end
+            
+            figure
+            set(gcf,'defaultaxeslinewidth',2)
+            set(gcf,'defaultlinelinewidth',2)
+            set(gcf,'defaultaxesfontsize',16)
+            subplot(2,1,1)
+            plot(PROFILE_NO, pcond_factor, 'b-');
+            hold on
+            plot(PROFILE_NO, pcond_factor, 'g-');
+            % plot station by station fit
+            ok = find(isfinite(sta_mean));
+            plot(PROFILE_NO(ok), sta_mean(ok), 'r-');
+            %legend('2 x cal error','1 x cal error','1-1 profile fit', 'Location', 'Best');
+            errorbar(PROFILE_NO, pcond_factor, 2*pcond_factor_err,'b')
+            errorbar(PROFILE_NO, pcond_factor, pcond_factor_err,'g*-')
+            plot(PROFILE_NO(ok), sta_mean(ok), 'r-');
+            grid on
+            plot( [0, max(PROFILE_NO)+1], [1,1], 'k-')
+            %axis([ 0, max(PROFILE_NO)+1, min([pcond_factor-pcond_factor_err,1])-.0004, max([pcond_factor+pcond_factor_err,1])+.0004 ])
+			if length(ok)>1
+            axis([ 0, max(PROFILE_NO)+1, min(sta_mean(ok)), max(sta_mean(ok))])
+			end
+            set(gca,'FontSize',12)
+            ylabel('r') % multiplicative term has no units
+            title( strcat(title_floatname, ' potential conductivity (mmho/cm) multiplicative correction r with errors') );
+            
+            subplot(2,1,2)
+            plot(PROFILE_NO, avg_Soffset, 'b-');
+            hold on
+            plot(PROFILE_NO, avg_Soffset, 'g-');
+            % Plot station by station fit
+            ok = find(isfinite(avg_Staoffset));
+            plot(PROFILE_NO(ok), avg_Staoffset(ok), 'r-');
+            %legend('2 x cal error','1 x cal error','1-1 profile fit', 'Location', 'Best');
+            errorbar(PROFILE_NO, avg_Soffset, 2*avg_Soffset_err,'b')
+            errorbar(PROFILE_NO, avg_Soffset, avg_Soffset_err,'go-')
+            plot(PROFILE_NO(ok), avg_Staoffset(ok), 'r-');
+            grid on
+            %axis([ 0, max(PROFILE_NO)+1, min([avg_Soffset-avg_Soffset_err,0])-.02, max([avg_Soffset+avg_Soffset_err,0])+.02 ])
+			if length(ok)>1
+            axis([ 0, max(PROFILE_NO)+1, min(avg_Staoffset(ok)), max(avg_Staoffset(ok)) ])
+			end
+            plot( [0, max(PROFILE_NO)+1], [0,0], 'k-')
+            set(gca,'FontSize',12)
+            xlabel('float profile number');
+            ylabel('\Delta S')
+            title( strcat(title_floatname, ' vertically-averaged salinity (PSS-78) additive correction \Delta S with errors') );
+            
+            drawnow
+            %set(gcf,'papertype','usletter','paperunits','inches','paperorientation','portrait','paperposition',[.25,.75,8,9.5]);
+            %keyboard
+            print('-depsc', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_3.eps'));
+            print('-dpdf', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_3.pdf'));
+            
+            
+            % plot the calibrated theta-S curves from the float (figure 4) --------------------------
+            
+            figure;
+            set(gcf,'defaultaxeslinewidth',2)
+            set(gcf,'defaultlinelinewidth',2)
+            set(gcf,'defaultaxesfontsize',14)
+            
+            jj=[1:ceil(n/30):n]; % the legend can only fit 30 profiles
+            ok = [];% check to make sure we have choosen profiles with good data
+            for k=1:length(jj)
+                if ~isempty(find(isfinite(SAL(:,jj(k)))))
+                    ok = [ok jj(k)];
+                end
+            end
+            jj = ok;
+            
+            colormap(jet(n));
+            c=colormap;
+            qq=plot( PTMP(:,jj), cal_SAL(:,jj) );
+            for i=1:length(jj)
+                set(qq(i),'color',c(jj(i),:)) ;
+            end
+            hold on;
+            
+            for i=1:n % plot all remaining profiles
+                qq = plot( PTMP(:,i), cal_SAL(:,i) );
+                set(qq,'color',c(i,:)) ;
+            end
+            
+            for i=1:n
+                b = find( isnan(index(:,i))==0 );
+                a = index(b,i);
+                if ~isempty(a)
+                    h = errorbar( la_ptmp(a,i), mapped_sal(a,i), mapsalerrors(a,i), 'o', 'color', c(i,:));
+                end
+            end
+            
+            view([90 -90]);
+            set(gca,'FontSize',12);
+            
+            % Move here by T. Reynaud: 21.09.2020
+            leg6=legend(int2str([PROFILE_NO(jj)]'), 'Location', 'NorthEastOutside')
+
+            xlabel('\theta ^{\circ} C')
+            ylabel('Salinity (PSS-78)')
+            
+            max_s=max([max(max(cal_SAL)),max(max(mapped_sal))])+.1;
+            min_s=min([min(min(cal_SAL)),min(min(mapped_sal))])-.1;
+            max_t=max(max(PTMP))+1;
+            min_t=min(min(PTMP))-1;
+            if(isnan(min_s)==0)
+                axis([min_t,max_t,min_s,max_s]);
+            end
+            
+            drawnow
+            title( strcat(title_floatname, ' calibrated float data (-) and mapped salinity (o) with objective errors' ) );
+            set(gcf,'papertype','usletter','paperunits','inches','paperorientation','portrait','paperposition',[.25,.75,8,9.5]);
+            print('-depsc', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_4.eps'));
+            print('-dpdf', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_4.pdf'));
+            
+            
+            % Brian King's plot: salinity anomaly time series on theta levels (figure 5) ------------
+            
+            figure
+            set(gcf,'defaultaxeslinewidth',2)
+            set(gcf,'defaultlinelinewidth',2)
+            set(gcf,'defaultaxesfontsize',16)
+            
+            fl.useqc = '0';
+            fl.plot = 1;
+            fl.yaxes = [2 5 20];
+            d.PSAL = SAL;
+            d.TEMP = TEMP;
+            d.PRES = PRES;
+            d.PSAL_QC = zeros(m,n);
+            d.TEMP_QC = zeros(m,n);
+            d.PRES_QC = zeros(m,n);
+            d.LONGITUDE = LONG;
+            d.LATITUDE = LAT;
+            d.PROFILE_NO = PROFILE_NO;
+            fl = anom(d,fl); % Brian King's routine
+            subplot('position',[.1 .40 .8 .30])
+            title(['       Salinity anom on theta.    ' title_floatname])
+            
+            drawnow
+            set(gcf,'papertype','usletter','paperunits','inches','paperorientation','portrait','paperposition',[.25,.5,8,10]);
+            print('-depsc', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_5.eps'));
+            print('-dpdf', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_5.pdf'));
+            
+             
+            % Brian King's plot: salinity  time series on theta levels (figure 5_bis) ------------
+            
+            figure
+            set(gcf,'defaultaxeslinewidth',2)
+            set(gcf,'defaultlinelinewidth',2)
+            set(gcf,'defaultaxesfontsize',16)
+            
+            fl.useqc = '0';
+            fl.plot = 1;
+            fl.yaxes = [2 5 20];
+            d.PSAL = SAL-mapped_sal;
+            d.TEMP = TEMP;
+            d.PRES = PRES;
+            d.PSAL_QC = zeros(m,n);
+            d.TEMP_QC = zeros(m,n);
+            d.PRES_QC = zeros(m,n);
+            d.LONGITUDE = LONG;
+            d.LATITUDE = LAT;
+            d.PROFILE_NO = PROFILE_NO;
+            fl = anom_2(d,fl); % Brian King's routine
+            subplot('position',[.1 .40 .8 .30])
+            title(['       Salinity anom on theta.    ' title_floatname])
+            
+            drawnow
+            set(gcf,'papertype','usletter','paperunits','inches','paperorientation','portrait','paperposition',[.25,.5,8,10]);
+            print('-depsc', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_5_bis.eps'));
+            print('-dpdf', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_5.pdf'));
+            
+            % plot salinity time series on theta levels with the smallest S variance (figure 6) ------------
+            
+            unique_cal = unique(lo_float_calseries.calseries);
+            n_seq = length(unique_cal);
+            
+            for iy=1:n_seq
+                if unique_cal(iy)>0
+                    calindex = find(lo_float_calseries.calseries==unique_cal(iy));
+                    k = length(calindex);
+                    
+                    % choose 10 float theta levels to use in the piecewise linear fit --------
+                    
+                    unique_SAL = SAL(:, calindex);
+                    unique_PTMP = PTMP(:, calindex);
+                    unique_PRES = PRES(:, calindex);
+                    unique_la_ptmp = la_ptmp(:, calindex);
+                    unique_mapped_sal = mapped_sal(:, calindex);
+                    unique_mapsalerrors = mapsalerrors(:, calindex);
+                    
+                    ten_SAL = NaN.*ones(10,k);
+                    ten_PTMP = NaN.*ones(10,k);
+                    ten_PRES = NaN.*ones(10,k);
+                    ten_mapped_sal = NaN.*ones(10,k);
+                    ten_mapsalerrors = NaN.*ones(10,k);
+                    
+                    
+                    [tlevels, plevels, index, var_s_Thetalevels, Thetalevels] = find_10thetas( unique_SAL, unique_PTMP, unique_PRES, unique_la_ptmp, use_theta_gt, use_theta_lt, use_pres_gt, use_pres_lt, use_percent_gt);
+                    %[tlevels, plevels, index, var_s_Thetalevels, Thetalevels] = find_10thetas( unique_mapped_sal, unique_PTMP, unique_PRES, unique_la_ptmp, use_theta_gt, use_theta_lt, use_pres_gt, use_pres_lt, use_percent_gt);
+
+                    tplot=[1:length(tlevels)];
+                    p=length(tplot);
+                    Sint=NaN.*ones(p,n);
+                    Smap=NaN.*ones(p,n);
+                    Smaperr=NaN.*ones(p,n);
+                    Scal=NaN.*ones(p,n);
+                    Scalerr=NaN.*ones(p,n);
+                    Thetalevel_indexes=NaN.*ones(p,n);
+                    
+                    trimPRES=PRES;  % use only manually specified THETA & PRES range ---
+                    trimSAL=SAL;
+                    trimPTMP=PTMP;
+                    trim_mapped_sal=mapped_sal;
+                    trim_mapsalerrors=mapsalerrors;
+                    trim_cal_SAL=cal_SAL;
+                    trim_cal_SAL_err=cal_SAL_err;
+                    
+                    jj=find(isnan(la_ptmp)==1);
+                    trimPRES(jj)=NaN;
+                    trimSAL(jj)=NaN;
+                    trimPTMP(jj)=NaN;
+                    trim_mapped_sal(jj)=NaN;
+                    trim_mapsalerrors(jj)=NaN;
+                    trim_cal_SAL(jj)=NaN;
+                    trim_cal_SAL_err(jj)=NaN;
+                    
+                    if( isempty(use_theta_lt)==0 & isempty(use_theta_gt)==1 )
+                        jj=find(trimPTMP>use_theta_lt);
+                        trimPRES(jj)=NaN;
+                        trimSAL(jj)=NaN;
+                        trimPTMP(jj)=NaN;
+                        trim_mapped_sal(jj)=NaN;
+                        trim_mapsalerrors(jj)=NaN;
+                        trim_cal_SAL(jj)=NaN;
+                        trim_cal_SAL_err(jj)=NaN;
+                    end
+                    
+                    if( isempty(use_theta_gt)==0 & isempty(use_theta_lt)==1 )
+                        jj=find(trimPTMP<use_theta_gt);
+                        trimPRES(jj)=NaN;
+                        trimSAL(jj)=NaN;
+                        trimPTMP(jj)=NaN;
+                        trim_mapped_sal(jj)=NaN;
+                        trim_mapsalerrors(jj)=NaN;
+                        trim_cal_SAL(jj)=NaN;
+                        trim_cal_SAL_err(jj)=NaN;
+                    end
+                    
+                    if( isempty(use_theta_gt)==0 & isempty(use_theta_lt)==0 )
+                        if(use_theta_gt>use_theta_lt) %the middle band is excluded
+                            jj=find(trimPTMP<use_theta_gt&trimPTMP>use_theta_lt);
+                        else
+                            jj=find(trimPTMP<use_theta_gt|trimPTMP>use_theta_lt);
+                        end
+                        trimPRES(jj)=NaN;
+                        trimSAL(jj)=NaN;
+                        trimPTMP(jj)=NaN;
+                        trim_mapped_sal(jj)=NaN;
+                        trim_mapsalerrors(jj)=NaN;
+                        trim_cal_SAL(jj)=NaN;
+                        trim_cal_SAL_err(jj)=NaN;
+                    end
+                    
+                    if( isempty(use_pres_lt)==0 & isempty(use_pres_gt)==1 )
+                        jj=find(trimPRES>use_pres_lt);
+                        trimPRES(jj)=NaN;
+                        trimSAL(jj)=NaN;
+                        trimPTMP(jj)=NaN;
+                        trim_mapped_sal(jj)=NaN;
+                        trim_mapsalerrors(jj)=NaN;
+                        trim_cal_SAL(jj)=NaN;
+                        trim_cal_SAL_err(jj)=NaN;
+                    end
+                    
+                    if( isempty(use_pres_gt)==0 & isempty(use_pres_lt)==1 )
+                        jj=find(trimPRES<use_pres_gt);
+                        trimPRES(jj)=NaN;
+                        trimSAL(jj)=NaN;
+                        trimPTMP(jj)=NaN;
+                        trim_mapped_sal(jj)=NaN;
+                        trim_mapsalerrors(jj)=NaN;
+                        trim_cal_SAL(jj)=NaN;
+                        trim_cal_SAL_err(jj)=NaN;
+                    end
+                    
+                    if( isempty(use_pres_gt)==0 & isempty(use_pres_lt)==0 )
+                        if(use_pres_gt>use_pres_lt) %he middle band is excluded
+                            jj=find(trimPRES<use_pres_gt&trimPRES>use_pres_lt);
+                        else
+                            jj=find(trimPRES<use_pres_gt|trimPRES>use_pres_lt);
+                        end
+                        trimPRES(jj)=NaN;
+                        trimSAL(jj)=NaN;
+                        trimPTMP(jj)=NaN;
+                        trim_mapped_sal(jj)=NaN;
+                        trim_mapsalerrors(jj)=NaN;
+                        trim_cal_SAL(jj)=NaN;
+                        trim_cal_SAL_err(jj)=NaN;
+                    end
+                    
+                    for i=1:n
+                        for j=tplot
+                            if(tlevels(j)<max(trimPTMP(:,i))&tlevels(j)>min(trimPTMP(:,i)))
+                                diffTheta = abs(trimPTMP(:,i)-tlevels(j));
+                                if isempty(find(~isnan(diffTheta)))
+                                    Thetalevel_indexes(j,i) = NaN;
+                                else
+                                    Thetalevel_indexes(j,i) = min(find(diffTheta==min(diffTheta)));
+                                end
+                            end
+                        end
+                    end
+                    
+                    for i=tplot % build the S matrix for plotting
+                        for j=1:n
+                            ti=Thetalevel_indexes(i,j);
+                            if ~isnan(ti)
+                                interval=max(ti-1,1):min(ti+1,m); %interval is one above and one below ti
+                                a = trimPTMP(ti,j) - trimPTMP(interval, j);
+                                if( trimPTMP(ti,j)>tlevels(i) )
+                                    gg=find(a>0);
+                                    if( ~isempty(gg) )
+                                        b=find(a==min(a(gg))); %find the level with min +ve diff
+                                        ki=interval(b);
+                                    else
+                                        ki=ti;
+                                    end
+                                end
+                                if( trimPTMP(ti,j)<tlevels(i) )
+                                    gg=find(a<0);
+                                    if( ~isempty(gg) )
+                                        b=find(-a==min(-a(gg))); %find the level with min -ve diff
+                                        ki=interval(b);
+                                    else
+                                        ki=ti;
+                                    end
+                                end
+                                if( trimPTMP(ti,j)==tlevels(i) )
+                                    ki=ti;
+                                end
+                                if( ki~=ti&~isnan(trimSAL(ti,j))&~isnan(trimSAL(ki,j))&~isnan(trimPTMP(ti,j))&~isnan(trimPTMP(ki,j)) )
+                                    Sint(i,j) = interp1( [trimPTMP(ti,j), trimPTMP(ki,j)], [trimSAL(ti,j), trimSAL(ki,j)], tlevels(i) );
+                                else
+                                    Sint(i,j) = trimSAL(ti,j); % interpolate if possible because that is more accurate than using closest points
+                                end
+                                if( ki~=ti&~isnan(trim_mapped_sal(ti,j))&~isnan(trim_mapped_sal(ki,j))&~isnan(trimPTMP(ti,j))&~isnan(trimPTMP(ki,j)) )
+                                    Smap(i,j) = interp1( [trimPTMP(ti,j), trimPTMP(ki,j)], [trim_mapped_sal(ti,j), trim_mapped_sal(ki,j)], tlevels(i) );
+                                    Smaperr(i,j) = interp1( [trimPTMP(ti,j), trimPTMP(ki,j)], [trim_mapsalerrors(ti,j), trim_mapsalerrors(ki,j)], tlevels(i) );
+                                else
+                                    Smap(i,j)=trim_mapped_sal(ti,j); % interpolate if possible because that is more accurate than using closest points
+                                    Smaperr(i,j)=trim_mapsalerrors(ti,j); % interpolate if possible because that is more accurate than using closest points
+                                end
+                                if( ki~=ti&~isnan(trim_cal_SAL(ti,j))&~isnan(trim_cal_SAL(ki,j))&~isnan(trimPTMP(ti,j))&~isnan(trimPTMP(ki,j)) )
+                                    Scal(i,j) = interp1( [trimPTMP(ti,j), trimPTMP(ki,j)], [trim_cal_SAL(ti,j), trim_cal_SAL(ki,j)], tlevels(i) );
+                                    Scalerr(i,j) = interp1( [trimPTMP(ti,j), trimPTMP(ki,j)], [trim_cal_SAL_err(ti,j), trim_cal_SAL_err(ki,j)], tlevels(i) );
+                                else
+                                    Scal(i,j)=trim_cal_SAL(ti,j); % interpolate if possible because that is more accurate than using closest points
+                                    Scalerr(i,j)=trim_cal_SAL_err(ti,j); % interpolate if possible because that is more accurate than using closest points
+                                end
+                            end
+                        end
+                    end
+                    
+                    
+                    for ifig=1:ceil((length(tplot))/2)
+                    figure
+                    set(gcf,'defaultaxeslinewidth',2)
+                    set(gcf,'defaultlinelinewidth',2)
+                    set(gcf,'defaultaxesfontsize',16)
+                    
+                    for k=1:2
+                        kk=(ifig-1)*2+k;
+                        while(kk<=length(tplot))
+                        j=tplot(kk);
+                        subplot(2,1,k)
+                        if(isempty(Sint)==0)
+                            plot(PROFILE_NO,Sint(j,:),'b*-');
+                            hold on
+                            plot(PROFILE_NO,Smap(j,:),'r');
+                            plot(PROFILE_NO,Scal(j,:),'g');
+                            mm=find(isfinite(Scal(j,:))==1); ll=PROFILE_NO; ll=ll(mm); kk=Scal(j,mm); nn=Scalerr(j,mm);
+                            h=fill([ll,fliplr(ll)],[kk+nn,fliplr([kk-nn])],'g');
+                            set(h,'EdgeColor','g');
+                            errorbar(PROFILE_NO,Smap(j,:),Smaperr(j,:),'r-')
+                            plot(PROFILE_NO,Sint(j,:),'b*-');
+                            SMIN = min([Sint(j,:),Scal(j,:),Smap(j,:)]);
+                            SMAX = max([Sint(j,:),Scal(j,:),Smap(j,:)]);
+                            if isfinite(SMIN) & isfinite(SMAX)
+                                axis([0, max(PROFILE_NO)+1, SMIN-.05, SMAX+.05 ])
+                            end
+                            set(gca,'FontSize',12)
+                            title( strcat(title_floatname, ' salinities with error on \theta= ', num2str(tlevels(j)), '^{\circ}C' ) );
+                            ylabel('PSS-78')
+                            grid on
+                             
+                        end
+                        end
+                        
+                    end
+                    
+                     legend({'uncal float','mapped salinity','cal float w/1xerr.'}, 'Location', 'south','orientation','horizontal','FontSize',10);
+                     xlabel('float profile number');
+                    
+                    drawnow
+                    set(gcf,'papertype','usletter','paperunits','inches','paperorientation','portrait','paperposition',[.25,.75,8,9.5]);
+                    print('-depsc', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_6_', num2str(ifig), '_', num2str(iy), '.eps'));
+                    print('-dpdf', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_6_', num2str(ifig), '_', num2str(iy), '.pdf'));
+                    end
+                end
+            end
+            
+            % Brian King's plot: salinity anomaly time series on theta levels (figure 7) ------------
+            
+            figure
+            set(gcf,'defaultaxeslinewidth',2)
+            set(gcf,'defaultlinelinewidth',2)
+            set(gcf,'defaultaxesfontsize',16)
+            
+            fl.useqc = '0';
+            fl.plot = 1;
+            fl.yaxes = [2 5 20];
+            d.PSAL = cal_SAL;
+            d.TEMP = TEMP;
+            d.PRES = PRES;
+            d.PSAL_QC = zeros(m,n);
+            d.TEMP_QC = zeros(m,n);
+            d.PRES_QC = zeros(m,n);
+            d.LONGITUDE = LONG;
+            d.LATITUDE = LAT;
+            d.PROFILE_NO = PROFILE_NO;
+            fl = anom(d,fl); % Brian King's routine
+            subplot('position',[.1 .40 .8 .30])
+            title(['Calibrated salinity anom on theta. ' title_floatname])
+            
+            drawnow
+            set(gcf,'papertype','usletter','paperunits','inches','paperorientation','portrait','paperposition',[.25,.5,8,10]);
+            print('-depsc', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_7.eps'));
+            print('-dpdf', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_7.pdf'));
+            
+            
+            % Paul Robbins' analyse variance plot (figure 8) ------------
+            unique_cal = unique(lo_float_calseries.calseries);
+            n_seq = length(unique_cal);
+            
+            for iy=1:n_seq
+                
+                calindex = find(lo_float_calseries.calseries==unique_cal(iy));
+                k = length(calindex);
+                if unique_cal(iy)>0
+                    % choose 10 float theta levels to use in the piecewise linear fit --------
+                    
+                    unique_SAL = SAL(:, calindex);
+                    unique_PTMP = PTMP(:, calindex);
+                    unique_PRES = PRES(:, calindex);
+                    unique_la_ptmp = la_ptmp(:, calindex);
+                    unique_mapped_sal = mapped_sal(:, calindex);
+                    unique_mapsalerrors = mapsalerrors(:, calindex);
+                    
+                    
+                   [tlevels, plevels, index, var_s_Thetalevels, Thetalevels] = find_10thetas( unique_SAL, unique_PTMP, unique_PRES, unique_la_ptmp, use_theta_gt, use_theta_lt, use_pres_gt, use_pres_lt, use_percent_gt);
+                    %[tlevels, plevels, index, var_s_Thetalevels, Thetalevels] = find_10thetas( unique_mapped_sal, unique_PTMP, unique_PRES, unique_la_ptmp, use_theta_gt, use_theta_lt, use_pres_gt, use_pres_lt, use_percent_gt);
+
+                    [clim_var_s_Thetalevels]=find_var_s(Thetalevels,unique_la_ptmp,unique_mapped_sal,use_percent_gt);
+                    
+                    
+                    figure
+                    set(gcf,'defaultaxeslinewidth',1)
+                    set(gcf,'defaultlinelinewidth',1)
+                    set(gcf,'defaultaxesfontsize',12)
+                    
+                    % plot t-s profile
+                    subplot(222)
+                    % plot(unique_mapped_sal,unique_la_ptmp,':k');
+                    hold on
+                    box on
+                    plot(unique_SAL,unique_PTMP,'b-');
+                    
+                    set(gca,'Xlim',[floor(min(min(unique_SAL))*100)/100,ceil(max(max(unique_SAL))*100)/100])
+                    set(gca,'Ylim',[floor(min(min(unique_PTMP))*100)/100,ceil(max(max(unique_PTMP))*100)/100])
+                    x = get(gca,'xlim');
+                    y = get(gca,'ylim');
+                    xlabel('PSS-78')
+                    title(strcat('OW chosen levels, ', pn_float_name));
+                    for i=1:10
+                        hold on
+                        plot(x,[tlevels(i) tlevels(i)] ,'g-');
+                    end
+                    grid on
+                    
+                    % plot s var on t
+                    subplot(221)
+                    hold on
+                    box on
+                    
+                    %plot(clim_var_s_Thetalevels,Thetalevels,'k+')
+                    plot(var_s_Thetalevels,Thetalevels,'b-')
+                    x = get(gca,'xlim');
+                    for i=1:10
+                        hold on
+                        plot(x,[tlevels(i) tlevels(i)] ,'g-');
+                    end
+                    %legend({'mapped_sal','float_sal'},'interpreter','none','FontSize',9)
+                    title(['Salinity Variance on Theta, cycles ' num2str(PROFILE_NO(calindex(1))) '-' num2str(PROFILE_NO(calindex(end))) ])
+                    ylabel('Potential temp (^{\circ}C)')
+                    xlabel('salinity variance')
+                    %set(gca,'ylim',y)
+                    grid on
+                    
+                    % plot p-t profile
+                    subplot(223)
+                    plot(unique_PTMP,-unique_PRES,'b-');
+                    set(gca,'Xlim',[floor(min(min(unique_PTMP))*100)/100,ceil(max(max(unique_PTMP))*100)/100])
+                    set(gca,'Ylim',[floor(min(min(-unique_PRES))*100)/100,ceil(max(max(-unique_PRES))*100)/100])
+                    x = get(gca,'xlim');
+                    xlabel('^{\circ}C')
+                    ylabel('Pressure (dbar)')
+                    title(strcat('OW chosen levels - ', pn_float_name));
+                    for i=1:10
+                        hold on
+                        plot(x,[-plevels(i) -plevels(i)] ,'g-');
+                    end
+                    grid on
+                    
+                    % plot p-s profile
+                    subplot(224)
+                    plot(unique_SAL,-unique_PRES,'b-');
+                    set(gca,'Xlim',[floor(min(min(unique_SAL))*100)/100,ceil(max(max(unique_SAL))*100)/100])
+                    set(gca,'Ylim',[floor(min(min(-unique_PRES))*100)/100,ceil(max(max(-unique_PRES))*100)/100])
+                    x = get(gca,'xlim');
+                    xlabel('PSS-78')
+                    title(strcat('OW chosen levels - ', pn_float_name));
+                    for i=1:10
+                        hold on
+                        plot(x,[-plevels(i) -plevels(i)] ,'g-');
+                    end
+                    
+                    grid on
+                    drawnow
+                    set(gcf,'papertype','usletter','paperunits','inches','paperorientation','portrait','paperposition',[.5,.25,8,10.25]);
+                    print('-depsc', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_8_', num2str(iy), '.eps'));
+                    print('-dpdf', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_8_', num2str(iy), '.pdf'));
+                    
+                    
+                    figure
+                    set(gcf,'defaultaxeslinewidth',1)
+                    set(gcf,'defaultlinelinewidth',1)
+                    set(gcf,'defaultaxesfontsize',12)
+                    
+                    % plot t-s profile
+                    hold on
+                    box on
+                    grid on
+                    %keyboard
+                    plot(unique_SAL(:,1),unique_PTMP(:,1),'b-');
+                    plot(unique_mapped_sal(:,1),unique_la_ptmp(:,1),'-m');
+                    
+                    plot(unique_SAL,unique_PTMP,'b-');
+                    plot(unique_mapped_sal,unique_la_ptmp,'-m');
+                    
+                    x = get(gca,'xlim');
+                    y = get(gca,'ylim');
+                    xlabel('PSS-78')
+                    title(strcat('OW chosen levels, ', pn_float_name));
+                    
+                    for i=1:10
+                        hold on
+                        plot(x,[tlevels(i) tlevels(i)] ,'g-');
+                    end
+                    
+                    % ileg move here by T. Reynaud 21.09.2020
+                    ileg=legend({'float profiles','mapped profiles'},'FontSize',10,'Location','best')
+
+                    drawnow
+                    set(gcf,'papertype','usletter','paperunits','inches','paperorientation','portrait','paperposition',[.5,.25,8,10.25]);
+                    print('-depsc', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_8_zoom', num2str(iy), '.eps'));
+                    print('-dpdf', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_8_zoom', num2str(iy), '.pdf'));
+                    
+                end
+            end
+            
+        end %if(isempty(find(isnan(cal_SAL)==0))==0) ---------------
+        
+    end %if(isempty(find(isnan(mapped_sal)==0))==0) -----------
+    
+end %if(isempty(find(isnan(PRES)==0))==0) ------------------
+
+
+function [var_s_Thetalevels]=find_var_s(Thetalevels,PTMP,SAL,use_percent_gt);
+[m,n]=size(SAL);
+Thetalevel_indexes = NaN*ones(length(Thetalevels),n);
+for i=1:n
+    for j=1:length(Thetalevels)
+        if(Thetalevels(j)<max(PTMP(:,i))&Thetalevels(j)>min(PTMP(:,i)))
+            diffTheta = abs(PTMP(:,i)-Thetalevels(j));
+            if isempty(find(~isnan(diffTheta)))
+                Thetalevel_indexes(j,i) = NaN;
+            else
+                Thetalevel_indexes(j,i) = min(find(diffTheta==min(diffTheta)));
+            end
+        end
+    end
+end
+
+% find S variance on theta levels ---
+
+S_temp=NaN.*ones(length(Thetalevels),n);
+
+for i=1:length(Thetalevels) % build the S matrix to find var & the max number of good profiles
+    for j=1:n
+        ti=Thetalevel_indexes(i,j);
+        if ~isnan(ti)
+            interval=max(ti-1,1):min(ti+1,m); %interval is one above and one below ti
+            a=PTMP(ti,j) - PTMP(interval, j);
+            if(PTMP(ti,j)>Thetalevels(i))
+                gg=find(a>0);
+                if( ~isempty(gg) )
+                    b=find(a==min(a(gg))); %find the level with min +ve diff
+                    ki=interval(b);
+                else
+                    ki=ti;
+                end
+            end
+            if(PTMP(ti,j)<Thetalevels(i))
+                gg=find(a<0);
+                if( ~isempty(gg) )
+                    b=find(-a==min(-a(gg))); %find the level with min -ve diff
+                    ki=interval(b);
+                else
+                    ki=ti;
+                end
+            end
+            if(PTMP(ti,j)==Thetalevels(i)) %this can happen when there is only 1 profile
+                ki=ti;
+            end
+            if( ki~=ti&~isnan(SAL(ti,j))&~isnan(SAL(ki,j))&~isnan(PTMP(ti,j))&~isnan(PTMP(ki,j)) )
+                S_temp(i,j) = interp1( [PTMP(ti,j), PTMP(ki,j)], [SAL(ti,j), SAL(ki,j)], Thetalevels(i) );
+            else
+                S_temp(i,j)=SAL(ti,j); % interpolate if possible because that is more accurate than using closest points
+            end
+        end
+    end
+end
+
+
+numgood=NaN.*ones(length(Thetalevels),1);
+percentSprofs=NaN.*ones(length(Thetalevels),1);
+var_s_Thetalvls=NaN.*ones(length(Thetalevels),1);
+
+for i=1:length(Thetalevels)
+    good=find(isnan(S_temp(i,:))==0);
+    numgood(i)=length(good);
+    if(isempty(good)==0)
+        var_s_Thetalvls(i) =  var(S_temp(i,good)); % only use S on theta level that has valid values
+    end
+end
+
+for j=1:length(Thetalevels)
+    if(max(numgood)~=0)
+        percentSprofs(j) = numgood(j)/max(numgood); % maximum number of good data points on any theta level
+    end
+end
+bad = find(percentSprofs<use_percent_gt);
+var_s_Thetalvls(bad)=NaN;
+
+var_s_Thetalevels=var_s_Thetalvls;

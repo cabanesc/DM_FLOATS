@@ -1,0 +1,52 @@
+8
+
+dir
+39
+https://forge.ifremer.fr/svn/cora-update/Lib/ObsInSitu/General/RWnetcdf/R2008b
+https://forge.ifremer.fr/svn/cora-update
+
+
+
+2010-12-14T14:13:49.021449Z
+3
+fp06053
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+cb1457fe-4480-6a9a-804d-fe11422b7ddd
+
+read_netcdf_allthefile.m
+file
+
+
+
+
+2011-03-14T08:51:54.000000Z
+2999d719a76b74a897b7d665e87f745b
+2010-12-14T14:13:49.021449Z
+3
+fp06053
+
+create_netcdf_allthefile.m
+file
+
+
+
+
+2011-03-14T08:51:54.000000Z
+754bf99419a475a89a13f22f02a1186e
+2010-12-14T14:13:49.021449Z
+3
+fp06053
+

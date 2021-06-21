@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/cora-update/!svn/ver/3/Lib/ObsInSitu/General/Coriolis
+END
+extract_date_file_name.m
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/cora-update/!svn/ver/3/Lib/ObsInSitu/General/Coriolis/extract_date_file_name.m
+END
+check_globqc_prof.m
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/cora-update/!svn/ver/47/Lib/ObsInSitu/General/Coriolis/check_globqc_prof.m
+END
+adjust_param_and_qc.m
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/cora-update/!svn/ver/3/Lib/ObsInSitu/General/Coriolis/adjust_param_and_qc.m
+END
+put_presdeph_in_level.m
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/cora-update/!svn/ver/3/Lib/ObsInSitu/General/Coriolis/put_presdeph_in_level.m
+END
+format_flags_char2num.m
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/cora-update/!svn/ver/3/Lib/ObsInSitu/General/Coriolis/format_flags_char2num.m
+END

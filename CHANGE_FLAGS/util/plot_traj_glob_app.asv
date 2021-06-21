@@ -1,0 +1,162 @@
+function [thetitle]=plot_traj_glob(app)
+% -========================================================
+%   USAGE : plot_traj(FL)
+%   PURPOSE : plot the trajectory of the float, on a map with bathy
+% -----------------------------------
+%   INPUT :
+%     FL   (structure)  Float data
+%   optional input :
+%     Vec 1*n_cycle parameter to plot along the trajectory
+%   OUTPUT :
+%    thetitle (char) title of the plot
+% -----------------------------------
+%   HISTORY  : created (2009) ccabanes
+%            : modified (yyyy) byxxx
+%   CALLED SUBROUTINES: none
+% ========================================================
+
+
+FL=app.DATA.F;
+Topo=app.DATA.topo;
+if isfield(Topo,'lat')==0
+    if isfield(Topo,'grd_lat')
+        Topo.lat=Topo.grd_lat;
+    end
+end
+if isfield(Topo,'lon')==0
+    if isfield(Topo,'grd_lon')
+        Topo.lon=Topo.grd_lon;
+    end
+end
+Topo = shiftEW(Topo,'lon','grwch');
+Vec=[1:FL.max_cy];
+% load colormap
+load ('./util/bathy_17_colormap.mat');
+
+
+if isfield(FL,'longitude')
+    if isfield(FL,'latitude')
+        
+        
+        FL = shiftEW(FL,'longitude','grwch');
+        lonmin = floor(min(FL.longitude.data));
+        lonmax = ceil(max(FL.longitude.data));
+        latmin = floor(min(FL.latitude.data));
+        latmax = ceil(max(FL.latitude.data));
+        
+        region.lonmin = max([lonmin-10,-180]);
+        region.lonmax = min([lonmax+10,180]);
+        region.latmin = max([latmin-10,-90]);
+        region.latmax = min([latmax+10,90]);
+        
+        if lonmin<-100 && lonmax>100
+            Topo = shiftEW(Topo,'lon','pacif');
+            FL = shiftEW(FL,'longitude','pacif');
+            lonmin = floor(min(FL.longitude.data));
+            lonmax = ceil(max(FL.longitude.data));
+            region.lonmin = max([lonmin-10,0]);
+            region.lonmax = min([lonmax+10,360]);
+        end
+        
+        %keyboard
+        if min(size(Topo.lat.data))==1
+           Topo.lat.data =repmat(Topo.lat.data,[1,length(Topo.lon.data)]);
+           Topo.lon.data =repmat(Topo.lon.data',[size(Topo.lat.data,1),1]);
+        end
+        
+        iy = (Topo.lat.data(:,1)>= region.latmin & Topo.lat.data(:,1)<= region.latmax);
+        ix = (Topo.lon.data(1,:)>= region.lonmin & Topo.lon.data(1,:)<= region.lonmax);
+        r=reshape(Topo.lat.data(iy,ix),sum(ix)*sum(iy),1);
+        t=reshape(Topo.lon.data(iy,ix),sum(ix)*sum(iy),1);
+        y=reshape(Topo.topo.data(iy,ix),sum(ix)*sum(iy),1);
+        y(y>0)=NaN;
+       
+            
+       
+        
+       axis(app.UIAxes, [region.lonmin,region.lonmax,region.latmin,region.latmax])
+        
+        %newmap=[newmap;newmap(end,:);newmap(end,:);[1 0 1];[1 0 1];[1 0 1]];
+        %cvec=[-9500:500:1000,100000];
+
+        %box on
+        grid(app.UIAxes)
+        hold(app.UIAxes)
+       % if isempty(regionI)||(region.lonmin < regionI.lonmin|region.lonmax>regionI.lonmax|region.latmin<regionI.latmin|region.latmax>regionI.latmax)    
+        
+        cvec=[-100000,-6500:500:1000,100000];
+        [c,h]=contour(app.UIAxes,Topo.lon.data(iy,ix),Topo.lat.data(iy,ix),Topo.topo.data(iy,ix),cvec);
+%         p=h.Children;
+%         %p = get(h,'Children');
+%         thechild=get(p,'CData');
+%         cdat=cell2mat(thechild);
+%         for i=1:length(cvec)-1
+%             set(p(cdat>=cvec(i)& cdat< cvec(i+1)),'Facecolor',newmap(i,:),'LineStyle','none')
+%         end
+        contour(app.UIAxes,Topo.lon.data(iy,ix),Topo.lat.data(iy,ix),Topo.topo.data(iy,ix),[0 0],'LineColor',[0.6 0.5 0.4]);
+        
+        %end
+                
+        if  nargin==1
+            Vec = FL.cycle_number.data;
+        end
+        plot(app.UIAxes,FL.longitude.data,FL.latitude.data,'b+')
+
+        if length(FL.cycle_number.data)<max(Vec)/3
+           scatter(app.UIAxes,FL.longitude.data,FL.latitude.data,50,FL.cycle_number.data,'ok')
+        end
+        [s]=scatter(app.UIAxes,FL.longitude.data,FL.latitude.data,30,FL.cycle_number.data,'filled')
+        if length(FL.cycle_number.data)<max(Vec)/3
+        plot(app.UIAxes,FL.longitude.data,FL.latitude.data,'w')
+        end
+        
+        Vec=Vec(~isnan(Vec));
+        minvec=min(Vec);
+        maxvec=max(Vec);
+        c=jet(maxvec-minvec+1);
+        colormap(s,c)
+        if minvec<maxvec
+        caxis(app.UIAxes,[minvec maxvec])
+        else
+        caxis(app.UIAxes,[minvec maxvec+1])
+        end
+        colorbar(app.UIAxes,'delete')
+        xlabel(app.UIAxes,'longitude')
+        ylabel(app.UIAxes,'latitude')
+        c=colorbar(app.UIAxes,'horiz')
+        xlabel(c,'Cycle Number')
+       
+        
+        thetitle = [' '];
+        info1  = {'platform_number','pi_name','data_centre','juld'};
+        info2  = {'Platform: ', ', PI: ', ', ',', date of the first cycle: '};
+        
+        %regionO=region;
+        
+        for k=1:length(info1)
+            if isfield(FL,info1{k})
+                if isfield(FL.(info1{k}), 'data')
+                    if isequal(info1{k},'juld')
+                        % transforme la date juld > jour dd/mm/yyyy
+                        thedate = datestr( (FL.juld.data(1,:) + datenum('19500101','yyyymmdd')),'dd/mm/yyyy');
+                        
+                        thetitle = [thetitle info2{k}  thedate  ];
+                    else
+                        thetitle = [thetitle info2{k}  strtrim(num2str(FL.(info1{k}).data(1,:)))  ];
+                    end
+                    
+                end
+            end
+        end
+        
+       % title(thetitle,'interpreter','none')
+        
+    else
+        error(' No latitude data in the float data structure')
+    end
+    
+else
+    error('No longitude data in the float data structure ')
+end
+
+

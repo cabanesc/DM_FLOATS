@@ -1,0 +1,51 @@
+%   General configuration file
+
+% GENERAL
+% -----------------
+
+% miror of the GDAC FTP server
+DIR_FTP_CORIOLIS=/Users/thierry_reynaud/IFREMER/MATLAB/LOCODOX/LOCODOX_EXTERNAL_FLOAT_DATA/CORIOLIS/
+DIR_REFDATA_CORIOLIS=/Volumes/refdata/ARGO/DATA/202009-ArgoData/dac/
+
+% local directory to store float netcdf files you are working on
+DIR_FTP=/Users/thierry_reynaud/IFREMER/MATLAB/LOCODOX/LOCODOX_EXTERNAL_FLOAT_DATA/DMQC_STEP1/
+
+% output files with DMQC corrections are put in this directory
+DIR_DM_FILES=/Users/thierry_reynaud/IFREMER/MATLAB/LOCODOX/LOCODOX_EXTERNAL_FLOAT_DATA/DMQC_PSAL/
+
+FILE_TOPO=/Users/thierry_reynaud/IFREMER/MATLAB/DM_FLOATS_TR/CFLAG_EXTERNAL_DATA/TOPOGRAPHY/topo.onetenthdeg.nc
+FILE_TOPO_LOW=/Volumes/argo/DMARGO/OW/TOPO/topo.onedeg.nc
+
+% place to save your plots from various codes 
+DIR_PLOT=/Users/thierry_reynaud/IFREMER/MATLAB/DM_FLOATS_TR/CFLAG_DATA/plot/
+
+% place for your input/ouptut from OWC (source, calib, mapped ,plot)
+DIR_DATA=/Users/thierry_reynaud/IFREMER/MATLAB/DM_FLOATS_TR/CFLAG_DATA/data/
+
+DIR_CODES=/Users/thierry_reynaud/IFREMER/MATLAB/DM_FLOATS_TR/
+
+% OW codes and reference data are stored on a common disk (pharos)
+%-----------------------------------------------------------------
+% OWC path on the common disk (pharos)
+%DIR_OWC=/home5/pharos/argo/DMARGO/OW/
+DIR_OWC=/Volumes/argo/DMARGO/OW/
+% OWC version to use  ('VERSION_LAST' or 'VERSION_1_1_9' or 'VERSION_2_1_0' ... see DIR_OWC for available versions)
+VERSION_OWC=VERSION_2_1_0
+
+DIR_OWC_CTD=CLIMATOLOGY/CTD_for_DMQC_2019V01/
+DIR_OWC_ARGO=CLIMATOLOGY/ARGO_for_DMQC_2019V03/
+% /Volumes/argo/DMARGO/OW/VERSION_2_1_0/data/climatology/historical_ctd/ctd_7503 ... pas en smb
+% /Volumes/argo/DMARGO/OW/CLIMATOLOGY/CTD_for_DMQC_2019V01/ctd_7503
+
+
+% VERIF_PROFIL1
+% -------------
+% CAMPAIGN CTD data are stored on a common disk (pharos)
+%DIR_CAMPAIGN=/home5/pharos/argo/QCARGO/TRAITEMENT/data/
+DIR_CAMPAIGN=/Volumes/argo/QCARGO/TRAITEMENT/data/
+
+% DM OPERATOR INFO
+%-----------------
+OPERATOR_ORCID_ID = https://orcid.org/0000-0001-5252-3717
+OPERATOR_NAME = T. Reynaud
+OPERATOR_INSTITUTION = LOPS/Ifremer

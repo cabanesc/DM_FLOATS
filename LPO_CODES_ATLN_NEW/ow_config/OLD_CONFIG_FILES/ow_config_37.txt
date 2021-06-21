@@ -1,0 +1,92 @@
+% CONFIGURATION ATLANTIQUE NORD, DONNEES HISTORIQUES CTD, OFFSET ONLY
+
+% ===============================
+%
+%    Climatology Data Input Paths
+%
+
+HISTORICAL_DIRECTORY=/home/lpoargo1/DMARGO/OW/{VERSION_OW}/data/climatology
+HISTORICAL_CTD_PREFIX=/historical_ctd/ctd_
+HISTORICAL_BOTTLE_PREFIX=/historical_bot/bot_
+HISTORICAL_ARGO_PREFIX=/argo_profiles/argo_
+
+% ===============================
+%
+%    Float Input Path
+%
+
+FLOAT_SOURCE_DIRECTORY={DIR_DATA}/float_source/
+FLOAT_SOURCE_POSTFIX=.mat
+
+% ===============================
+%
+%    Mapping Output Path
+%
+
+FLOAT_MAPPED_DIRECTORY={DIR_DATA}/float_mapped/CONFIG37/
+FLOAT_MAPPED_PREFIX=map_
+FLOAT_MAPPED_POSTFIX=.mat
+
+% ===============================
+%
+%    Calibration Output Path
+%
+
+FLOAT_CALIB_DIRECTORY={DIR_DATA}/float_calib/CONFIG37/
+FLOAT_CALIB_PREFIX=cal_
+FLOAT_CALSERIES_PREFIX=calseries_
+FLOAT_CALIB_POSTFIX=.mat
+
+% ===============================
+%
+%    Diagnostic Plots Output Path
+%
+
+FLOAT_PLOTS_DIRECTORY={DIR_DATA}/float_plots/CONFIG37/
+
+% ===============================
+%
+%    Constants File Path
+%
+
+CONFIG_DIRECTORY=/home/lpoargo1/DMARGO/OW/{VERSION_OW}/data/constants/
+CONFIG_COASTLINES=coastdat.mat
+CONFIG_WMO_BOXES=wmo_boxes_ctd.mat
+CONFIG_SAF=TypicalProfileAroundSAF.mat
+
+% ===============================
+%
+%    Objective Mapping Parameters
+%
+
+% max number of historical casts used in objective mapping
+CONFIG_MAX_CASTS=250
+
+% pour Ovide 1, pour Good Hope 0
+% 1=use PV, 0=don't use PV, in objective mapping
+MAP_USE_PV=1
+
+% pour Ovide 0, pour Good Hope 1
+% 1=use SAF separation criteria, 0=don't use SAF separation criteria, in objective mapping
+MAP_USE_SAF=0
+
+% spatial decorrelation scales, in degrees
+MAPSCALE_LONGITUDE_LARGE=3.2
+MAPSCALE_LONGITUDE_SMALL=0.8 
+MAPSCALE_LATITUDE_LARGE=2
+MAPSCALE_LATITUDE_SMALL=0.5 
+
+% cross-isobath scales, see BS(2005)
+MAPSCALE_PHI_LARGE=0.5
+MAPSCALE_PHI_SMALL=0.1
+
+% temporal decorrelation scale, in years
+MAPSCALE_AGE=0.69
+
+% exclude the top xxx dbar of the water column
+MAP_P_EXCLUDE=500
+
+% only use historical data that are within +/- yyy dbar from float data
+MAP_P_DELTA=250
+
+
