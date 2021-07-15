@@ -144,7 +144,7 @@ if(isempty(find(isnan(PRES)==0))==0) % if no data exists, terminate here, no plo
         for j=1:length(ii)
             enough=num2str(ones(3,1));
             c=char(num2str(xticks(ii(j))),enough');
-            xticklabels(ii(j),:)=c(1,:);
+            xticklabels(ii(j),:)={c(1,:)};     % correction ccabanes to be used with matlab2020b
         end
         set(gca,'XTickLabel',xticklabels);
         axis([min(LONG)-10, max(LONG)+10, min(LAT)-10, max(LAT)+10])
@@ -198,7 +198,7 @@ if(isempty(find(isnan(PRES)==0))==0) % if no data exists, terminate here, no plo
         for j=1:length(ii)
             enough=num2str(ones(3,1));
             c=char(num2str(xticks(ii(j))),enough');
-            xticklabels(ii(j),:)=c(1,:);
+            xticklabels(ii(j),:)={c(1,:)}; % correction ccabanes to be used with matlab 2020b
         end
         set(gca,'XTickLabel',xticklabels);
         
