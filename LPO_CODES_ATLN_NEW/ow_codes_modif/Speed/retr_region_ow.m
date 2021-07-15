@@ -75,10 +75,10 @@ for ln_index = 1:length(pa_wmo_numbers)
                   jj=findstr(profile,'_');
                   ref_float=profile(1:jj-1);
                   kk=findstr(pa_float_name, ref_float);
-                  %kk2=findstr('6901598', ref_float);
+                  kk2=findstr('6901144', ref_float);
                   %ref_float
-                  %if(isempty(kk)==0)|(isempty(kk2)==0)
-                  if(isempty(kk)==0)
+                  if(isempty(kk)==0)|(isempty(kk2)==0)
+                  %if(isempty(kk)==0)
                     not_use=[not_use,i];
                   end
                 end
@@ -149,12 +149,18 @@ pa_grid_long( ln_jj ) = 360 + pa_grid_long( ln_jj ) ;
 
 % make sure longitude is continuous around the 0-360 degree mark
 
-ln_kk = find( pa_grid_long>=320 & pa_grid_long<=360 ) ;
-if( isempty( ln_kk ) == 0 )
-   ln_ll = find( pa_grid_long>=0 & pa_grid_long<=40 ) ;
+% ln_kk = find( pa_grid_long>=320 & pa_grid_long<=360 ) ;
+% if( isempty( ln_kk ) == 0 )
+   % ln_ll = find( pa_grid_long>=0 & pa_grid_long<=40 ) ;
+   % pa_grid_long( ln_ll ) = 360 + pa_grid_long( ln_ll ) ;
+% end
+% correction ccabanes pour  pour MAIN_dmqc_speed
+ln_kk1 = find( pa_grid_long>=320);
+ln_kk2 =find( pa_grid_long<=40);
+if( isempty( ln_kk1) == 0 & isempty(ln_kk2)==0)
+   ln_ll = find( pa_grid_long>=0 & pa_grid_long<=180 ) ;
    pa_grid_long( ln_ll ) = 360 + pa_grid_long( ln_ll ) ;
 end
-
 
 % make pa_grid_sal, pa_grid_ptmp, pa_grid_pres have the same NaNs
 

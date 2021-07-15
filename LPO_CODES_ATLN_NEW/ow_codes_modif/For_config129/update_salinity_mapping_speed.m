@@ -237,7 +237,8 @@ if length( missing_profile_index )>0
                     
                     LONG2=LONG;
                     if(isempty(find(la_grid_long>360))==0)
-                        if(LONG>=0&LONG<=20)
+                        %if(LONG>=0&LONG<=20)
+						if(LONG>=0&LONG<=180)  % correction cc pour speed
                             LONG2=LONG+360;
                         end
                     end
@@ -245,8 +246,8 @@ if length( missing_profile_index )>0
                     % find ln_max_casts historical points that are most strongly correlated with the float profile
                     
                     
-                    %[ index ] = find_besthist( la_grid_lat, la_grid_long, la_grid_dates, la_grid_Z, LAT, LONG2, DATES, Z, latitude_large, latitude_small, longitude_large, longitude_small, phi_large, phi_small, map_age,map_age_large, map_use_pv, ln_max_casts );
-                    [ index ] = find_besthist_mask( la_grid_lat, la_grid_long, la_grid_dates, la_grid_Z, LAT, LONG2, DATES, Z, latitude_large, latitude_small, longitude_large, longitude_small, phi_large, phi_small, map_age,map_age_large, map_use_pv, ln_max_casts,mask);
+                    [ index ] = find_besthist( la_grid_lat, la_grid_long, la_grid_dates, la_grid_Z, LAT, LONG2, DATES, Z, latitude_large, latitude_small, longitude_large, longitude_small, phi_large, phi_small, map_age,map_age_large, map_use_pv, ln_max_casts );
+                    %[ index ] = find_besthist_mask( la_grid_lat, la_grid_long, la_grid_dates, la_grid_Z, LAT, LONG2, DATES, Z, latitude_large, latitude_small, longitude_large, longitude_small, phi_large, phi_small, map_age,map_age_large, map_use_pv, ln_max_casts,mask);
 
                     index_all=[index_all;index];
                     index_each{i}=index;
@@ -256,6 +257,7 @@ if length( missing_profile_index )>0
                 end
                 
             end
+            
         end
         
         [u,ui]=unique(index_all);
@@ -346,7 +348,7 @@ if length( missing_profile_index )>0
                 la_bhist_dates = la_bhist_dates_all(itruc);
                 la_bhist_Z = la_bhist_Z_all(itruc);
                 
-                
+                %keyboard
                 % include JB's SAF frontal separation criteria if map_use_saf==1
                 
                 if(map_use_saf==1)
@@ -372,7 +374,8 @@ if length( missing_profile_index )>0
                 % make LONG compatiable with la_bhist_long at the 0-360 mark
                 
                 if(isempty(find(la_bhist_long>360))==0)
-                    if(LONG>=0&LONG<=20)
+                    %if(LONG>=0&LONG<=20)
+					if(LONG>=0&LONG<=180)  % correction cc pour speed
                         LONG=LONG+360;
                     end
                 end

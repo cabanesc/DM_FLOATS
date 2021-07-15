@@ -28,9 +28,11 @@ pa_grid_dates = [ ] ;
 % to save time: use of files that only contains lon and lat data
 po_config_data.HISTORICAL_CTD_PREFIX='/historical_ctd/lonlat/ctd_';
 po_config_data.HISTORICAL_ARGO_PREFIX='/argo_profiles/lonlat/argo_';
-
+if exist('/home5/pharos/argo/DMARGO/OW/VERSION_LAST/data/climatology/historical_ctd/bad_data_point.mat')
+load('/home5/pharos/argo/DMARGO/OW/VERSION_LAST/data/climatology/historical_ctd/bad_data_point.mat');
+else
 bad_ctd=[];
-
+end
 for ln_index = 1:m
     for ntyp = 2:4 % go through columns and check to see if this data type is supposed to be loaded
         if( ~isnan(pa_wmo_numbers(ln_index,1)) & pa_wmo_numbers(ln_index,ntyp) )
@@ -63,10 +65,10 @@ for ln_index = 1:m
           
                   ref_float=profile(1:jj-1);
                   kk=findstr(pa_float_name, ref_float);
-                  %kk2=findstr('6901598', strtrim(ref_float));
+                  kk2=findstr('6901144', strtrim(ref_float));
                   %
-                 %if(isempty(kk)==0)|(isempty(kk2)==0)
-                  if(isempty(kk)==0)
+                 if(isempty(kk)==0)|(isempty(kk2)==0)
+                  %if(isempty(kk)==0)
 		    not_use=[not_use,i];
                   end
                 end
@@ -102,12 +104,19 @@ pa_grid_long( ln_jj ) = 360 + pa_grid_long( ln_jj ) ;
 
 % make sure longitude is continuous around the 0-360 degree mark
 
-ln_kk = find( pa_grid_long>=320 & pa_grid_long<=360 ) ;
-if( isempty( ln_kk ) == 0 )
-   ln_ll = find( pa_grid_long>=0 & pa_grid_long<=40 ) ;
+% ln_kk = find( pa_grid_long>=320 & pa_grid_long<=360 ) ;
+% if( isempty( ln_kk ) == 0 )
+   % ln_ll = find( pa_grid_long>=0 & pa_grid_long<=40 ) ;
+   % pa_grid_long( ln_ll ) = 360 + pa_grid_long( ln_ll ) ;
+% end
+% correction ccabanes pour  pour MAIN_dmqc_speed
+ln_kk1 = find( pa_grid_long>=320);
+ln_kk2 =find( pa_grid_long<=40);
+if( isempty( ln_kk1) == 0 & isempty(ln_kk2)==0)
+   ln_ll = find( pa_grid_long>=0 & pa_grid_long<=180 ) ;
+   %ln_ll = find( pa_grid_long>=0) ;
    pa_grid_long( ln_ll ) = 360 + pa_grid_long( ln_ll ) ;
 end
-
 
 pa_grid_dates = changedates( pa_grid_dates ) ;
 
