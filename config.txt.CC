@@ -28,7 +28,7 @@ DIR_CODES=/home1/homedir5/perso/ccabanes/dvlpRD/Argo/TD/DM_FLOATS/
 DIR_OWC=/home5/pharos/argo/DMARGO/OW/
 
 % OWC version to use  ('VERSION_LAST' or 'VERSION_1_1_9' or 'VERSION_2_1_0' ... see DIR_OWC for available versions)
-VERSION_OWC=VERSION_2_1_0
+VERSION_OWC=VERSION_3_0_1
 
 % Bathymetry files:
 FILE_TOPO=/home5/pharos/argo/DMARGO/OW/TOPO/topo.onetenthdeg.nc
