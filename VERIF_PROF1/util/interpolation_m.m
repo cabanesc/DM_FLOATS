@@ -49,7 +49,7 @@ if strcmp(y_name,'pres')
 							A = [A,NaN];
 						elseif(pression_argo(i) < PARAM.LIM_SURF_DEEP)
 						
-							for ll = (ind - floor(PARAM.STEP_SURF/2)+1):(ind + floor(PARAM.STEP_SURF/2)+1)
+							for ll = (ind - floor(PARAM.STEP_SURF/2)+1):min((ind + floor(PARAM.STEP_DEEP/2)+1),nz_ctd)  
 								A = [A,CTD.(field_names{j}).data(1,ll)];
 							end
 							val = mean(A);
