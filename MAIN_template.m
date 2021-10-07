@@ -106,7 +106,7 @@ if irun.FIND_CLOSE_float
     rep='COMPARE_FLOAT_REF_TR';
     init_path('add',rep,rdir);
     eval(fullfile('cd ./',rep));
-    FIND_close_floats(floatname,dacname,'UPDATE',0,'PRINT',1,'DATATYPE','raw')
+    FIND_close_floats(floatname,dacname,'UPDATE',1,'PRINT',1,'DATATYPE','raw')
     eval('cd ..');
     init_path('clear',rep,rdir);
 end

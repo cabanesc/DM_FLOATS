@@ -109,6 +109,9 @@ exclude_float=PARAM.EXCLUDE_FLOATS;
 if ~exist(CONFIG.file_nearby_floats) || PARAM.UPDATE==1
     disp('reading GDAC index file ...')
     index_file_name=[CONFIG.DIR_REFDATA_CORIOLIS 'ar_index_global_prof.txt'];
+    if ~exist(index_file_name)
+        index_file_name=[CONFIG.DIR_REFDATA_CORIOLIS '../ar_index_global_prof.txt'];
+    end
     index_data = read_index_prof(index_file_name);
     
     [liste_profile_files,liste_floats_files] = select_floats_from_index(index_data,'lonmin',BOITE.lonmin, 'lonmax', BOITE.lonmax, 'latmin',BOITE.latmin, 'latmax', BOITE.latmax ,'ocean',PARAM.OCEAN,'exclude_type',{'852','851'},'datemin','20020101');

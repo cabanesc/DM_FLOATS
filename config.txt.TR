@@ -3,8 +3,10 @@
 % GENERAL
 % -----------------
 
-% miror of the GDAC FTP server
+% miror of the GDAC FTP server(original floats profiles, won't be modified)
 DIR_FTP_CORIOLIS=/Users/thierry_reynaud/IFREMER/MATLAB/LOCODOX/LOCODOX_EXTERNAL_FLOAT_DATA/CORIOLIS/
+
+% Last DOI of the full ARGO GDAC
 DIR_REFDATA_CORIOLIS=/Volumes/refdata/ARGO/DATA/202009-ArgoData/dac/
 
 % local directory to store float netcdf files you are working on

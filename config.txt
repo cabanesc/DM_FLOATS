@@ -3,8 +3,12 @@
 % GENERAL
 % -----------------
 
-% miror of the GDAC FTP server (@ coriolis)
+% miror of the GDAC FTP server (original floats profiles, won't be modified)
 DIR_FTP_CORIOLIS=/home/coriolis_exp/spool/co05/co0508/dac/
+
+% Last DOI of the full ARGO GDAC
+DIR_REFDATA_CORIOLIS=/home5/pharos/REFERENCE_DATA/ARGO/DATA/202106-ArgoData/dac/
+
 
 % local directory to store float netcdf files you are working on (copied from DIR_FTP_CORIOLIS)
 DIR_FTP=/export/home1/ccabanes/data/FTP_ARGO/
