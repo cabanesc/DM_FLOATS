@@ -1,13 +1,14 @@
 function plot_inverdens(CONFIG,wmonum,cycnum,pres,temp,psal,titflag)
 
 
+
 plotpath = [CONFIG.DIR_PLOT '/density_anomaly/'];
 if ~exist(plotpath,'dir')
     mkdir(plotpath);
 end
 
 
-texte1= [' - Profil(s) avec une inversion de densite > 0.03  : '] ;
+texte1= [' - Profile(s) with density inversion > 0.03  : '] ;
 
 [nprf,nz]=size(pres);
 float = num2str(wmonum);

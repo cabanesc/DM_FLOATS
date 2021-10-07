@@ -13,6 +13,8 @@
 %    if not (default 0)
 %    'PRINT'     (logical)      PRINT=1 is figure is saved  PRINT=0 otherwise
 %                               (default=1)
+%    'MAKEPAUSE'  (logical)     MAKEPAUSE=1 : PAUSE at each profile when
+%    plotting the theta/s diagram (default=0)
 % -----------------------------------
 %   OUTPUT :
 % -----------------------------------
@@ -46,12 +48,14 @@ PARAM.DATATYPE='raw';
 PARAM.USEFLAG='n';
 PARAM.PRINT=1;
 PARAM.DATAREP='DIR_FTP';
+PARAM.MAKEPAUSE=0;
 
 % Input CONFIG
 if isfield(s,'DATATYPE')==1;PARAM.DATATYPE=s.DATATYPE;end;
 if isfield(s,'USEFLAG')==1;PARAM.USEFLAG=s.USEFLAG;end;
 if isfield(s,'PRINT')==1;PARAM.PRINT=s.PRINT;end;
 if isfield(s,'DATAREP')==1;PARAM.DATAREP=s.DATAREP;end;
+if isfield(s,'MAKEPAUSE')==1;PARAM.MAKEPAUSE=s.MAKEPAUSE;end;
 
 float=str2num(floatname);
 
@@ -306,7 +310,7 @@ plot_inverdens(CONFIG,floatnum,cycnum,pres,temp,psal,titflag)
 
 h2=figure;
 orient landscape
-set(gca,'Fontsize',18);
+set(gca,'Fontsize',16);
 hold on
 for iprof=1:ncyc
     plot(psal(iprof,:),temp(iprof,:),'color',map(iprof,:),'marker','.','linewidth',2);
@@ -331,9 +335,11 @@ if PARAM.PRINT==1
     eval(['print -depsc2 ' plotpath floatnum '_TS_raw_' titflag titsavedata '.eps']);
     eval(['print -dpng ' plotpath floatnum '_TS_raw_' titflag titsavedata '.png']);
 end
+
+%------
 h3=figure;
 orient landscape
-set(gca,'Fontsize',18);
+set(gca,'Fontsize',16);
 hold on
 for iprof=1:ncyc
     plot(psal(iprof,:),tpot(iprof,:),'color',map(iprof,:),'marker','.','linewidth',2);
@@ -370,10 +376,12 @@ if PARAM.PRINT==1
     eval(['print -depsc2 ' plotpath floatnum '_thetaS_' titflag titsavedata '.eps']);
     eval(['print -dpng ' plotpath floatnum '_thetaS_' titflag titsavedata '.png']);
 end
+
+%------
 h4=figure;
 %keyboard
 orient landscape
-set(gca,'Fontsize',18);
+set(gca,'Fontsize',16);
 hold on
 pres_tab=pres;
 psal_tab=psal;
@@ -382,8 +390,10 @@ psal_tab(pres_tab<0)=NaN;
 tpot_tab(pres_tab<0)=NaN;
 for iprof=1:ncyc
     plot(psal_tab(iprof,:),tpot_tab(iprof,:),'color',map(iprof,:),'marker','.','linewidth',2);
-    disp(num2str(cycnum(iprof)));
-    %pause
+    if(PARAM.MAKEPAUSE==1)
+        disp(num2str(cycnum(iprof)));
+        pause
+    end
 end
 psal_tab(pres_tab<1500)=NaN;
 tpot_tab(pres_tab<1500)=NaN;
@@ -405,6 +415,7 @@ else
     ylabel('Potential Temp. (ref. to 0db)')
     xlabel('Salinity')
 end
+%keyboard
 vxmax=max(ceil(psal_tab(:)*100))/100;
 vxmin=min(floor(psal_tab(:)*100))/100;
 vymax=max(ceil(tpot_tab(:)*100))/100;
@@ -413,18 +424,27 @@ if ~isnan(vxmax*vxmin*vymax*vymin)
     set(gca,'xlim',[vxmin vxmax],'ylim',[vymin vymax]);
     
     %set(gca,'xlim',[cpsal(1) cpsal(end)],'ylim',[ctpot(1) ctpot(end)]);
-    [c,h]=contour(tabcp,tabct,csig,[25:0.05:35],'k');
-    clabel(c,h,'LabelSpacing',2*144,'FontSize',10,'FontWeight','normal')
-    [c,h]=contour(tabcp,tabct,csig,[25:0.01:35],'k:');
+    if max(max(csig)-min(min(csig)))<4
+        [c,h]=contour(tabcp,tabct,csig,[0:0.05:50],'k');
+        clabel(c,h,'LabelSpacing',2*144,'FontSize',10,'FontWeight','normal')
+    else
+        [c,h]=contour(tabcp,tabct,csig,[0:0.5:50],'k');
+        clabel(c,h,'LabelSpacing',144*2,'FontSize',10,'FontWeight','normal')
+    end
+    if max(max(csig)-min(min(csig)))<2
+        [c,h]=contour(tabcp,tabct,csig,[0:0.01:50],'k:');
+    end
 end
 grid on
 box on
-title([ floatnum ', theta/S diagram']);
+title([ floatnum ', theta/S diagram (P>1500db)']);
 if PARAM.PRINT==1
     set(gcf,'papertype','usletter','paperunits','inches','paperorientation','landscape','paperposition',[.25,.75,9.5,8]);
     eval(['print -depsc2 ' plotpath floatnum '_thetaS_zoom_' titflag titsavedata '.eps']);
     eval(['print -dpng ' plotpath floatnum '_thetaS_zoom_' titflag titsavedata '.png']);
 end
+
+
 if strcmp(pltoxy,'o')
     h5=figure;
     orient landscape
@@ -551,10 +571,12 @@ for icas=1:ncas
             ylabel('Pressure (db)')
             xlabel('Cycle number')
             if strcmp(PARAM.DATATYPE,'adj')
-                title([ floatnum ' - ' nomvalini]);
+                title([ floatnum ' - ' nomvalini ' ADJUSTED']);
+                
                 
             else
-                title([ floatnum ' - ' nomvalini ' ADJUSTED']);
+                title([ floatnum ' - ' nomvalini]);
+                
             end
             %eval(['print -depsc2 ' plotpath floatnum '_' nomvalini '_raw_' titflag titsavedata '.eps']);
             %eval(['print -dpng ' plotpath floatnum '_' nomvalini '_raw_' titflag titsavedata '.png']);
@@ -567,7 +589,7 @@ end
 
 % carte 1 (positions)
 % -------------------
-
+%keyboard
 zone_visu=[floor(min(lat))-0.2 ceil(max(lat))+0.2  floor(min(lon))-0.2 ceil(max(lon))+0.2];
 reso='LR';proj='miller';
 [hf,ha]=fct_pltmap_traj(zone_visu,reso,proj,park_press,prof_press);

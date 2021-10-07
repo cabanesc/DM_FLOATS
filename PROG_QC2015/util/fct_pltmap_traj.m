@@ -72,8 +72,8 @@ cvec=[-12000:500:1000,100000];
 set(h,'LineStyle','None');
 caxis([-10500 1000])
 colormap(newmap4);
-m_grid('xtick',[xt_min:1/fact:xt_max],'ytick',[yt_min:1/fact:yt_max],'color',[0 0 0],'linestyle',':');
-
+%m_grid('xtick',[xt_min:1/fact:xt_max],'ytick',[yt_min:1/fact:yt_max],'color',[0 0 0],'linestyle',':');
+m_grid('color',[0 0 0],'linestyle',':');
 % p = get(h,'Children');
 % thechild=get(p,'CData');
 % cdat=cell2mat(thechild);

@@ -47,7 +47,8 @@ fact=0.1;
 %m_grid('tickdir','in');	     
              
 m_proj(proj,'longitude',[xt_min xt_max],'latitude',[yt_min yt_max]);
-m_grid('xtick',[xt_min:1/fact:xt_max],'ytick',[yt_min:1/fact:yt_max],'color',[0 0 0],'linestyle','-.');
+%m_grid('xtick',[xt_min:1/fact:xt_max],'ytick',[yt_min:1/fact:yt_max],'color',[0 0 0],'linestyle','-.');
+m_grid('color',[0 0 0],'linestyle',':');
 
 
 % Modified by T. Reynaud 07/09/2020

@@ -11,7 +11,7 @@ if  strcmp(nomparamx,'O2sat') == 0
     map=jet(length(cycnum));
  
     figure; 
-    set(gca,'fontsize',18)
+    set(gca,'fontsize',16)
     grid
     hold on
     
@@ -26,7 +26,7 @@ if  strcmp(nomparamx,'O2sat') == 0
 
  %       set(gca,'ydir','reverse') 
     end
-    
+    box on
     title(['WMO ' wmonum ' - ' nomparamx],'interpreter','none');
     xlabel(labelx)
     ylabel(labely)
@@ -54,6 +54,7 @@ else
         set(gca,'fontsize',18)
         grid
         hold on
+        box on
  % revoir
         psat=paramx';
         for ii=1:4
@@ -67,6 +68,7 @@ else
         set(gca,'fontsize',18)
         grid
         hold on
+        
         % revoir
         pres = paramy';
         for ii=1:4
