@@ -5,7 +5,7 @@
 close all;
 clear all;
 % full path of the DM_FLOATS directory: rdir
-rdir='/home1/homedir5/perso/ccabanes/dvlpRD/Argo/TD/DM_FLOATS/'; % CC
+rdir='/home1/homedir5/perso/ccabanes/dvlpRD/Argo/TD/git/DM_FLOATS/'; % CC
 %rdir='/Users/thierry_reynaud/IFREMER/MATLAB/DM_FLOATS_TR/';        % TR
 eval(fullfile('cd ',rdir));
 
@@ -14,29 +14,29 @@ eval(fullfile('cd ',rdir));
 %3900515/	6900807/	6901603/	6902808/	6902818/	6903246/
 %3900516/	6901004/	6901758/	6902810/	6902881/	6903249/
 
-floatname = '6902752';
+floatname = '3901919';
 dacname = 'coriolis';
-numconfig_ow = 149;                  % available ow configuration files are in LPO_CODES_ATLN_NEW/ow_config/ :
+numconfig_ow = 1494;                  % available ow configuration files are in LPO_CODES_ATLN_NEW/ow_config/ :
 % 149 : Classical North Atlantic config, ARGO reference database is used
 % 129 : Classical North Atlantic config, ARGO  and CTD reference databases are used
 %  39 : Classical North Atlantic config, CTD reference databases is used
-config_campaign='config_ovide18.txt'; % campaign config files are in VERIF_PROF1/config_campagne/
+config_campaign=''; % campaign config files are in VERIF_PROF1/config_campagne/
 % available config_campaign files:
 %config_bocats.txt    config_geovide.txt  config_ovide18.txt  config_rrex15.txt
 %config_catarina.txt  config_ovide10.txt   config_pedro.txt    config_rrex17.txt
-name_campaign  = 'OVIDE 18';          % titre pour le rapport
+name_campaign  = 'MOCCA ';          % titre pour le rapport
 
 
 
-n_prof=1; % numero de profil que l'on veut verifier avec VERIF_FLAG
+n_prof=10; % numero de profil que l'on veut verifier avec VERIF_FLAG
 
 
-irun.LOAD_float      = 1;  % chargement des données: copie les fichiers netcdf depuis DIR_FTP_CORIOLIS vers DIR_FTP
+irun.LOAD_float      = 0;  % chargement des données: copie les fichiers netcdf depuis DIR_FTP_CORIOLIS vers DIR_FTP
 irun.PLOTDATA_raw    = 0;  % plots preliminaires (theta/S, sections, bathy...)
 irun.CORRECT_float   = 0;  % visualisation & correction des flags
 irun.VERIF_FLAG      = 0;  % comparaison d'un profil Argo (n_prof) aux profils les plus proches de la base de reference
 irun.VERIF_PROF1_raw = 0;  % comparaison au profil CTD de mise a l'eau
-irun.FIND_CLOSE_float= 0;  % optionnel : comparaison aux profils Argo voisins 
+irun.FIND_CLOSE_float= 1;  % optionnel : comparaison aux profils Argo voisins 
 irun.OW              = 0;  % calcul correction OWC
 irun.CORRECTIONS     = 0;  % ecriture des fichiers  D  avec correction
 irun.PLOTDATA_adj    = 0;  % verification des donnees ajustees (theta/S, sections)
@@ -83,7 +83,9 @@ if irun.VERIF_FLAG
     rep='VERIF_FLAG';
     init_path('add',rep,rdir);
     eval(fullfile('cd ./',rep));
-    verif_flag_1profil(floatname,dacname,n_prof,'CHECK_REF',1,'DEPTH_ZOOM',1000);
+    %verif_flag_1profil(floatname,dacname,n_prof,'DEPTH_ZOOM',1000,'REFERENCE','ctd');
+    verif_flag_1profil(floatname,dacname,n_prof,'DEPTH_ZOOM',1000, 'REFERENCE','argo');
+
     eval('cd ..');
     init_path('clear',rep,rdir);
 end

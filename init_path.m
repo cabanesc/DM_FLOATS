@@ -39,7 +39,7 @@ switch lower(rep)
                 addpath(fullfile(rdir));
                 addpath(fullfile(rdir,'/VERIF_FLAG/util'));
                 addpath(fullfile(rdir,'/lib/tool_Ocean/cmocean'));
-                addpath('/home1/homedir5/perso/ccabanes/matlab/lpo/hydcal');
+                addpath('/home1/homedir5/perso/ccabanes/matlab/lib_lpo/hydcal');
                 addpath('/home1/homedir5/perso/ccabanes/matlab/util/m_map1.4m');
             case lower('clear')
                 path(pathdef)
