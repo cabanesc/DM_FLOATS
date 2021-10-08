@@ -636,7 +636,7 @@ if(isempty(find(isnan(PRES)==0))==0) % if no data exists, terminate here, no plo
             ylabel('TIME SCALE ( yr )')
             %xlabel('average')
             for i=1:5
-                text(1.5,i+0.5,[num2str(floor(meanoutnan(ii_large(:,i)))) ' +/- ' num2str(floor(stdoutnan(ii_large(:,i))))] ,'color','w','fontweight','bold','HorizontalAlignment','center')
+                text(1.5,i+0.5,[num2str(floor(meanoutnan(ii_large(:,i)))) ' +/- ' num2str(floor(stdoutnan(ii_large(:,i))))] ,'color','w','fontweight','bold','fontsize',7,'HorizontalAlignment','center')
             end
             
             %subplot (2,15,[18:30])
@@ -668,12 +668,12 @@ if(isempty(find(isnan(PRES)==0))==0) % if no data exists, terminate here, no plo
             ylabel('TIME SCALE ( yr )')
             xlabel('Average (+/- std)')
             for i=1:5
-                text(1.5,i+0.5,[num2str(floor(meanoutnan(ii_small(:,i)))) ' +/- ' num2str(floor(stdoutnan(ii_small(:,i))))] ,'color','w','fontweight','bold','HorizontalAlignment','center')
+                text(1.5,i+0.5,[num2str(floor(meanoutnan(ii_small(:,i)))) ' +/- ' num2str(floor(stdoutnan(ii_small(:,i))))] ,'color','w','fontweight','bold','fontsize',7,'HorizontalAlignment','center')
             end
             
             ax=axes('Units','Normal','Position',[.01 .01 .95 0.90],'Visible','off');
             set(get(ax,'Title'),'Visible','on')
-            title(['Number of reference data available for float ' pn_float_name ' at theta = ' num2str(floor(medianoutnan(tlevels)*100)/100)],'FontWeight','bold','FontSize',12)
+            title(['Number of reference data available for float ' pn_float_name ' at theta = ' num2str(floor(medianoutnan(tlevels)*100)/100)],'FontWeight','bold','FontSize',10)
             
             drawnow
             set(gcf,'papertype','usletter','paperunits','inches','paperorientation','portrait','paperposition',[.25,.75,7,5]);
@@ -797,7 +797,7 @@ if(isempty(find(isnan(PRES)==0))==0) % if no data exists, terminate here, no plo
             ylabel('TIME SCALE ( yr )')
             %xlabel('average')
             for i=1:5
-                text(1.5,i+0.5,[num2str(floor(meanoutnan(ii_large(:,i)))) ' +/- ' num2str(floor(stdoutnan(ii_large(:,i))))] ,'color','w','fontweight','bold','HorizontalAlignment','center')
+                text(1.5,i+0.5,[num2str(floor(meanoutnan(ii_large(:,i)))) ' +/- ' num2str(floor(stdoutnan(ii_large(:,i))))] ,'color','w','fontweight','bold','fontsize',7,'HorizontalAlignment','center')
             end
             
             %subplot (2,15,[18:30])
@@ -829,12 +829,12 @@ if(isempty(find(isnan(PRES)==0))==0) % if no data exists, terminate here, no plo
             ylabel('TIME SCALE ( yr )')
             xlabel('Average (+/- std)')
             for i=1:5
-                text(1.5,i+0.5,[num2str(floor(meanoutnan(ii_small(:,i)))) ' +/- ' num2str(floor(stdoutnan(ii_small(:,i))))] ,'color','w','fontweight','bold','HorizontalAlignment','center')
+                text(1.5,i+0.5,[num2str(floor(meanoutnan(ii_small(:,i)))) ' +/- ' num2str(floor(stdoutnan(ii_small(:,i))))] ,'color','w','fontweight','bold','fontsize',7,'HorizontalAlignment','center')
             end
             
             ax=axes('Units','Normal','Position',[.01 .01 .95 0.90],'Visible','off');
             set(get(ax,'Title'),'Visible','on')
-            title(['Number of reference data available for float ' pn_float_name ' at theta = ' num2str(floor(max(tlevels)*100)/100)],'FontWeight','bold','FontSize',12)
+            title(['Number of reference data available for float ' pn_float_name ' at theta = ' num2str(floor(max(tlevels)*100)/100)],'FontWeight','bold','FontSize',10)
             
             drawnow
             set(gcf,'papertype','usletter','paperunits','inches','paperorientation','portrait','paperposition',[.25,.75,7,5]);

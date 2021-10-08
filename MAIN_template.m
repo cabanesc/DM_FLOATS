@@ -36,12 +36,12 @@ irun.PLOTDATA_raw    = 0;  % plots preliminaires (theta/S, sections, bathy...)
 irun.CORRECT_float   = 0;  % visualisation & correction des flags
 irun.VERIF_FLAG      = 0;  % comparaison d'un profil Argo (n_prof) aux profils les plus proches de la base de reference
 irun.VERIF_PROF1_raw = 0;  % comparaison au profil CTD de mise a l'eau
-irun.FIND_CLOSE_float= 1;  % optionnel : comparaison aux profils Argo voisins 
+irun.FIND_CLOSE_float= 0;  % optionnel : comparaison aux profils Argo voisins 
 irun.OW              = 0;  % calcul correction OWC
 irun.CORRECTIONS     = 0;  % ecriture des fichiers  D  avec correction
 irun.PLOTDATA_adj    = 0;  % verification des donnees ajustees (theta/S, sections)
 irun.VERIF_PROF1_adj = 0;  % verification des donnees ajustees (comparaison au profil CTD de mise a l'eau)
-irun.DOC             = 0;  % creation du rapport
+irun.DOC             = 1;  % creation du rapport
 
 %===========================%
 % chargement des données depuis le ftp
@@ -171,7 +171,6 @@ if irun.DOC
     init_path('add',rep,rdir);
     eval(fullfile('cd ./',rep));
     %n_prof=0;% A revoir avec CC
-    %generate_doc(floatname,dacname,numconfig_ow,'SUBTITLE',['Float ' floatname ' (bocats)'],'PROFREF',n_prof)%
     %generate_doc_overleaf(floatname,dacname,numconfig_ow,'SUBTITLE',['Float ' floatname ' (' name_campaign ')'],'PROFREF',n_prof,'PROFFLAG','1D')%
     generate_doc_overleaf(floatname,dacname,numconfig_ow,'SUBTITLE',['Float ' floatname ' (' name_campaign ')'],'PROFREF',n_prof)
     eval('cd ..');

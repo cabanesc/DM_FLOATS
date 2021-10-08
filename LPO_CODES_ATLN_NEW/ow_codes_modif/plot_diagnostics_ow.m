@@ -151,9 +151,9 @@ if(isempty(find(isnan(PRES)==0))==0) % if no data exists, terminate here, no plo
 
         drawnow
         %set(gcf,'papertype','usletter','paperunits','inches','paperorientation','portrait','paperposition',[.25,.75,8,9.5]);
-        print('-depsc', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_1.eps'));
+        %print('-depsc', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_1.eps'));
         print('-dpdf', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_1.pdf'));
-        
+        print('-dpng', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_1.png'));
         
         figure
         set(gcf,'defaultaxeslinewidth',2)
@@ -479,7 +479,7 @@ if(isempty(find(isnan(PRES)==0))==0) % if no data exists, terminate here, no plo
             fl.useqc = '0';
             fl.plot = 1;
             fl.yaxes = [2 5 20];
-            d.PSAL = SAL-mapped_sal;
+            d.PSAL = mapped_sal;
             d.TEMP = TEMP;
             d.PRES = PRES;
             d.PSAL_QC = zeros(m,n);
@@ -488,9 +488,9 @@ if(isempty(find(isnan(PRES)==0))==0) % if no data exists, terminate here, no plo
             d.LONGITUDE = LONG;
             d.LATITUDE = LAT;
             d.PROFILE_NO = PROFILE_NO;
-            fl = anom_2(d,fl); % Brian King's routine
+            fl = anom(d,fl); % Brian King's routine
             subplot('position',[.1 .40 .8 .30])
-            title(['       Salinity anom on theta.    ' title_floatname])
+            title(['   Mapped Salinity anom on theta.    ' title_floatname])
             
             drawnow
             set(gcf,'papertype','usletter','paperunits','inches','paperorientation','portrait','paperposition',[.25,.5,8,10]);

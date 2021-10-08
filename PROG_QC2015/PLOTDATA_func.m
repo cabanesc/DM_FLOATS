@@ -496,6 +496,7 @@ else
 end
 
 for icas=1:ncas
+    
     pas = tpas (icas);
     coef = tcoef(icas);
     if icas == 1 %PSAL
@@ -562,8 +563,9 @@ for icas=1:ncas
         xlabel('Date')
         if PARAM.PRINT==1
             set(gcf,'papertype','usletter','paperunits','inches','paperorientation','landscape','paperposition',[.25,.75,9.5,8]);
+            ['print -dpng ' plotpath floatnum '_' nomval '_interp_' titflag titsavedata '.png']
             eval(['print -dpng ' plotpath floatnum '_' nomval '_interp_' titflag titsavedata '.png'])
-            eval(['print -depsc2 ' plotpath floatnum '_' nomval '_interp_' titflag titsavedata '.eps'])
+            %eval(['print -depsc2 ' plotpath floatnum '_' nomval '_interp_' titflag titsavedata '.eps'])
         end
         if icas ~= 2 && icas ~= 5
             [hf] = pcolor_argodata(cycnum,pres',valini',nomvalini,'flat');

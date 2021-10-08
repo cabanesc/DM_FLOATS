@@ -24,7 +24,7 @@ DIR_PLOT=/export/home1/ccabanes/data/QCARGO/TRAITEMENT/plot/
 DIR_DATA=/export/home1/ccabanes/data/QCARGO/TRAITEMENT/data/
 
 % full path of the DM_FLOATS directory
-DIR_CODES=/home1/homedir5/perso/ccabanes/dvlpRD/Argo/TD/DM_FLOATS/
+DIR_CODES=/home1/homedir5/perso/ccabanes/dvlpRD/Argo/TD/git/DM_FLOATS/
 
 % OW codes and reference data are stored on a common disk (pharos)
 %-----------------------------------------------------------------

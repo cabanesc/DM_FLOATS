@@ -12,48 +12,6 @@ lo_system_configuration = load_configuration( [DIR_CODES 'LPO_CODES_ATLN_NEW/ow_
 
 fw1=fopen(['./REPORTS/table_config' num2str(numconfig) '.tex'],'w');
 
-fprintf(fw1,'%s\n', ['\documentclass[11pt,titlepage]{article}']);
-fprintf(fw1,'%s\n', ['\usepackage[latin1]{inputenc}']);
-%\usepackage[french]{babel}
-fprintf(fw1,'%s\n', ['\usepackage[dvips,final]{graphicx}']);
-
-fprintf(fw1,'%s\n', ['\usepackage{color}']);
-fprintf(fw1,'%s\n', ['\usepackage{tabularx}']);
-fprintf(fw1,'%s\n', ['\usepackage{float}']);
-%\usepackage{rotfloat}
-fprintf(fw1,'%s\n', ['\usepackage{calc}']);
-fprintf(fw1,'%s\n', ['\usepackage{soul}']);
-fprintf(fw1,'%s\n', ['\usepackage[small,hang]{caption}']);
-fprintf(fw1,'%s\n', ['\usepackage{subcaption}']);
-fprintf(fw1,'%s\n', ['\usepackage[colorlinks={true}]{hyperref}']);
-fprintf(fw1,'%s\n', [' ']);
-fprintf(fw1,'%s\n', ['\setlength{\textwidth}{430pt}']);
-fprintf(fw1,'%s\n', ['\setlength{\oddsidemargin}{0pt}']);
-fprintf(fw1,'%s\n', ['\setlength{\evensidemargin}{0pt}']);
-fprintf(fw1,'%s\n', ['\setlength{\marginparwidth}{0pt}']);
-%\setlength{\footskip}{20pt}
-fprintf(fw1,'%s\n', ['\setlength{\headsep}{35pt}']);
-fprintf(fw1,'%s\n', ['\setlength{\topmargin}{-15pt}']);
-fprintf(fw1,'%s\n', ['\setlength{\textheight}{650pt}']);
-
-fprintf(fw1,'%s\n', ['\newcommand{\dg}{$^\circ$}']);
-fprintf(fw1,'%s\n', ['\newcommand{\Sv}{$\times 10^6$ m$^3$.s$^{-1}$}']);
-fprintf(fw1,'%s\n', ['\newcommand{\pw}{$\times 10^{15}$ W}']);
-fprintf(fw1,'%s\n', ['\newcommand{\cmps}{cm.s$^{-1}$}']);
-fprintf(fw1,'%s\n', ['\newcommand{\mps}{m.s$^{-1}$}']);
-fprintf(fw1,'%s\n', ['\newcommand{\mcps}{m$^2$.s$^{-1}$}']);
-fprintf(fw1,'%s\n', ['\newcommand{\upv}{$\times 10^{-11}$ m$^{-1}$.s$^{-1}$}']);
-%\newcommand{\sig0}{$\sigma_0$}
-fprintf(fw1,'%s\n', ['\newcommand{\usig}{kg.m$^{-3}$}']);
-
-
-%\graphicspath{{/home1/corsen/perso/ccabanes/dvlpRD/Argo/TD/OW/data/float_plots/CONFIG1/1900075/}  {/home1/corsen/perso/ccabanes/Results/Argo/TD/Traitements/Plot/Verif_flag/1900075/}}
-
- fprintf(fw1,'%s\n', ['\usecounter{page}']);
- fprintf(fw1,'%s\n', ['\begin{document}']);
-
-fprintf(fw1,'%s\n', ['\pagestyle{plain}']);
-fprintf(fw1,'%s\n', ['\pagenumbering{arabic}']);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TABLE3
 fprintf(fw1,'%s\n', ['\begin{table}[h]']);
@@ -93,8 +51,6 @@ fprintf(fw1,'%s\n', ['$$']);
 %fprintf(fw1,'%s\n', ['\caption{Parameters of the OWC method }']);
 fprintf(fw1,'%s\n', ['\label{tab3}']);
 fprintf(fw1,'%s\n', ['\end{table}']);
-
-fprintf(fw1,'%s\n', ['\end{document}']);
 
 fclose(fw1);
 
