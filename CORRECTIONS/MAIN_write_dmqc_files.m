@@ -88,7 +88,7 @@ else
     DIR_OW = [C.DIR_DATA 'float_calib/CONFIG' numconfig '/' ];     % calibration files directory(cal_$flt_name$.mat files)
     DIR_OUT = [C.DIR_DM_FILES dacname '/'];   % output files with DMQC corrections are put in this directory
 	
-	DIR_PLOT= ['./parmalog/' flotteur '/'];
+	DIR_PLOT= ['./paramlog/' flotteur '/'];
 	mkdir(DIR_PLOT)
 
 end
