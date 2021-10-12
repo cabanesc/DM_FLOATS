@@ -1,13 +1,13 @@
 % Genere les fichiers wmo_boxes_xxx.mat en fonction
 % de l'existence des fichiers boxnum.mat
 
-inipath='/home/lpoargo1/DMARGO/OW/VERSION_1_1_3/data/';
+inipath='/home5/pharos/argo/DMARGO/OW/matlab_ow-3.0.0_a/data/';
 
-% Chargement du fichier initial, r�cup�ration du tableau la_wmo_boxes
+% Chargement du fichier initial, recuperation du tableau la_wmo_boxes
 load([inipath 'constants/wmo_boxes.mat']);
 la_wmo_boxes_ini=la_wmo_boxes;
 
-% Fichier contenant les donn�es CTD seulement pour les bo�tes WMO
+% Fichier contenant les donnees CTD seulement pour les bo�tes WMO
 % existantes
 la_wmo_boxes(:,2)=0;
 la_wmo_boxes(:,4)=0;
@@ -20,17 +20,17 @@ end
 la_wmo_boxes_ctd=la_wmo_boxes(:,2);
 eval(['save ' inipath 'constants/wmo_boxes_ctd.mat  la_wmo_boxes']);
 
-% Fichier contenant les donn�es CTD seulement de toutes les bo�tes WMO 
+% Fichier contenant les donnees CTD seulement de toutes les boites WMO 
 la_wmo_boxes(:,2)=1;
 eval(['save ' inipath 'constants/wmo_boxes_allctd.mat  la_wmo_boxes']); 
 
-% Fichier contenant les donn�es ARGO seulement de toutes les bo�tes WMO 
+% Fichier contenant les donnees ARGO seulement de toutes les boites WMO 
 la_wmo_boxes(:,2)=0;
 la_wmo_boxes(:,4)=1;
 eval(['save ' inipath 'constants/wmo_boxes_allargo.mat  la_wmo_boxes']); 
 
 
-% Fichier contenant les donn�es ARGO seulement pour les bo�tes WMO
+% Fichier contenant les donnees ARGO seulement pour les boites WMO
 % existantes
 la_wmo_boxes(:,2)=0;
 la_wmo_boxes(:,4)=0;
@@ -43,7 +43,7 @@ end
 la_wmo_boxes_argo=la_wmo_boxes(:,4);
 eval(['save ' inipath 'constants/wmo_boxes_argo.mat  la_wmo_boxes']); 
    
-% Fichier contenant les donn�es ARGO et les donn�es CTD pour les bo�tes WMO
+% Fichier contenant les donnees ARGO et les donnees CTD pour les boites WMO
 % existantes
 la_wmo_boxes(:,2)=la_wmo_boxes_ctd;
 la_wmo_boxes(:,4)=la_wmo_boxes_argo;

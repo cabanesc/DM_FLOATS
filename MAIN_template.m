@@ -34,14 +34,14 @@ n_prof=10; % numero de profil que l'on veut verifier avec VERIF_FLAG
 irun.LOAD_float      = 0;  % chargement des données: copie les fichiers netcdf depuis DIR_FTP_CORIOLIS vers DIR_FTP
 irun.PLOTDATA_raw    = 0;  % plots preliminaires (theta/S, sections, bathy...)
 irun.CORRECT_float   = 0;  % visualisation & correction des flags
-irun.VERIF_FLAG      = 0;  % comparaison d'un profil Argo (n_prof) aux profils les plus proches de la base de reference
+irun.VERIF_FLAG      = 1;  % comparaison d'un profil Argo (n_prof) aux profils les plus proches de la base de reference
 irun.VERIF_PROF1_raw = 0;  % comparaison au profil CTD de mise a l'eau
 irun.FIND_CLOSE_float= 0;  % optionnel : comparaison aux profils Argo voisins 
 irun.OW              = 0;  % calcul correction OWC
 irun.CORRECTIONS     = 0;  % ecriture des fichiers  D  avec correction
 irun.PLOTDATA_adj    = 0;  % verification des donnees ajustees (theta/S, sections)
 irun.VERIF_PROF1_adj = 0;  % verification des donnees ajustees (comparaison au profil CTD de mise a l'eau)
-irun.DOC             = 1;  % creation du rapport
+irun.DOC             = 0;  % creation du rapport
 
 %===========================%
 % chargement des données depuis le ftp
