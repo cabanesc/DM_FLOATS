@@ -332,8 +332,8 @@ box on
 title([floatnum ', T/S diagram']);
 if PARAM.PRINT==1
     set(gcf,'papertype','usletter','paperunits','inches','paperorientation','landscape','paperposition',[.25,.75,9.5,8]);
-    eval(['print -depsc2 ' plotpath floatnum '_TS_raw_' titflag titsavedata '.eps']);
-    eval(['print -dpng ' plotpath floatnum '_TS_raw_' titflag titsavedata '.png']);
+    %eval(['print -depsc2 ' plotpath floatnum '_TS_raw_' titflag titsavedata '.eps']);
+    eval(['print -f' num2str(h2.Number) ' -dpng ' plotpath floatnum '_TS_raw_' titflag titsavedata '.png']);
 end
 
 %------
@@ -373,8 +373,8 @@ title([floatnum ', theta/S diagram']);
 
 if PARAM.PRINT==1
     set(gcf,'papertype','usletter','paperunits','inches','paperorientation','landscape','paperposition',[.25,.75,9.5,8]);
-    eval(['print -depsc2 ' plotpath floatnum '_thetaS_' titflag titsavedata '.eps']);
-    eval(['print -dpng ' plotpath floatnum '_thetaS_' titflag titsavedata '.png']);
+    %eval(['print -depsc2 ' plotpath floatnum '_thetaS_' titflag titsavedata '.eps']);
+    eval(['print -f' num2str(h3.Number) ' -dpng ' plotpath floatnum '_thetaS_' titflag titsavedata '.png']);
 end
 
 %------
@@ -440,10 +440,10 @@ box on
 title([ floatnum ', theta/S diagram (P>1500db)']);
 if PARAM.PRINT==1
     set(gcf,'papertype','usletter','paperunits','inches','paperorientation','landscape','paperposition',[.25,.75,9.5,8]);
-    eval(['print -depsc2 ' plotpath floatnum '_thetaS_zoom_' titflag titsavedata '.eps']);
-    eval(['print -dpng ' plotpath floatnum '_thetaS_zoom_' titflag titsavedata '.png']);
+    %eval(['print -depsc2 ' plotpath floatnum '_thetaS_zoom_' titflag titsavedata '.eps']);
+    eval(['print -f' num2str(h4.Number) ' -dpng ' plotpath floatnum '_thetaS_zoom_' titflag titsavedata '.png']);
 end
-
+%keyboard
 
 if strcmp(pltoxy,'o')
     h5=figure;
@@ -563,8 +563,8 @@ for icas=1:ncas
         xlabel('Date')
         if PARAM.PRINT==1
             set(gcf,'papertype','usletter','paperunits','inches','paperorientation','landscape','paperposition',[.25,.75,9.5,8]);
-            ['print -dpng ' plotpath floatnum '_' nomval '_interp_' titflag titsavedata '.png']
-            eval(['print -dpng ' plotpath floatnum '_' nomval '_interp_' titflag titsavedata '.png'])
+            ['print -f' num2str(hf.Number) ' -dpng ' plotpath floatnum '_' nomval '_interp_' titflag titsavedata '.png']
+            eval(['print -f' num2str(hf.Number) ' -dpng ' plotpath floatnum '_' nomval '_interp_' titflag titsavedata '.png'])
             %eval(['print -depsc2 ' plotpath floatnum '_' nomval '_interp_' titflag titsavedata '.eps'])
         end
         if icas ~= 2 && icas ~= 5
@@ -630,8 +630,8 @@ title(['Float WMO ' floatnum])
 if PARAM.PRINT==1
     figure(hf)
     set(hf,'papertype','usletter','paperunits','inches','paperorientation','landscape','paperposition',[.25,.75,9.5,8]);
-    eval(['print -depsc2 ' plotpath floatnum '_pos_' titflag titsavedata '.eps']);
-    eval(['print -dpng ' plotpath floatnum '_pos_' titflag titsavedata '.png']);
+    %eval(['print -depsc2 ' plotpath floatnum '_pos_' titflag titsavedata '.eps']);
+    eval(['print -f' num2str(hf.Number) ' -dpng ' plotpath floatnum '_pos_' titflag titsavedata '.png']);
 end
 % carte 2 (positions)
 % -------------------
@@ -662,8 +662,8 @@ title(['Float WMO ' floatnum])
 
 if PARAM.PRINT==1
     set(gcf,'papertype','usletter','paperunits','inches','paperorientation','landscape','paperposition',[.25,.75,9.5,8]);
-    eval(['print -depsc2 ' plotpath floatnum '_pos2_' titflag titsavedata '.eps']);
-    eval(['print -dpng ' plotpath floatnum '_pos2_' titflag titsavedata '.png']);
+    %eval(['print -depsc2 ' plotpath floatnum '_pos2_' titflag titsavedata '.eps']);
+    eval(['print -f' num2str(hf.Number) ' -dpng ' plotpath floatnum '_pos2_' titflag titsavedata '.png']);
 end
 
 
@@ -686,7 +686,7 @@ xlabel('Date')
 title(['Float WMO ' floatnum])
 if PARAM.PRINT==1
     set(gcf,'papertype','usletter','paperunits','inches','paperorientation','landscape','paperposition',[.25,.75,9.5,8]);
-    eval(['print -depsc2 ' plotpath floatnum '_cycle_' titflag titsavedata '.eps']);
+    %eval(['print -depsc2 ' plotpath floatnum '_cycle_' titflag titsavedata '.eps']);
     eval(['print -dpng ' plotpath floatnum '_cycle_' titflag titsavedata '.png']);
 end
 %clear all

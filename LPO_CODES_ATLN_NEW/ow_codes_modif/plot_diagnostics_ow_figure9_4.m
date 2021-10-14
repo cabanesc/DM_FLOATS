@@ -90,8 +90,8 @@ if(isempty(find(isnan(PRES)==0))==0) % if no data exists, terminate here, no plo
         %keyboard
         [m,n] = size(PRES);
         
-        figure(1)
-       subplot(2,1,1)
+        figure
+        subplot(2,1,1)
         
         
         %Topo_ficin='/home/lpoargo1/DMARGO/OW/TOPO/topo.onetenthdeg.atl.nc';
@@ -111,8 +111,8 @@ if(isempty(find(isnan(PRES)==0))==0) % if no data exists, terminate here, no plo
         % %  set(gcf,'defaultlinelinewidth',2)
         % %  set(gcf,'defaultaxesfontsize',12)
         
-         colormap(jet(n));
-         c=colormap;
+        colormap(jet(n));
+        c=colormap;
         
         x=[];
         y=[];
@@ -168,7 +168,7 @@ if(isempty(find(isnan(PRES)==0))==0) % if no data exists, terminate here, no plo
         %keyboard
         %title( ['A) Argo float ' title_floatname ', ' strtrim(F.pi_name.data(1,:)) ', ' strtrim(F.data_centre.data(1,:))]);
         iwrap=1;
-
+        
         lat=Topo.lat.data;
         bathy.topo.data=NaN*ones(size(Topo.topo.data));
         if iwrap==1
@@ -184,32 +184,32 @@ if(isempty(find(isnan(PRES)==0))==0) % if no data exists, terminate here, no plo
                 
             end
         else
-          bathy.topo.data=Topo.topo.data;
-          lon=Topo.lon.data;
+            bathy.topo.data=Topo.topo.data;
+            lon=Topo.lon.data;
         end
-       [bathy.lon.data,bathy.lat.data]=meshgrid(lon,lat);
-
+        [bathy.lon.data,bathy.lat.data]=meshgrid(lon,lat);
+        
         iix=find(bathy.lon.data(1,:)>minx & bathy.lon.data(1,:)<maxx);
-        jjy=find(bathy.lat.data(:,1)>miny & bathy.lat.data(:,1)<maxy);        
-
+        jjy=find(bathy.lat.data(:,1)>miny & bathy.lat.data(:,1)<maxy);
         
         
-% Commented by T. Reynaud 02/11/2020        
-%         iix=find(Topo.lon.data(1,:)>minx&Topo.lon.data(1,:)<maxx);
-%         jjy=find(Topo.lat.data(:,1)>miny&Topo.lat.data(:,1)<maxy);        
-%         contour(Topo.lon.data(jjy,iix),Topo.lat.data(jjy,iix),Topo.topo.data(jjy,iix),[-1000 -1000],'LineColor',[0.6 0.5 0.4]);
-%         contour(Topo.lon.data(jjy,iix),Topo.lat.data(jjy,iix),Topo.topo.data(jjy,iix),[-2000 -2000],'LineColor',[0.6 0.5 0.4]);
-%         contour(Topo.lon.data(jjy,iix),Topo.lat.data(jjy,iix),Topo.topo.data(jjy,iix),[-3000 -3000],'LineColor',[0.8 0.7 0.6]);
-%         contour(Topo.lon.data(jjy,iix),Topo.lat.data(jjy,iix),Topo.topo.data(jjy,iix),[-4000 -4000],'LineColor',[0.8 0.8 0.8]);        
-%         contour(Topo.lon.data(jjy,iix),Topo.lat.data(jjy,iix),Topo.topo.data(jjy,iix),[0 0],'LineColor',[0 0 0]);
-
-% Added by T. Reynaud 02/11/2020
+        
+        % Commented by T. Reynaud 02/11/2020
+        %         iix=find(Topo.lon.data(1,:)>minx&Topo.lon.data(1,:)<maxx);
+        %         jjy=find(Topo.lat.data(:,1)>miny&Topo.lat.data(:,1)<maxy);
+        %         contour(Topo.lon.data(jjy,iix),Topo.lat.data(jjy,iix),Topo.topo.data(jjy,iix),[-1000 -1000],'LineColor',[0.6 0.5 0.4]);
+        %         contour(Topo.lon.data(jjy,iix),Topo.lat.data(jjy,iix),Topo.topo.data(jjy,iix),[-2000 -2000],'LineColor',[0.6 0.5 0.4]);
+        %         contour(Topo.lon.data(jjy,iix),Topo.lat.data(jjy,iix),Topo.topo.data(jjy,iix),[-3000 -3000],'LineColor',[0.8 0.7 0.6]);
+        %         contour(Topo.lon.data(jjy,iix),Topo.lat.data(jjy,iix),Topo.topo.data(jjy,iix),[-4000 -4000],'LineColor',[0.8 0.8 0.8]);
+        %         contour(Topo.lon.data(jjy,iix),Topo.lat.data(jjy,iix),Topo.topo.data(jjy,iix),[0 0],'LineColor',[0 0 0]);
+        
+        % Added by T. Reynaud 02/11/2020
         contour(bathy.lon.data(jjy,iix),bathy.lat.data(jjy,iix),bathy.topo.data(jjy,iix),[-1000 -1000],'LineColor',[0.6 0.5 0.4]);
         contour(bathy.lon.data(jjy,iix),bathy.lat.data(jjy,iix),bathy.topo.data(jjy,iix),[-2000 -2000],'LineColor',[0.6 0.5 0.4]);
         contour(bathy.lon.data(jjy,iix),bathy.lat.data(jjy,iix),bathy.topo.data(jjy,iix),[-3000 -3000],'LineColor',[0.8 0.7 0.6]);
-        contour(bathy.lon.data(jjy,iix),bathy.lat.data(jjy,iix),bathy.topo.data(jjy,iix),[-4000 -4000],'LineColor',[0.8 0.8 0.8]);        
+        contour(bathy.lon.data(jjy,iix),bathy.lat.data(jjy,iix),bathy.topo.data(jjy,iix),[-4000 -4000],'LineColor',[0.8 0.8 0.8]);
         contour(bathy.lon.data(jjy,iix),bathy.lat.data(jjy,iix),bathy.topo.data(jjy,iix),[0 0],'LineColor',[0 0 0]);
-
+        
         
         
         % calibration curve (figure 3) --------------------------
@@ -447,17 +447,17 @@ if(isempty(find(isnan(PRES)==0))==0) % if no data exists, terminate here, no plo
                     end
                 end
             end
-                    
+            
             for j=1:n
                 ii=find(~isnan(Smaperr(:,j)));
                 cov = build_ptmp_cov( tlevels(ii));
                 mean_err_mapp(j)=sum(sum(diag(Smaperr(ii,j))*cov))/(length(ii)*length(ii));
             end
             
-           
             
             
-			
+            
+            
             subplot(2,1,2)
             plot(PROFILE_NO, avg_Soffset, 'b-');
             hold on
@@ -534,154 +534,154 @@ if(isempty(find(isnan(PRES)==0))==0) % if no data exists, terminate here, no plo
             ii_small_2=NaN*zeros(length(PROFILE_NO),1);
             ii_small_1=NaN*zeros(length(PROFILE_NO),1);
             for i=1:length(PROFILE_NO)
-            
+                
                 iprof=lo_float_source_stat_data.profile_index(i);
                 if ~isnan(iprof)
-                itruc=ismember(lo_float_source_stat_data.index_un,lo_float_source_stat_data.index_each{i});
-                
-                la_bhist_lat = lo_float_source_stat_data.la_bhist_lat_all(itruc);
-                la_bhist_long = lo_float_source_stat_data.la_bhist_long_all(itruc);
-                la_bhist_dates = lo_float_source_stat_data.la_bhist_dates_all(itruc);
-                la_bhist_Z = lo_float_source_stat_data.la_bhist_Z_all(itruc);
-                Min_ptmp = lo_float_source_stat_data.Min_ptmp(itruc)';
-                
-                fl_LAT = lo_float_source_data.LAT( iprof) ;
-                fl_LONG = lo_float_source_data.LONG( iprof) ;
-                fl_DATES = lo_float_source_data.DATES(iprof) ;
-                
-                if(fl_LONG>180) % m_tbase inputs longitudes from 0 to +/- 180
-                    fl_LONG1=fl_LONG-360;
-                else
-                    fl_LONG1=fl_LONG;
-                end
-                if(la_bhist_long>180) % m_tbase inputs longitudes from 0 to +/- 180
-                    la_bhist_long1=la_bhist_long-360;
-                else
-                    la_bhist_long1=la_bhist_long;
-                end
-                
-                m_proj('mercator','long', [min(fl_LONG1)-1, max(fl_LONG1)+1], 'lat', [min(fl_LAT)-1, max(fl_LAT)+1] );
-                [elev,x,y] = m_tbase( [min(fl_LONG1)-1, max(fl_LONG1)+1, min(fl_LAT)-1, max(fl_LAT)+1] );
-                fl_Z = -interp2( x,y,elev, fl_LONG1, fl_LAT, 'linear'); % -ve bathy values
-                
-                PV_float = (2*7.292*10^-5.*sin(fl_LAT.*pi/180))./fl_Z;
-                PV_bhist = (2*7.292*10^-5.*sin(la_bhist_lat.*pi/180))./la_bhist_Z;
-                
-                if( str2num(po_system_configuration.MAP_USE_PV)==1 ) % if PV is wanted
-                    ellipse_large = sqrt( (la_bhist_long1-fl_LONG1).^2./(str2num(po_system_configuration.MAPSCALE_LONGITUDE_LARGE)).^2 + (la_bhist_lat-fl_LAT).^2./(str2num(po_system_configuration.MAPSCALE_LATITUDE_LARGE)).^2 +...
-                        ((PV_float-PV_bhist)./sqrt( PV_float.^2+PV_bhist.^2 )./str2num(po_system_configuration.MAPSCALE_PHI_LARGE)).^2 ) ;
-                    ellipse_small = sqrt( (la_bhist_long1-fl_LONG1).^2./(str2num(po_system_configuration.MAPSCALE_LONGITUDE_SMALL)).^2 + (la_bhist_lat-fl_LAT).^2./(str2num(po_system_configuration.MAPSCALE_LATITUDE_SMALL)).^2 +...
-                        ((PV_float-PV_bhist)./sqrt( PV_float.^2+PV_bhist.^2 )./str2num(po_system_configuration.MAPSCALE_PHI_SMALL)).^2 ) ;
-                else % if PV is unwanted ---
-                    ellipse_large = sqrt( (la_bhist_long1-fl_LONG1).^2./(str2num(po_system_configuration.MAPSCALE_LONGITUDE_LARGE)).^2 + (la_bhist_lat-fl_LAT).^2./(str2num(po_system_configuration.MAPSCALE_LATITUDE_LARGE)).^2 );
-                    ellipse_small = sqrt( (la_bhist_long1-fl_LONG1).^2./(str2num(po_system_configuration.MAPSCALE_LONGITUDE_SMALL)).^2 + (la_bhist_lat-fl_LAT).^2./(str2num(po_system_configuration.MAPSCALE_LATITUDE_SMALL)).^2 );
-                end
-                
-                ii_large_1(i)=sum(ellipse_large<1&abs(la_bhist_dates-fl_DATES)<1&Min_ptmp<medianoutnan(tlevels));
-                ii_large_2(i)=sum(ellipse_large<1&abs(la_bhist_dates-fl_DATES)<2&Min_ptmp<medianoutnan(tlevels));
-                ii_large_5(i)=sum(ellipse_large<1&abs(la_bhist_dates-fl_DATES)<5&Min_ptmp<medianoutnan(tlevels));
-                ii_large_10(i)=sum(ellipse_large<1&abs(la_bhist_dates-fl_DATES)<10&Min_ptmp<medianoutnan(tlevels));
-                ii_large_all(i)=sum(ellipse_large<1&Min_ptmp<medianoutnan(tlevels));
-                
-                ii_small_all(i)=sum(ellipse_small<1&Min_ptmp<medianoutnan(tlevels));
-                ii_small_10(i)=sum(ellipse_small<1 & abs(la_bhist_dates-fl_DATES)<10&Min_ptmp<medianoutnan(tlevels));
-                ii_small_5(i)=sum(ellipse_small<1 & abs(la_bhist_dates-fl_DATES)<5&Min_ptmp<medianoutnan(tlevels));
-                ii_small_2(i)=sum(ellipse_small<1 & abs(la_bhist_dates-fl_DATES)<2&Min_ptmp<medianoutnan(tlevels));
-                ii_small_1(i)=sum(ellipse_small<1 & abs(la_bhist_dates-fl_DATES)<1&Min_ptmp<medianoutnan(tlevels));
-                end
+                    itruc=ismember(lo_float_source_stat_data.index_un,lo_float_source_stat_data.index_each{i});
+                    
+                    la_bhist_lat = lo_float_source_stat_data.la_bhist_lat_all(itruc);
+                    la_bhist_long = lo_float_source_stat_data.la_bhist_long_all(itruc);
+                    la_bhist_dates = lo_float_source_stat_data.la_bhist_dates_all(itruc);
+                    la_bhist_Z = lo_float_source_stat_data.la_bhist_Z_all(itruc);
+                    Min_ptmp = lo_float_source_stat_data.Min_ptmp(itruc)';
+                    
+                    fl_LAT = lo_float_source_data.LAT( iprof) ;
+                    fl_LONG = lo_float_source_data.LONG( iprof) ;
+                    fl_DATES = lo_float_source_data.DATES(iprof) ;
+                    
+                    if(fl_LONG>180) % m_tbase inputs longitudes from 0 to +/- 180
+                        fl_LONG1=fl_LONG-360;
+                    else
+                        fl_LONG1=fl_LONG;
+                    end
+                    if(la_bhist_long>180) % m_tbase inputs longitudes from 0 to +/- 180
+                        la_bhist_long1=la_bhist_long-360;
+                    else
+                        la_bhist_long1=la_bhist_long;
+                    end
+                    
+                    m_proj('mercator','long', [min(fl_LONG1)-1, max(fl_LONG1)+1], 'lat', [min(fl_LAT)-1, max(fl_LAT)+1] );
+                    [elev,x,y] = m_tbase( [min(fl_LONG1)-1, max(fl_LONG1)+1, min(fl_LAT)-1, max(fl_LAT)+1] );
+                    fl_Z = -interp2( x,y,elev, fl_LONG1, fl_LAT, 'linear'); % -ve bathy values
+                    
+                    PV_float = (2*7.292*10^-5.*sin(fl_LAT.*pi/180))./fl_Z;
+                    PV_bhist = (2*7.292*10^-5.*sin(la_bhist_lat.*pi/180))./la_bhist_Z;
+                    
+                    if( str2num(po_system_configuration.MAP_USE_PV)==1 ) % if PV is wanted
+                        ellipse_large = sqrt( (la_bhist_long1-fl_LONG1).^2./(str2num(po_system_configuration.MAPSCALE_LONGITUDE_LARGE)).^2 + (la_bhist_lat-fl_LAT).^2./(str2num(po_system_configuration.MAPSCALE_LATITUDE_LARGE)).^2 +...
+                            ((PV_float-PV_bhist)./sqrt( PV_float.^2+PV_bhist.^2 )./str2num(po_system_configuration.MAPSCALE_PHI_LARGE)).^2 ) ;
+                        ellipse_small = sqrt( (la_bhist_long1-fl_LONG1).^2./(str2num(po_system_configuration.MAPSCALE_LONGITUDE_SMALL)).^2 + (la_bhist_lat-fl_LAT).^2./(str2num(po_system_configuration.MAPSCALE_LATITUDE_SMALL)).^2 +...
+                            ((PV_float-PV_bhist)./sqrt( PV_float.^2+PV_bhist.^2 )./str2num(po_system_configuration.MAPSCALE_PHI_SMALL)).^2 ) ;
+                    else % if PV is unwanted ---
+                        ellipse_large = sqrt( (la_bhist_long1-fl_LONG1).^2./(str2num(po_system_configuration.MAPSCALE_LONGITUDE_LARGE)).^2 + (la_bhist_lat-fl_LAT).^2./(str2num(po_system_configuration.MAPSCALE_LATITUDE_LARGE)).^2 );
+                        ellipse_small = sqrt( (la_bhist_long1-fl_LONG1).^2./(str2num(po_system_configuration.MAPSCALE_LONGITUDE_SMALL)).^2 + (la_bhist_lat-fl_LAT).^2./(str2num(po_system_configuration.MAPSCALE_LATITUDE_SMALL)).^2 );
+                    end
+                    
+                    ii_large_1(i)=sum(ellipse_large<1&abs(la_bhist_dates-fl_DATES)<1&Min_ptmp<medianoutnan(tlevels));
+                    ii_large_2(i)=sum(ellipse_large<1&abs(la_bhist_dates-fl_DATES)<2&Min_ptmp<medianoutnan(tlevels));
+                    ii_large_5(i)=sum(ellipse_large<1&abs(la_bhist_dates-fl_DATES)<5&Min_ptmp<medianoutnan(tlevels));
+                    ii_large_10(i)=sum(ellipse_large<1&abs(la_bhist_dates-fl_DATES)<10&Min_ptmp<medianoutnan(tlevels));
+                    ii_large_all(i)=sum(ellipse_large<1&Min_ptmp<medianoutnan(tlevels));
+                    
+                    ii_small_all(i)=sum(ellipse_small<1&Min_ptmp<medianoutnan(tlevels));
+                    ii_small_10(i)=sum(ellipse_small<1 & abs(la_bhist_dates-fl_DATES)<10&Min_ptmp<medianoutnan(tlevels));
+                    ii_small_5(i)=sum(ellipse_small<1 & abs(la_bhist_dates-fl_DATES)<5&Min_ptmp<medianoutnan(tlevels));
+                    ii_small_2(i)=sum(ellipse_small<1 & abs(la_bhist_dates-fl_DATES)<2&Min_ptmp<medianoutnan(tlevels));
+                    ii_small_1(i)=sum(ellipse_small<1 & abs(la_bhist_dates-fl_DATES)<1&Min_ptmp<medianoutnan(tlevels));
                 end
             end
-            ii_large=[ii_large_1,ii_large_2,ii_large_5,ii_large_10,ii_large_all,ii_large_all];
-            ii_small=[ii_small_1,ii_small_2,ii_small_5,ii_small_10,ii_small_all,ii_small_all];
-            ii_large_nan=ii_large;
-            ii_large_nan(ii_large==0)=NaN;
-            ii_small_nan=ii_small;
-            ii_small_nan(ii_small==0)=NaN;
-            
-            fig=figure;
-            
-            
-            %subplot (2,15,[3:15])
-            subplot ('Position',[0.22 0.52 0.7 0.35])
-			%keyboard
-			pcolor(PROFILE_NO,[1:6],ii_large_nan');
-            %sanePColor(PROFILE_NO,[1:5],ii_large_nan');
-            set(gca,'YtickLabel',{''})
-            set(gca,'XtickLabel',{''})
-            box on
-            colormap(c)
-            title('within LARGE spatial scales ')
-            %xlabel('Profile Number')
-            colorbar
-            hold on
-            box on
-            %subplot (2,15,[1:2])
-            set(gca,'TickDir','out')
-			
-            %subplot ('Position',[0.07 0.52 0.1 0.35])
-            subplot ('Position',[0.1 0.52 0.1 0.35])
-            box on
-            hold on
-            grid on
-			pcolor([meanoutnan(ii_large);meanoutnan(ii_large)]')
-            %sanePColor([meanoutnan(ii_large);meanoutnan(ii_large)]')
-            caxis([0 max(max(ii_large))])
-            c=cool;
-            
-            %axis([1 2 0.5  5.5])
-			%axis([0.5 2.5 0.5  5.5])
-            set(gca,'Ytick',[1.5 2.5 3.5 4.5 5.5])
-            set(gca,'YtickLabel',[{'1','2','5','10','all',''}])
-            
-            ylabel('TIME SCALE ( yr )')
-            %xlabel('average')
-            for i=1:5
-                text(1.5,i+0.5,[num2str(floor(meanoutnan(ii_large(:,i)))) ' +/- ' num2str(floor(stdoutnan(ii_large(:,i))))] ,'color','w','fontweight','bold','fontsize',7,'HorizontalAlignment','center')
-            end
-            
-            %subplot (2,15,[18:30])
-            subplot ('Position',[0.22 0.1 0.7 0.35])
-			pcolor(PROFILE_NO,[1:6],ii_small_nan');
-            %sanePColor(PROFILE_NO,[1:5],ii_small_nan');
-            set(gca,'YtickLabel',{''})
-            box on
-            colormap(c)
-            title(' within SMALL spatial scales ')
-            xlabel('Profile Number')
-            colorbar
-            hold on
-            box on
-            set(gca,'TickDir','out')
-            
-            %subplot (2,15,[16:17])
-            subplot ('Position',[0.1 0.1 0.1 0.35])
-            box on
-            hold on
-            grid on
-			pcolor([meanoutnan(ii_small);meanoutnan(ii_small)]')
-            %sanePColor([meanoutnan(ii_small);meanoutnan(ii_small)]')
-            caxis([0 max(max(ii_small))])
-            %axis([1 2 0.5  5.5])
-			%axis([0.5 2.5 0.5  5.5])
-            set(gca,'Ytick',[1.5 2.5 3.5 4.5 5.5])
-            set(gca,'YtickLabel',[{'1','2','5','10','all',''}])
-            ylabel('TIME SCALE ( yr )')
-            xlabel('Average (+/- std)')
-            for i=1:5
-                text(1.5,i+0.5,[num2str(floor(meanoutnan(ii_small(:,i)))) ' +/- ' num2str(floor(stdoutnan(ii_small(:,i))))] ,'color','w','fontweight','bold','fontsize',7,'HorizontalAlignment','center')
-            end
-            
-            ax=axes('Units','Normal','Position',[.01 .01 .95 0.90],'Visible','off');
-            set(get(ax,'Title'),'Visible','on')
-            title(['Number of reference data available for float ' pn_float_name ' at theta = ' num2str(floor(medianoutnan(tlevels)*100)/100)],'FontWeight','bold','FontSize',10)
-            
-            drawnow
-            set(gcf,'papertype','usletter','paperunits','inches','paperorientation','portrait','paperposition',[.25,.75,7,5]);
-            print('-depsc', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_10.eps'));
-            print('-dpng', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_10.png'));
-            print('-dpdf', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_10.pdf'));
-            
-            disp(' ')
+        end
+        ii_large=[ii_large_1,ii_large_2,ii_large_5,ii_large_10,ii_large_all,ii_large_all];
+        ii_small=[ii_small_1,ii_small_2,ii_small_5,ii_small_10,ii_small_all,ii_small_all];
+        ii_large_nan=ii_large;
+        ii_large_nan(ii_large==0)=NaN;
+        ii_small_nan=ii_small;
+        ii_small_nan(ii_small==0)=NaN;
+        
+        fig=figure;
+        
+        
+        %subplot (2,15,[3:15])
+        subplot ('Position',[0.22 0.52 0.7 0.35])
+        %keyboard
+        pcolor(PROFILE_NO,[1:6],ii_large_nan');
+        %sanePColor(PROFILE_NO,[1:5],ii_large_nan');
+        set(gca,'YtickLabel',{''})
+        set(gca,'XtickLabel',{''})
+        box on
+        colormap(c)
+        title('within LARGE spatial scales ')
+        %xlabel('Profile Number')
+        colorbar
+        hold on
+        box on
+        %subplot (2,15,[1:2])
+        set(gca,'TickDir','out')
+        
+        %subplot ('Position',[0.07 0.52 0.1 0.35])
+        subplot ('Position',[0.1 0.52 0.1 0.35])
+        box on
+        hold on
+        grid on
+        pcolor([meanoutnan(ii_large);meanoutnan(ii_large)]')
+        %sanePColor([meanoutnan(ii_large);meanoutnan(ii_large)]')
+        caxis([0 max(max(ii_large))])
+        c=cool;
+        
+        %axis([1 2 0.5  5.5])
+        %axis([0.5 2.5 0.5  5.5])
+        set(gca,'Ytick',[1.5 2.5 3.5 4.5 5.5])
+        set(gca,'YtickLabel',[{'1','2','5','10','all',''}])
+        
+        ylabel('TIME SCALE ( yr )')
+        %xlabel('average')
+        for i=1:5
+            text(1.5,i+0.5,[num2str(floor(meanoutnan(ii_large(:,i)))) ' +/- ' num2str(floor(stdoutnan(ii_large(:,i))))] ,'color','w','fontweight','bold','fontsize',7,'HorizontalAlignment','center')
+        end
+        
+        %subplot (2,15,[18:30])
+        subplot ('Position',[0.22 0.1 0.7 0.35])
+        pcolor(PROFILE_NO,[1:6],ii_small_nan');
+        %sanePColor(PROFILE_NO,[1:5],ii_small_nan');
+        set(gca,'YtickLabel',{''})
+        box on
+        colormap(c)
+        title(' within SMALL spatial scales ')
+        xlabel('Profile Number')
+        colorbar
+        hold on
+        box on
+        set(gca,'TickDir','out')
+        
+        %subplot (2,15,[16:17])
+        subplot ('Position',[0.1 0.1 0.1 0.35])
+        box on
+        hold on
+        grid on
+        pcolor([meanoutnan(ii_small);meanoutnan(ii_small)]')
+        %sanePColor([meanoutnan(ii_small);meanoutnan(ii_small)]')
+        caxis([0 max(max(ii_small))])
+        %axis([1 2 0.5  5.5])
+        %axis([0.5 2.5 0.5  5.5])
+        set(gca,'Ytick',[1.5 2.5 3.5 4.5 5.5])
+        set(gca,'YtickLabel',[{'1','2','5','10','all',''}])
+        ylabel('TIME SCALE ( yr )')
+        xlabel('Average (+/- std)')
+        for i=1:5
+            text(1.5,i+0.5,[num2str(floor(meanoutnan(ii_small(:,i)))) ' +/- ' num2str(floor(stdoutnan(ii_small(:,i))))] ,'color','w','fontweight','bold','fontsize',7,'HorizontalAlignment','center')
+        end
+        
+        ax=axes('Units','Normal','Position',[.01 .01 .95 0.90],'Visible','off');
+        set(get(ax,'Title'),'Visible','on')
+        title(['Number of reference data available for float ' pn_float_name ' at theta = ' num2str(floor(medianoutnan(tlevels)*100)/100)],'FontWeight','bold','FontSize',10)
+        
+        drawnow
+        set(gcf,'papertype','usletter','paperunits','inches','paperorientation','portrait','paperposition',[.25,.75,7,5]);
+        print('-depsc', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_10.eps'));
+        print('-dpng', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_10.png'));
+        print('-dpdf', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_10.pdf'));
+        
+        disp(' ')
         disp(' ')
         tlevels
         
@@ -700,150 +700,150 @@ if(isempty(find(isnan(PRES)==0))==0) % if no data exists, terminate here, no plo
             ii_small_2=NaN*zeros(length(PROFILE_NO),1);
             ii_small_1=NaN*zeros(length(PROFILE_NO),1);
             for i=1:length(PROFILE_NO)
-            
+                
                 iprof=lo_float_source_stat_data.profile_index(i);
                 if ~isnan(iprof)
-                itruc=ismember(lo_float_source_stat_data.index_un,lo_float_source_stat_data.index_each{i});
-                
-                la_bhist_lat = lo_float_source_stat_data.la_bhist_lat_all(itruc);
-                la_bhist_long = lo_float_source_stat_data.la_bhist_long_all(itruc);
-                la_bhist_dates = lo_float_source_stat_data.la_bhist_dates_all(itruc);
-                la_bhist_Z = lo_float_source_stat_data.la_bhist_Z_all(itruc);
-                Min_ptmp = lo_float_source_stat_data.Min_ptmp(itruc)';
-                
-                fl_LAT = lo_float_source_data.LAT( iprof) ;
-                fl_LONG = lo_float_source_data.LONG( iprof) ;
-                fl_DATES = lo_float_source_data.DATES(iprof) ;
-                if(fl_LONG>180) % m_tbase inputs longitudes from 0 to +/- 180
-                    fl_LONG1=fl_LONG-360;
-                else
-                    fl_LONG1=fl_LONG;
-                end
-                if(la_bhist_long>180) % m_tbase inputs longitudes from 0 to +/- 180
-                    la_bhist_long1=la_bhist_long-360;
-                else
-                    la_bhist_long1=la_bhist_long;
-                end
-                m_proj('mercator','long', [min(fl_LONG1)-1, max(fl_LONG1)+1], 'lat', [min(fl_LAT)-1, max(fl_LAT)+1] );
-                [elev,x,y] = m_tbase( [min(fl_LONG1)-1, max(fl_LONG1)+1, min(fl_LAT)-1, max(fl_LAT)+1] );
-                fl_Z = -interp2( x,y,elev, fl_LONG1, fl_LAT, 'linear'); % -ve bathy values
-                
-                PV_float = (2*7.292*10^-5.*sin(fl_LAT.*pi/180))./fl_Z;
-                PV_bhist = (2*7.292*10^-5.*sin(la_bhist_lat.*pi/180))./la_bhist_Z;
-                
-                if( str2num(po_system_configuration.MAP_USE_PV)==1 ) % if PV is wanted
-                    ellipse_large = sqrt( (la_bhist_long1-fl_LONG1).^2./(str2num(po_system_configuration.MAPSCALE_LONGITUDE_LARGE)).^2 + (la_bhist_lat-fl_LAT).^2./(str2num(po_system_configuration.MAPSCALE_LATITUDE_LARGE)).^2 +...
-                        ((PV_float-PV_bhist)./sqrt( PV_float.^2+PV_bhist.^2 )./str2num(po_system_configuration.MAPSCALE_PHI_LARGE)).^2 ) ;
-                    ellipse_small = sqrt( (la_bhist_long1-fl_LONG1).^2./(str2num(po_system_configuration.MAPSCALE_LONGITUDE_SMALL)).^2 + (la_bhist_lat-fl_LAT).^2./(str2num(po_system_configuration.MAPSCALE_LATITUDE_SMALL)).^2 +...
-                        ((PV_float-PV_bhist)./sqrt( PV_float.^2+PV_bhist.^2 )./str2num(po_system_configuration.MAPSCALE_PHI_SMALL)).^2 ) ;
-                else % if PV is unwanted ---
-                    %ellipse = sqrt((grid_long-LONG).^2./(longitude_large*3).^2 + (grid_lat-LAT).^2./(latitude_large*3).^2) ;
-                end
-                
-                ii_large_1(i)=sum(ellipse_large<1&abs(la_bhist_dates-fl_DATES)<1&Min_ptmp<max(tlevels));
-                ii_large_2(i)=sum(ellipse_large<1&abs(la_bhist_dates-fl_DATES)<2&Min_ptmp<max(tlevels));
-                ii_large_5(i)=sum(ellipse_large<1&abs(la_bhist_dates-fl_DATES)<5&Min_ptmp<max(tlevels));
-                ii_large_10(i)=sum(ellipse_large<1&abs(la_bhist_dates-fl_DATES)<10&Min_ptmp<max(tlevels));
-                ii_large_all(i)=sum(ellipse_large<1&Min_ptmp<max(tlevels));
-                
-                ii_small_all(i)=sum(ellipse_small<1&Min_ptmp<max(tlevels));
-                ii_small_10(i)=sum(ellipse_small<1 & abs(la_bhist_dates-fl_DATES)<10&Min_ptmp<max(tlevels));
-                ii_small_5(i)=sum(ellipse_small<1 & abs(la_bhist_dates-fl_DATES)<5&Min_ptmp<max(tlevels));
-                ii_small_2(i)=sum(ellipse_small<1 & abs(la_bhist_dates-fl_DATES)<2&Min_ptmp<max(tlevels));
-                ii_small_1(i)=sum(ellipse_small<1 & abs(la_bhist_dates-fl_DATES)<1&Min_ptmp<max(tlevels));
-                end
+                    itruc=ismember(lo_float_source_stat_data.index_un,lo_float_source_stat_data.index_each{i});
+                    
+                    la_bhist_lat = lo_float_source_stat_data.la_bhist_lat_all(itruc);
+                    la_bhist_long = lo_float_source_stat_data.la_bhist_long_all(itruc);
+                    la_bhist_dates = lo_float_source_stat_data.la_bhist_dates_all(itruc);
+                    la_bhist_Z = lo_float_source_stat_data.la_bhist_Z_all(itruc);
+                    Min_ptmp = lo_float_source_stat_data.Min_ptmp(itruc)';
+                    
+                    fl_LAT = lo_float_source_data.LAT( iprof) ;
+                    fl_LONG = lo_float_source_data.LONG( iprof) ;
+                    fl_DATES = lo_float_source_data.DATES(iprof) ;
+                    if(fl_LONG>180) % m_tbase inputs longitudes from 0 to +/- 180
+                        fl_LONG1=fl_LONG-360;
+                    else
+                        fl_LONG1=fl_LONG;
+                    end
+                    if(la_bhist_long>180) % m_tbase inputs longitudes from 0 to +/- 180
+                        la_bhist_long1=la_bhist_long-360;
+                    else
+                        la_bhist_long1=la_bhist_long;
+                    end
+                    m_proj('mercator','long', [min(fl_LONG1)-1, max(fl_LONG1)+1], 'lat', [min(fl_LAT)-1, max(fl_LAT)+1] );
+                    [elev,x,y] = m_tbase( [min(fl_LONG1)-1, max(fl_LONG1)+1, min(fl_LAT)-1, max(fl_LAT)+1] );
+                    fl_Z = -interp2( x,y,elev, fl_LONG1, fl_LAT, 'linear'); % -ve bathy values
+                    
+                    PV_float = (2*7.292*10^-5.*sin(fl_LAT.*pi/180))./fl_Z;
+                    PV_bhist = (2*7.292*10^-5.*sin(la_bhist_lat.*pi/180))./la_bhist_Z;
+                    
+                    if( str2num(po_system_configuration.MAP_USE_PV)==1 ) % if PV is wanted
+                        ellipse_large = sqrt( (la_bhist_long1-fl_LONG1).^2./(str2num(po_system_configuration.MAPSCALE_LONGITUDE_LARGE)).^2 + (la_bhist_lat-fl_LAT).^2./(str2num(po_system_configuration.MAPSCALE_LATITUDE_LARGE)).^2 +...
+                            ((PV_float-PV_bhist)./sqrt( PV_float.^2+PV_bhist.^2 )./str2num(po_system_configuration.MAPSCALE_PHI_LARGE)).^2 ) ;
+                        ellipse_small = sqrt( (la_bhist_long1-fl_LONG1).^2./(str2num(po_system_configuration.MAPSCALE_LONGITUDE_SMALL)).^2 + (la_bhist_lat-fl_LAT).^2./(str2num(po_system_configuration.MAPSCALE_LATITUDE_SMALL)).^2 +...
+                            ((PV_float-PV_bhist)./sqrt( PV_float.^2+PV_bhist.^2 )./str2num(po_system_configuration.MAPSCALE_PHI_SMALL)).^2 ) ;
+                    else % if PV is unwanted ---
+                        %ellipse = sqrt((grid_long-LONG).^2./(longitude_large*3).^2 + (grid_lat-LAT).^2./(latitude_large*3).^2) ;
+                    end
+                    
+                    ii_large_1(i)=sum(ellipse_large<1&abs(la_bhist_dates-fl_DATES)<1&Min_ptmp<max(tlevels));
+                    ii_large_2(i)=sum(ellipse_large<1&abs(la_bhist_dates-fl_DATES)<2&Min_ptmp<max(tlevels));
+                    ii_large_5(i)=sum(ellipse_large<1&abs(la_bhist_dates-fl_DATES)<5&Min_ptmp<max(tlevels));
+                    ii_large_10(i)=sum(ellipse_large<1&abs(la_bhist_dates-fl_DATES)<10&Min_ptmp<max(tlevels));
+                    ii_large_all(i)=sum(ellipse_large<1&Min_ptmp<max(tlevels));
+                    
+                    ii_small_all(i)=sum(ellipse_small<1&Min_ptmp<max(tlevels));
+                    ii_small_10(i)=sum(ellipse_small<1 & abs(la_bhist_dates-fl_DATES)<10&Min_ptmp<max(tlevels));
+                    ii_small_5(i)=sum(ellipse_small<1 & abs(la_bhist_dates-fl_DATES)<5&Min_ptmp<max(tlevels));
+                    ii_small_2(i)=sum(ellipse_small<1 & abs(la_bhist_dates-fl_DATES)<2&Min_ptmp<max(tlevels));
+                    ii_small_1(i)=sum(ellipse_small<1 & abs(la_bhist_dates-fl_DATES)<1&Min_ptmp<max(tlevels));
                 end
             end
-            ii_large=[ii_large_1,ii_large_2,ii_large_5,ii_large_10,ii_large_all,ii_large_all];
-            ii_small=[ii_small_1,ii_small_2,ii_small_5,ii_small_10,ii_small_all,ii_small_all];
-            ii_large_nan=ii_large;
-            ii_large_nan(ii_large==0)=NaN;
-            ii_small_nan=ii_small;
-            ii_small_nan(ii_small==0)=NaN;
-            
-            fig=figure;
-            
-            
-            %subplot (2,15,[3:15])
-            subplot ('Position',[0.22 0.52 0.7 0.35])
-			pcolor(PROFILE_NO,[1:6],ii_large_nan');
-            %sanePColor(PROFILE_NO,[1:5],ii_large_nan');
-            set(gca,'YtickLabel',{''})
-            set(gca,'XtickLabel',{''})
-            box on
-            colormap(c)
-            title('within LARGE spatial scales ')
-            %xlabel('Profile Number')
-            colorbar
-            hold on
-            box on
-            %subplot (2,15,[1:2])
-            set(gca,'TickDir','out')
-            
-            subplot ('Position',[0.1 0.52 0.1 0.35])
-            box on
-            hold on
-            grid on
-			pcolor([meanoutnan(ii_large);meanoutnan(ii_large)]')
-            %sanePColor([meanoutnan(ii_large);meanoutnan(ii_large)]')
-            caxis([0 max(max(ii_large))])
-            c=cool;
-            
-            %axis([1 2 0.5  5.5])
-			%axis([0.5 2.5 0.5  5.5])
-            set(gca,'Ytick',[1.5 2.5 3.5 4.5 5.5])
-            set(gca,'YtickLabel',[{'1','2','5','10','all',''}])
-            
-            ylabel('TIME SCALE ( yr )')
-            %xlabel('average')
-            for i=1:5
-                text(1.5,i+0.5,[num2str(floor(meanoutnan(ii_large(:,i)))) ' +/- ' num2str(floor(stdoutnan(ii_large(:,i))))] ,'color','w','fontweight','bold','fontsize',7,'HorizontalAlignment','center')
-            end
-            
-            %subplot (2,15,[18:30])
-            subplot ('Position',[0.22 0.1 0.7 0.35])
-			pcolor(PROFILE_NO,[1:6],ii_small_nan');
-            %sanePColor(PROFILE_NO,[1:5],ii_small_nan');
-            set(gca,'YtickLabel',{''})
-            box on
-            colormap(c)
-            title(' within SMALL spatial scales ')
-            xlabel('Profile Number')
-            colorbar
-            hold on
-            box on
-            set(gca,'TickDir','out')
-            
-            %subplot (2,15,[16:17])
-            subplot ('Position',[0.1 0.1 0.1 0.35])
-            box on
-            hold on
-            grid on
-			pcolor([meanoutnan(ii_small);meanoutnan(ii_small)]')
-			%sanePColor([meanoutnan(ii_small);meanoutnan(ii_small)]')
-            caxis([0 max(max(ii_small))])
-            %axis([1 2 0.5  5.5])
-			%axis([0.5 2.5 0.5  5.5])
-            set(gca,'Ytick',[1.5 2.5 3.5 4.5 5.5])
-            set(gca,'YtickLabel',[{'1','2','5','10','all',''}])
-            ylabel('TIME SCALE ( yr )')
-            xlabel('Average (+/- std)')
-            for i=1:5
-                text(1.5,i+0.5,[num2str(floor(meanoutnan(ii_small(:,i)))) ' +/- ' num2str(floor(stdoutnan(ii_small(:,i))))] ,'color','w','fontweight','bold','fontsize',7,'HorizontalAlignment','center')
-            end
-            
-            ax=axes('Units','Normal','Position',[.01 .01 .95 0.90],'Visible','off');
-            set(get(ax,'Title'),'Visible','on')
-            title(['Number of reference data available for float ' pn_float_name ' at theta = ' num2str(floor(max(tlevels)*100)/100)],'FontWeight','bold','FontSize',10)
-            
-            drawnow
-            set(gcf,'papertype','usletter','paperunits','inches','paperorientation','portrait','paperposition',[.25,.75,7,5]);
-            print('-depsc', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_11.eps'));
-            print('-dpng', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_11.png'));
-            print('-dpdf', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_11.pdf'));
         end
-    end %if(isempty(find(isnan(mapped_sal)==0))==0) -----------
-    
+        ii_large=[ii_large_1,ii_large_2,ii_large_5,ii_large_10,ii_large_all,ii_large_all];
+        ii_small=[ii_small_1,ii_small_2,ii_small_5,ii_small_10,ii_small_all,ii_small_all];
+        ii_large_nan=ii_large;
+        ii_large_nan(ii_large==0)=NaN;
+        ii_small_nan=ii_small;
+        ii_small_nan(ii_small==0)=NaN;
+        
+        fig=figure;
+        
+        
+        %subplot (2,15,[3:15])
+        subplot ('Position',[0.22 0.52 0.7 0.35])
+        pcolor(PROFILE_NO,[1:6],ii_large_nan');
+        %sanePColor(PROFILE_NO,[1:5],ii_large_nan');
+        set(gca,'YtickLabel',{''})
+        set(gca,'XtickLabel',{''})
+        box on
+        colormap(c)
+        title('within LARGE spatial scales ')
+        %xlabel('Profile Number')
+        colorbar
+        hold on
+        box on
+        %subplot (2,15,[1:2])
+        set(gca,'TickDir','out')
+        
+        subplot ('Position',[0.1 0.52 0.1 0.35])
+        box on
+        hold on
+        grid on
+        pcolor([meanoutnan(ii_large);meanoutnan(ii_large)]')
+        %sanePColor([meanoutnan(ii_large);meanoutnan(ii_large)]')
+        caxis([0 max(max(ii_large))])
+        c=cool;
+        
+        %axis([1 2 0.5  5.5])
+        %axis([0.5 2.5 0.5  5.5])
+        set(gca,'Ytick',[1.5 2.5 3.5 4.5 5.5])
+        set(gca,'YtickLabel',[{'1','2','5','10','all',''}])
+        
+        ylabel('TIME SCALE ( yr )')
+        %xlabel('average')
+        for i=1:5
+            text(1.5,i+0.5,[num2str(floor(meanoutnan(ii_large(:,i)))) ' +/- ' num2str(floor(stdoutnan(ii_large(:,i))))] ,'color','w','fontweight','bold','fontsize',7,'HorizontalAlignment','center')
+        end
+        
+        %subplot (2,15,[18:30])
+        subplot ('Position',[0.22 0.1 0.7 0.35])
+        pcolor(PROFILE_NO,[1:6],ii_small_nan');
+        %sanePColor(PROFILE_NO,[1:5],ii_small_nan');
+        set(gca,'YtickLabel',{''})
+        box on
+        colormap(c)
+        title(' within SMALL spatial scales ')
+        xlabel('Profile Number')
+        colorbar
+        hold on
+        box on
+        set(gca,'TickDir','out')
+        
+        %subplot (2,15,[16:17])
+        subplot ('Position',[0.1 0.1 0.1 0.35])
+        box on
+        hold on
+        grid on
+        pcolor([meanoutnan(ii_small);meanoutnan(ii_small)]')
+        %sanePColor([meanoutnan(ii_small);meanoutnan(ii_small)]')
+        caxis([0 max(max(ii_small))])
+        %axis([1 2 0.5  5.5])
+        %axis([0.5 2.5 0.5  5.5])
+        set(gca,'Ytick',[1.5 2.5 3.5 4.5 5.5])
+        set(gca,'YtickLabel',[{'1','2','5','10','all',''}])
+        ylabel('TIME SCALE ( yr )')
+        xlabel('Average (+/- std)')
+        for i=1:5
+            text(1.5,i+0.5,[num2str(floor(meanoutnan(ii_small(:,i)))) ' +/- ' num2str(floor(stdoutnan(ii_small(:,i))))] ,'color','w','fontweight','bold','fontsize',7,'HorizontalAlignment','center')
+        end
+        
+        ax=axes('Units','Normal','Position',[.01 .01 .95 0.90],'Visible','off');
+        set(get(ax,'Title'),'Visible','on')
+        title(['Number of reference data available for float ' pn_float_name ' at theta = ' num2str(floor(max(tlevels)*100)/100)],'FontWeight','bold','FontSize',10)
+        
+        drawnow
+        set(gcf,'papertype','usletter','paperunits','inches','paperorientation','portrait','paperposition',[.25,.75,7,5]);
+        print('-depsc', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_11.eps'));
+        print('-dpng', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_11.png'));
+        print('-dpdf', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_11.pdf'));
+    end
+end %if(isempty(find(isnan(mapped_sal)==0))==0) -----------
+
 end %if(isempty(find(isnan(PRES)==0))==0) ------------------
 
 

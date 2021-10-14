@@ -571,9 +571,9 @@ for ik=1:length(float_list)
     fprintf(fw1,'%s\n', ' %%%%%%%%%%%%%%%%%% FIGURE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
     fprintf(fw1,'%s\n','\begin{figure}[h!]');
     fprintf(fw1,'%s\n','\begin{center}');
+    
     fprintf(fw1,'%s\n','\begin{subfigure}[b]{0.48\linewidth}');
     fprintf(fw1,'%s\n','\centering');
-    
     dir_fig=[ DIR_PLOT 'preliminaire/' float_list{ik} '/' ];% Added By TR 25.09.20
     file =[float_list{ik} '_TPOT_interp_flagnotused.png'];
     if exist([dir_fig,file])
@@ -585,7 +585,6 @@ for ik=1:length(float_list)
     
     fprintf(fw1,'%s\n','\begin{subfigure}[b]{0.48\linewidth}');
     fprintf(fw1,'%s\n','\centering');
-    
     dir_fig=[ DIR_PLOT 'preliminaire/' float_list{ik} '/'];% Added By TR 25.09.20
     file =[float_list{ik} '_SIG0_interp_flagnotused.png'];
     if exist([dir_fig,file])
@@ -595,9 +594,9 @@ for ik=1:length(float_list)
     str=['\includegraphics[angle=0,origin=c,width=\textwidth,trim= 0 0 0 0, clip=true]{' file '}'];
     fprintf(fw1,'%s\n', str);
     fprintf(fw1,'%s\n','\end{subfigure}');
-    fprintf(fw1,'%s\n','\begin{subfigure}[b]{0.7\linewidth}');
-    fprintf(fw1,'%s\n','\centering');
     
+    fprintf(fw1,'%s\n','\begin{subfigure}[b]{0.8\linewidth}');
+    fprintf(fw1,'%s\n','\centering');
     dir_fig=[ DIR_PLOT 'preliminaire/' float_list{ik} '/'];% Added By TR 25.09.20
     file =[float_list{ik} '_PSAL_interp_flagnotused.png'];
     if exist([dir_fig,file])
@@ -1184,7 +1183,7 @@ for ik=1:length(float_list)
     fprintf(fw1,'%s\n', ' %%%%%%%%%%%%%%%%%% FIGURE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
     fprintf(fw1,'%s\n','\begin{figure}[h!]');
     fprintf(fw1,'%s\n','\begin{center}');
-    fprintf(fw1,'%s\n','\begin{subfigure}[b]{0.50\linewidth}');
+    fprintf(fw1,'%s\n','\begin{subfigure}[b]{0.48\linewidth}');
     fprintf(fw1,'%s\n','\centering');
     
     dir_fig=[ DIR_PLOT 'preliminaire/' float_list{ik} '/' ];% Added By TR 29.09.20
@@ -1196,11 +1195,11 @@ for ik=1:length(float_list)
     str=['\includegraphics[angle=0,origin=c,width=\textwidth,trim= 0 0 0 0, clip=true]{'  file '}'];
     fprintf(fw1,'%s\n', str);
     fprintf(fw1,'%s\n','\end{subfigure}');
-    fprintf(fw1,'%s\n','\begin{subfigure}[b]{0.50\linewidth}');
+    fprintf(fw1,'%s\n','\begin{subfigure}[b]{0.48\linewidth}');
     fprintf(fw1,'%s\n','\centering');
     
     dir_fig=[ DIR_PLOT 'preliminaire/' float_list{ik} '/'];% Added By TR 29.09.20
-    file =[float_list{ik} '_PSAL_interp_flagused_dm.png'];
+    file =[float_list{ik} '_SIG0_interp_flagused_dm.png'];
     if exist([dir_fig,file])
         copyfile([dir_fig,file],[dir_tex,file]);
     end
@@ -1209,11 +1208,11 @@ for ik=1:length(float_list)
     
     fprintf(fw1,'%s\n', str);
     fprintf(fw1,'%s\n','\end{subfigure}');
-    fprintf(fw1,'%s\n','\begin{subfigure}[b]{0.50\linewidth}');
+    fprintf(fw1,'%s\n','\begin{subfigure}[b]{1\linewidth}');
     fprintf(fw1,'%s\n','\centering');
     
     dir_fig=[ DIR_PLOT 'preliminaire/' float_list{ik} '/' ];% Added By TR 29.09.20
-    file =[float_list{ik} '_SIG0_interp_flagused_dm.png'];
+    file =[float_list{ik} '_PSAL_interp_flagused_dm.png'];
     if exist([dir_fig,file])
         copyfile([dir_fig,file],[dir_tex,file]);
     end

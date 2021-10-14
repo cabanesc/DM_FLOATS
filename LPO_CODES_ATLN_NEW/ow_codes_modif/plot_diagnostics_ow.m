@@ -118,7 +118,7 @@ if(isempty(find(isnan(PRES)==0))==0) % if no data exists, terminate here, no plo
         hold on
         plot(x,y,'b.')
         plot(coastdata_x,coastdata_y,'k.-');
-
+        
         
         for i=1:n
             h=plot(LONG(i),LAT(i),'+');
@@ -131,7 +131,7 @@ if(isempty(find(isnan(PRES)==0))==0) % if no data exists, terminate here, no plo
         
         % Legend moved here by T. Reynaud: 21.09.20
         leg1=legend('float','historical points','Location','Best');
-
+        
         xlabel('Longitude');
         ylabel('Latitude');
         title( strcat(title_floatname, ' profile locations with historical data' ) );
@@ -148,7 +148,7 @@ if(isempty(find(isnan(PRES)==0))==0) % if no data exists, terminate here, no plo
         end
         set(gca,'XTickLabel',xticklabels);
         axis([min(LONG)-10, max(LONG)+10, min(LAT)-10, max(LAT)+10])
-
+        
         drawnow
         %set(gcf,'papertype','usletter','paperunits','inches','paperorientation','portrait','paperposition',[.25,.75,8,9.5]);
         %print('-depsc', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_1.eps'));
@@ -166,7 +166,7 @@ if(isempty(find(isnan(PRES)==0))==0) % if no data exists, terminate here, no plo
         
         plot(LONG,LAT,'r-');
         hold on
-
+        
         plot(coastdata_x,coastdata_y,'k.-');
         for i=[1:n]
             h=plot(LONG(i),LAT(i),'.');
@@ -183,7 +183,7 @@ if(isempty(find(isnan(PRES)==0))==0) % if no data exists, terminate here, no plo
         
         % Legend moved here by T. Reynaud: 21.09.20
         ileg2=legend('float','Location','Best');
-
+        
         
         xlabel('Longitude');
         ylabel('Latitude');
@@ -231,16 +231,16 @@ if(isempty(find(isnan(PRES)==0))==0) % if no data exists, terminate here, no plo
             set(qq(i),'color',c(jj(i),:)) ;
         end
         hold on
-       
+        
         for i=1:n % plot all remaining profiles
             qq = plot( PTMP(:,i), SAL(:,i) );
             set(qq,'color',c(i,:)) ;
         end
         
         [tlevels, plevels, index, var_s_Thetalevels, Thetalevels] = find_10thetas( SAL, PTMP, PRES, la_ptmp, use_theta_gt, use_theta_lt, use_pres_gt, use_pres_lt, use_percent_gt);
-       %[tlevels, plevels, index, var_s_Thetalevels, Thetalevels] = find_10thetas( mapped_sal, PTMP, PRES, la_ptmp, use_theta_gt, use_theta_lt, use_pres_gt, use_pres_lt, use_percent_gt);
+        %[tlevels, plevels, index, var_s_Thetalevels, Thetalevels] = find_10thetas( mapped_sal, PTMP, PRES, la_ptmp, use_theta_gt, use_theta_lt, use_pres_gt, use_pres_lt, use_percent_gt);
         min_map=999;
-       max_map=-999;
+        max_map=-999;
         for i=1:n
             b = find( isnan(index(:,i))==0 );
             a = index(b,i);
@@ -265,34 +265,34 @@ if(isempty(find(isnan(PRES)==0))==0) % if no data exists, terminate here, no plo
         max_t=max(max(PTMP))+1;
         min_t=min(min(PTMP))-1;
         axis([min_t,max_t,min_s,max_s]);
-       
+        
         drawnow
         title( strcat( title_floatname, ' uncalibrated float data (-) and mapped salinity (o) with objective errors' ) );
         %set(gcf,'papertype','usletter','paperunits','inches','paperorientation','portrait','paperposition',[.25,.75,8,9.5]);
         print('-depsc', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_2.eps'));
         print('-dpdf', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_2.pdf'));
-
+        
         axis([floor(min(tlevels))-0.5,ceil(max(tlevels))+0.5,floor(min_map*10)/10,ceil(max_map*10)/10]);
         print('-depsc', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_2zoom.eps'));
         print('-dpdf', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_2zoom.pdf'));
         if n>1
-        p=nan*zeros(10,n);
-        for k=1:10
-            for j=1:n
-                u=index(k,j);
-                if ~isnan(u)
-                    p(k,j)=PRES(index(k,j));
+            p=nan*zeros(10,n);
+            for k=1:10
+                for j=1:n
+                    u=index(k,j);
+                    if ~isnan(u)
+                        p(k,j)=PRES(index(k,j));
+                    end
                 end
             end
-        end
-               
-        figure
-        pcolor(p)
-        colorbar
-        xlabel('profile number')
-        title('pressure of float measurements for the 10 theta levels')
-        print('-depsc', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_2bis.eps'));
-        print('-dpdf', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_2bis.pdf'));
+            
+            figure
+            pcolor(p)
+            colorbar
+            xlabel('profile number')
+            title('pressure of float measurements for the 10 theta levels')
+            print('-depsc', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_2bis.eps'));
+            print('-dpdf', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_2bis.pdf'));
         end
         % calibration curve (figure 3) --------------------------
         
@@ -343,9 +343,9 @@ if(isempty(find(isnan(PRES)==0))==0) % if no data exists, terminate here, no plo
             grid on
             plot( [0, max(PROFILE_NO)+1], [1,1], 'k-')
             %axis([ 0, max(PROFILE_NO)+1, min([pcond_factor-pcond_factor_err,1])-.0004, max([pcond_factor+pcond_factor_err,1])+.0004 ])
-			if length(ok)>1
-            axis([ 0, max(PROFILE_NO)+1, min(sta_mean(ok)), max(sta_mean(ok))])
-			end
+            if length(ok)>1
+                axis([ 0, max(PROFILE_NO)+1, min(sta_mean(ok)), max(sta_mean(ok))])
+            end
             set(gca,'FontSize',12)
             ylabel('r') % multiplicative term has no units
             title( strcat(title_floatname, ' potential conductivity (mmho/cm) multiplicative correction r with errors') );
@@ -363,9 +363,9 @@ if(isempty(find(isnan(PRES)==0))==0) % if no data exists, terminate here, no plo
             plot(PROFILE_NO(ok), avg_Staoffset(ok), 'r-');
             grid on
             %axis([ 0, max(PROFILE_NO)+1, min([avg_Soffset-avg_Soffset_err,0])-.02, max([avg_Soffset+avg_Soffset_err,0])+.02 ])
-			if length(ok)>1
-            axis([ 0, max(PROFILE_NO)+1, min(avg_Staoffset(ok)), max(avg_Staoffset(ok)) ])
-			end
+            if length(ok)>1
+                axis([ 0, max(PROFILE_NO)+1, min(avg_Staoffset(ok)), max(avg_Staoffset(ok)) ])
+            end
             plot( [0, max(PROFILE_NO)+1], [0,0], 'k-')
             set(gca,'FontSize',12)
             xlabel('float profile number');
@@ -421,7 +421,7 @@ if(isempty(find(isnan(PRES)==0))==0) % if no data exists, terminate here, no plo
             
             % Move here by T. Reynaud: 21.09.2020
             leg6=legend(int2str([PROFILE_NO(jj)]'), 'Location', 'NorthEastOutside')
-
+            
             xlabel('\theta ^{\circ} C')
             ylabel('Salinity (PSS-78)')
             
@@ -468,7 +468,7 @@ if(isempty(find(isnan(PRES)==0))==0) % if no data exists, terminate here, no plo
             print('-depsc', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_5.eps'));
             print('-dpdf', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_5.pdf'));
             
-             
+            
             % Brian King's plot: salinity  time series on theta levels (figure 5_bis) ------------
             
             figure
@@ -525,7 +525,7 @@ if(isempty(find(isnan(PRES)==0))==0) % if no data exists, terminate here, no plo
                     
                     [tlevels, plevels, index, var_s_Thetalevels, Thetalevels] = find_10thetas( unique_SAL, unique_PTMP, unique_PRES, unique_la_ptmp, use_theta_gt, use_theta_lt, use_pres_gt, use_pres_lt, use_percent_gt);
                     %[tlevels, plevels, index, var_s_Thetalevels, Thetalevels] = find_10thetas( unique_mapped_sal, unique_PTMP, unique_PRES, unique_la_ptmp, use_theta_gt, use_theta_lt, use_pres_gt, use_pres_lt, use_percent_gt);
-
+                    
                     tplot=[1:length(tlevels)];
                     p=length(tplot);
                     Sint=NaN.*ones(p,n);
@@ -691,48 +691,48 @@ if(isempty(find(isnan(PRES)==0))==0) % if no data exists, terminate here, no plo
                     
                     
                     for ifig=1:ceil((length(tplot))/2)
-                    figure
-                    set(gcf,'defaultaxeslinewidth',2)
-                    set(gcf,'defaultlinelinewidth',2)
-                    set(gcf,'defaultaxesfontsize',16)
-                    
-                    for k=1:2
-                        kk=(ifig-1)*2+k;
-                        while(kk<=length(tplot))
-                        j=tplot(kk);
-                        subplot(2,1,k)
-                        if(isempty(Sint)==0)
-                            plot(PROFILE_NO,Sint(j,:),'b*-');
-                            hold on
-                            plot(PROFILE_NO,Smap(j,:),'r');
-                            plot(PROFILE_NO,Scal(j,:),'g');
-                            mm=find(isfinite(Scal(j,:))==1); ll=PROFILE_NO; ll=ll(mm); kk=Scal(j,mm); nn=Scalerr(j,mm);
-                            h=fill([ll,fliplr(ll)],[kk+nn,fliplr([kk-nn])],'g');
-                            set(h,'EdgeColor','g');
-                            errorbar(PROFILE_NO,Smap(j,:),Smaperr(j,:),'r-')
-                            plot(PROFILE_NO,Sint(j,:),'b*-');
-                            SMIN = min([Sint(j,:),Scal(j,:),Smap(j,:)]);
-                            SMAX = max([Sint(j,:),Scal(j,:),Smap(j,:)]);
-                            if isfinite(SMIN) & isfinite(SMAX)
-                                axis([0, max(PROFILE_NO)+1, SMIN-.05, SMAX+.05 ])
+                        figure
+                        set(gcf,'defaultaxeslinewidth',2)
+                        set(gcf,'defaultlinelinewidth',2)
+                        set(gcf,'defaultaxesfontsize',16)
+                        
+                        for k=1:2
+                            kk=(ifig-1)*2+k;
+                            while(kk<=length(tplot))
+                                j=tplot(kk);
+                                subplot(2,1,k)
+                                if(isempty(Sint)==0)
+                                    plot(PROFILE_NO,Sint(j,:),'b*-');
+                                    hold on
+                                    plot(PROFILE_NO,Smap(j,:),'r');
+                                    plot(PROFILE_NO,Scal(j,:),'g');
+                                    mm=find(isfinite(Scal(j,:))==1); ll=PROFILE_NO; ll=ll(mm); kk=Scal(j,mm); nn=Scalerr(j,mm);
+                                    h=fill([ll,fliplr(ll)],[kk+nn,fliplr([kk-nn])],'g');
+                                    set(h,'EdgeColor','g');
+                                    errorbar(PROFILE_NO,Smap(j,:),Smaperr(j,:),'r-')
+                                    plot(PROFILE_NO,Sint(j,:),'b*-');
+                                    SMIN = min([Sint(j,:),Scal(j,:),Smap(j,:)]);
+                                    SMAX = max([Sint(j,:),Scal(j,:),Smap(j,:)]);
+                                    if isfinite(SMIN) & isfinite(SMAX)
+                                        axis([0, max(PROFILE_NO)+1, SMIN-.05, SMAX+.05 ])
+                                    end
+                                    set(gca,'FontSize',12)
+                                    title( strcat(title_floatname, ' salinities with error on \theta= ', num2str(tlevels(j)), '^{\circ}C' ) );
+                                    ylabel('PSS-78')
+                                    grid on
+                                    
+                                end
                             end
-                            set(gca,'FontSize',12)
-                            title( strcat(title_floatname, ' salinities with error on \theta= ', num2str(tlevels(j)), '^{\circ}C' ) );
-                            ylabel('PSS-78')
-                            grid on
-                             
-                        end
+                            
                         end
                         
-                    end
-                    
-                     legend({'uncal float','mapped salinity','cal float w/1xerr.'}, 'Location', 'south','orientation','horizontal','FontSize',10);
-                     xlabel('float profile number');
-                    
-                    drawnow
-                    set(gcf,'papertype','usletter','paperunits','inches','paperorientation','portrait','paperposition',[.25,.75,8,9.5]);
-                    print('-depsc', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_6_', num2str(ifig), '_', num2str(iy), '.eps'));
-                    print('-dpdf', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_6_', num2str(ifig), '_', num2str(iy), '.pdf'));
+                        legend({'uncal float','mapped salinity','cal float w/1xerr.'}, 'Location', 'south','orientation','horizontal','FontSize',10);
+                        xlabel('float profile number');
+                        
+                        drawnow
+                        set(gcf,'papertype','usletter','paperunits','inches','paperorientation','portrait','paperposition',[.25,.75,8,9.5]);
+                        print('-depsc', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_6_', num2str(ifig), '_', num2str(iy), '.eps'));
+                        print('-dpdf', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_6_', num2str(ifig), '_', num2str(iy), '.pdf'));
                     end
                 end
             end
@@ -785,9 +785,9 @@ if(isempty(find(isnan(PRES)==0))==0) % if no data exists, terminate here, no plo
                     unique_mapsalerrors = mapsalerrors(:, calindex);
                     
                     
-                   [tlevels, plevels, index, var_s_Thetalevels, Thetalevels] = find_10thetas( unique_SAL, unique_PTMP, unique_PRES, unique_la_ptmp, use_theta_gt, use_theta_lt, use_pres_gt, use_pres_lt, use_percent_gt);
+                    [tlevels, plevels, index, var_s_Thetalevels, Thetalevels] = find_10thetas( unique_SAL, unique_PTMP, unique_PRES, unique_la_ptmp, use_theta_gt, use_theta_lt, use_pres_gt, use_pres_lt, use_percent_gt);
                     %[tlevels, plevels, index, var_s_Thetalevels, Thetalevels] = find_10thetas( unique_mapped_sal, unique_PTMP, unique_PRES, unique_la_ptmp, use_theta_gt, use_theta_lt, use_pres_gt, use_pres_lt, use_percent_gt);
-
+                    
                     [clim_var_s_Thetalevels]=find_var_s(Thetalevels,unique_la_ptmp,unique_mapped_sal,use_percent_gt);
                     
                     
@@ -897,7 +897,7 @@ if(isempty(find(isnan(PRES)==0))==0) % if no data exists, terminate here, no plo
                     
                     % ileg move here by T. Reynaud 21.09.2020
                     ileg=legend({'float profiles','mapped profiles'},'FontSize',10,'Location','best')
-
+                    
                     drawnow
                     set(gcf,'papertype','usletter','paperunits','inches','paperorientation','portrait','paperposition',[.5,.25,8,10.25]);
                     print('-depsc', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_8_zoom', num2str(iy), '.eps'));

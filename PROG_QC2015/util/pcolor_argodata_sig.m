@@ -86,6 +86,9 @@ end
 cmin=coefout*min(floor(param(pres>1000)*coefin/coefout))/coefin;
 cmax=coefout*max(ceil(param(pres>1000)*coefin/coefout))/coefin;
 tabval2=[cmin-0.0001:pas:cmax+0.0001];
+if length(tabval2)>100
+    tabval2=[cmin-0.0001:pas*5:cmax+0.0001];
+end
 
 cmin=coefout*min(min(floor(param(pres>200)*coefin/coefout))/coefin);
 cmax=coefout*max(max(ceil(param(pres>200)*coefin/coefout))/coefin);

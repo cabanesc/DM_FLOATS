@@ -70,7 +70,7 @@ end
 if exist(['./paramlog/config_' flotteur '.txt'])
     disp(['CONFIGURATION FILE USED: ./paramlog/config_' flotteur '.txt'])
     
-    C=load_configuration(['./paramlog/config_' flotteur '.txt']);
+    C=load_configuration(['./paramlog/config_' flotteur '.txt']);l -9 
     DIR_FTP= C.DIR_FTP;    % input files directory
     DIR_OW = C.DIR_DATA;     % calibration files directory(cal_$flt_name$.mat files)
     DIR_OUT = C.DIR_DM_FILES;   % output files with DMQC corrections are put in this directory
