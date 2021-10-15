@@ -37,7 +37,7 @@
 function PLOT_REF_and_FLOAT(floatname,dacname,varargin)
 
 close all
-init_path
+%init_path
 
 CONFIG=load_configuration('config.txt');
 

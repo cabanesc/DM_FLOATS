@@ -11,7 +11,7 @@
 %    PROFREF   (array or cell of array -size n_floatsx1)  e.g. 1 or {1,[],10}  float profiles for which reference profile is plotted
 %    PROFREFADJ(array or cell of array -size n_floatsx1)  e.g. 1 or {1,[],10}  float adjusted profiles for which reference profile  is plotted
 %    PROFFLAG  (array or cell of array -size n_floatsx1)  e.g. 1 or {1 or '1','1D','2'}  float  profiles for  which flag are plotted
-%    PROFCLOSE (array or cell of array -size n_floatsx1)  e.g. 1 or {1,[],10}  float profiles for which closest Argo profil is plotted
+%    PROFCLOSE (array or cell of array -size n_floatsx1)  e.g. 1 or {1,[],10}  float profiles for which closest Argo profile is plotted
 %    COMP_GDAC  (logical) 1 if comparison to GDAC profile is plotted , 0 if not (default)
 %    PLOTDEPTHDEP (logical) 1 if plot of depth dependance is included (0 if not, default)
 %    TITLE     (char) title of the document  (default: 'Delayed mode analysis of salinity data acquired by Argo floats';)
@@ -864,15 +864,15 @@ for ik=1:length(float_list)
         fprintf(fw1,'%s\n', '$$');
         
         dir_fig=[ DIR_PLOT 'ref_database/' float_list{ik} '/'];% Added By TR 28.09.20
-        file =[float_list{ik} '_cycle_' num2str(Profclose{ik}(gj)) '.pdf'];
+        file =[float_list{ik} '_cycle_' num2str(Profclose{ik}(gj)) '.png'];
         if exist([dir_fig,file])
             copyfile([dir_fig,file],[dir_tex,file]);
         end
         %str=['\includegraphics[width=16cm,trim=  50 170 50 150, clip=true]{'  DIR_PLOT 'ref_database/' float_list{ik} '/' float_list{ik} '_cycle_' num2str(Profclose{ik}(gj)) '.pdf}'];
-        str=['\includegraphics[width=16cm,trim=  50 170 50 150, clip=true]{'  file '}'];
+        str=['\includegraphics[width=16cm,trim=  0 0 0 0, clip=true]{'  file '}'];
         fprintf(fw1,'%s\n', str);
         fprintf(fw1,'%s\n', '$$');
-        str=['Comparison of the profile ' num2str(Profclose{ik}(gj)) ' of the float ' float_list{ik} ' with close real time Argo profiles (magenta) found within 0.1$^\circ$ in latitude, 0.2 $^\circ$ in longitude and 365 days in times. Only RT profiles with QC=1 are selected and adjusted values are used if available. Differences between the salinity of the float and the salinity of the real time Argo profiles are computed on theta level and averaged for depth below 1500m (positive values mean that the float salinities are too high)'];
+        str=['Comparison of the profile ' num2str(Profclose{ik}(gj)) ' of the float ' float_list{ik} ' with close real time Argo profiles (magenta) found within 0.1$^\circ$ in latitude, 0.2 $^\circ$ in longitude and 365 days in times. Only RT profiles with QC=1 are selected and adjusted values are used if available. Differences between the salinity of the float and the salinity of the real time Argo profiles are computed on theta level and averaged for depth below 1000db (positive values mean that the float salinities are too high)'];
         fprintf(fw1,'%s\n', ['\caption{' str '}']);
         fprintf(fw1,'%s\n', ['\label{fig' float_list{ik} '_refthetaS_' num2str(gj) '}']);
         fprintf(fw1,'%s\n', '\end{center}');
@@ -888,7 +888,8 @@ for ik=1:length(float_list)
     if exist([DIR_PLOT 'ref_database/' float_list{ik} '/' float_list{ik} '_and_CURR_at_theta.eps'])==2 & exist([DIR_PLOT 'ref_database/' float_list{ik} '/' float_list{ik} '_and_CURR_at_theta.pdf'])==0
         eval(['!ps2pdf ' DIR_PLOT 'ref_database/' float_list{ik} '/' float_list{ik} '_and_CURR_at_theta.eps ' DIR_PLOT 'ref_database/' float_list{ik} '/' float_list{ik} '_and_CURR_at_theta.pdf'])
     end
-    if exist([DIR_PLOT 'ref_database/' float_list{ik} '/' float_list{ik} '_and_CURR_at_theta.pdf'])==2&&COMP_GDAC==1
+    
+    if exist([DIR_PLOT 'ref_database/' float_list{ik} '/' float_list{ik} '_and_CURR_at_theta.png'])==2&&COMP_GDAC==1
         %fprintf(fw1,'%s\n', ['\begin{itemize}']);
         fprintf(fw1,'%s\n', ['\subsection {RT profiles in the surrounding area}']);
         %fprintf(fw1,'%s\n', ['\end{itemize}']);
@@ -899,12 +900,12 @@ for ik=1:length(float_list)
         fprintf(fw1,'%s\n', '$$');
         
         dir_fig=[ DIR_PLOT 'ref_database/' float_list{ik} '/' ];% Added By TR 28.09.20
-        file =[float_list{ik} '_and_CURR_at_theta.pdf'];
+        file =[float_list{ik} '_and_CURR_at_theta.png'];
         if exist([dir_fig,file])
             copyfile([dir_fig,file],[dir_tex,file]);
         end
         %str=['\includegraphics[width=16cm,trim=  50 170 50 150, clip=true]{'  DIR_PLOT 'ref_database/' float_list{ik} '/' float_list{ik} '_and_CURR_at_theta.pdf}'];
-        str=['\includegraphics[width=16cm,trim=  50 170 50 150, clip=true]{'  file '}'];
+        str=['\includegraphics[width=16cm,trim=  0 0 0 0, clip=true]{'  file '}'];
         fprintf(fw1,'%s\n', str);
         fprintf(fw1,'%s\n', '$$');
         str=['Comparison of the salinity of the float ' float_list{ik} ' with  real time Argo salinities in the surrounding area at specified theta levels. Only RT data with QC=1 are selected and adjusted values are used if available. (upper panel) Map of salinities in the area. Data from float ' float_list{ik} ' are circled with magenta . (lower panel)  Salinity time series in the same area. Data from float ' float_list{ik} ' are drawn in magenta.'];

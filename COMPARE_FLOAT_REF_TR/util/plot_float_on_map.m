@@ -26,7 +26,6 @@ n=length(varargin);
 if n/2~=floor(n/2)
     error('check the imput arguments')
 end
-
 f=varargin(1:2:end);
 c=varargin(2:2:end);
 s = cell2struct(c,f,2);
@@ -59,7 +58,7 @@ end
 hold on
 box on
 grid on
-s.MarkerSize
+s.MarkerSize;
 if isfield(CONFIG,'YEAR_MIN')==0
     CONFIG.YEAR_MIN=-9999;
 end
@@ -81,6 +80,7 @@ end
 if ~isempty(thetitle)&isempty(strfind(thetitle,'float data'))
     title([thetitle ' and ' floatname ' float data' thestr]);
 end
+
 if s.Isbest==2
 vertical_sampling_scheme='Primary sampling';
 IncludeDescProf=1;
@@ -108,6 +108,7 @@ if isfield(F,'psal')
     F.psal.data(isbadpos,:)=NaN;
     F.tpot.data = sw_ptmp(F.psal.data,F.temp.data,F.pres.data,0);
     POUB=[];
+    
     if CONFIG.ONTHETA==1
         [POUB,F] = find_psal_on_theta(F, CONFIG.TPOT_MIN, CONFIG.TPOT_MAX, CONFIG.DEPTH_MIN,POUB);
     else

@@ -37,7 +37,7 @@
 function PLOT_GDAC_and_FLOAT(floatname,dacname,varargin)
 
 close all
-init_path
+%init_path
 
 CONFIG=load_configuration('config.txt');
 
@@ -128,11 +128,11 @@ CONFIG.VEC_REG=[(floor(min(F.longitude.data(time_slot))*10)/10-10),ceil(max(F.lo
 [topo,DimT]=read_netcdf_allthefile(CONFIG.FILE_TOPO);
 
 if strcmp(CONFIG.DATATYPE,'adj') == 1
-thesrt='(adj)';
-isbest_value=2;
+    thesrt='(adj)';
+    isbest_value=2;
 else
-isbest_value=0;
-thestr='(raw)';
+    isbest_value=0;
+    thestr='(raw)';
 end
 
 % COMPARAISON AUX DONNEES ARGO TEMPS REEL.
@@ -140,7 +140,7 @@ end
 
 figure
 subplot(2,1,1)
-title([' REAL TIME and float data ' floatname ' ' thestr ' : salinity at theta levels ' num2str(CONFIG.TPOT_MIN) ' - ' num2str(CONFIG.TPOT_MAX) ]);
+title({[' REAL TIME and float data ' floatname ' ' thestr ' :'];[' salinity at theta levels ' num2str(CONFIG.TPOT_MIN) ' - ' num2str(CONFIG.TPOT_MAX)]});
 contour_bathy(topo,CONFIG.VEC_REG)
 hold on
 box on
@@ -173,8 +173,9 @@ liste_floats_files(iio)=[];
 CONFIG_GDAC=CONFIG;
 CONFIG_GDAC.DIR_FTP=CONFIG_GDAC.DIR_FTP_CORIOLIS;
 second_floatname='';
-for kfloat=1:length(liste_floats_files)
-kfloat
+%for kfloat=1:length(liste_floats_files)
+for kfloat=1:50
+    disp(['nearby float:' num2str(kfloat) '/' num2str(length(liste_floats_files))]);
     subplot(2,1,1)
     plot_float_on_map(tabfloat{kfloat},tabdac{kfloat},topo,CONFIG_GDAC,'psal_mean','MarkerSize',20,'MarkerLine','off','Isbest',1);
     subplot(2,1,2)
@@ -184,7 +185,6 @@ kfloat
         plot_float_on_map(tabfloat{kfloat},tabdac{kfloat},topo,CONFIG_GDAC,'psal_mean','MarkerSize',50,'MarkerLine','off','Isbest',1);
         subplot(2,1,2)
         plot_float_on_time(tabfloat{kfloat},tabdac{kfloat},CONFIG_GDAC,'','MarkerFaceColor','c','MarkerSize',50,'MarkerLine','off','Isbest',1,'Number_floats',[kfloat,length(liste_floats_files)]);
-        
     end
 end
 
@@ -202,8 +202,8 @@ else
     caxis(thexlim)
 end
 colorbar
-titplt=[floatname '_and_CURR_at_theta.pdf'];
+titplt=[floatname '_and_CURR_at_theta.png'];
 if CONFIG.PRINT==1
-eval(['print -dpdf ' CONFIG.plotpath  titplt]);
+    eval(['print -dpng ' CONFIG.plotpath  titplt]);
 end
 

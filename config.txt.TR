@@ -6,10 +6,10 @@
 % miror of the GDAC FTP server(original floats profiles, won't be modified)
 DIR_FTP_CORIOLIS=/Users/thierry_reynaud/IFREMER/MATLAB/LOCODOX/LOCODOX_EXTERNAL_FLOAT_DATA/CORIOLIS/
 
-% Last DOI of the full ARGO GDAC
+% Last DOI of the full ARGO GDAC (needed to FIND_CLOSE_FLOATS)
 DIR_REFDATA_CORIOLIS=/Volumes/refdata/ARGO/DATA/202009-ArgoData/dac/
 
-% local directory to store float netcdf files you are working on
+% local directory to store float netcdf files you are working on (copied from DIR_FTP_CORIOLIS), will be modified (RT flags)
 DIR_FTP=/Users/thierry_reynaud/IFREMER/MATLAB/LOCODOX/LOCODOX_EXTERNAL_FLOAT_DATA/DMQC_STEP1/
 
 % output files with DMQC corrections are put in this directory

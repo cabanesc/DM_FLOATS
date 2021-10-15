@@ -26,11 +26,15 @@ index_data = textscan(fr,'%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s' , 'delimiter' , ',' 
 % transforme les longitudes latitudes   en double %  
 %(il vaut mieux tout lire en %s, cela evite que textscan plante si ce qui est dans 
 % le fichier index ne correspond pas a une valeur numerique)
+tic
 index_data{2} = datenum(index_data{2},'yyyymmddHHMMSS'); % date
-index_data{8} = datenum(index_data{8},'yyyymmddHHMMSS'); % date_update
-index_data{14} = datenum(index_data{14},'yyyymmddHHMMSS'); % gdac_date_creation
-index_data{15} = datenum(index_data{15},'yyyymmddHHMMSS'); % gdac_date_update
+%index_data{8} = datenum(index_data{8},'yyyymmddHHMMSS'); % date_update
+%index_data{14} = datenum(index_data{14},'yyyymmddHHMMSS'); % gdac_date_creation
+%index_data{15} = datenum(index_data{15},'yyyymmddHHMMSS'); % gdac_date_update
+toc
+tic
 index_data{3} = str2double(index_data{3}); % Latitude
 index_data{4} = str2double(index_data{4}); % Longitude
+toc
 fclose(fr);
 

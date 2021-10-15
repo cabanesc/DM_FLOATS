@@ -1,6 +1,7 @@
 % -========================================================
-%   USAGE : MAIN_dmqc_speed(tabfloat,tabdac,configow,varargin)
-%   PURPOSE : run OWC software for a float or a group of floats, using a specified OW config
+%   USAGE : plot_model_fit(tabfloat,tabdac,configow,POSTFIX_D,POSTFIX_S)
+%   PURPOSE : superpose results of owc (calibration figure) with different
+%   set_calseries parameters (usefull for deep floats)
 % -----------------------------------
 %   INPUT :
 %    tabfloat  (char or cell of chars -size n_floatsx1)    e.g. '6900258' or {'6900258', '3901954'}
@@ -20,7 +21,7 @@
 % ========================================================
 function plot_model_fit(tabfloat,tabdac,configow,POSTFIX_D,POSTFIX_S)
 
-init_path
+%init_path
 
 close all
 

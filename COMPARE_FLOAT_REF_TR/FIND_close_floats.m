@@ -37,20 +37,20 @@ CONFIG=load_configuration('config.txt');
 CONFIG.plotpathini=[CONFIG.DIR_PLOT '/ref_database/'];
 CONFIG.plotpath=[CONFIG.plotpathini '/' floatname '/'];
 if exist(CONFIG.plotpath)~=7
-    mkdir(CONFIG.plotpath)
+    mkdir(CONFIG.plotpath);
 end
 
 % To save list of nearby floats
 CONFIG.file_nearby_floats=[CONFIG.plotpath '/list_' floatname '.mat'];
 
-n=length(varargin)
+n=length(varargin);
 
 if n/2~=floor(n/2)
     error('check the imput arguments')
 end
 
-f=varargin(1:2:end)
-c=varargin(2:2:end)
+f=varargin(1:2:end);
+c=varargin(2:2:end);
 s = cell2struct(c,f,2);
 
 % default CONFIG
@@ -90,7 +90,7 @@ BOITE.shiftEW='grwch';
 
 plotpathini= CONFIG.plotpathini;
 
-listfloat={floatname}
+listfloat={floatname};
 
 
 % flotteurs a exclure de la comparaison
@@ -293,7 +293,7 @@ for k=1:length(uniq_float_to_check)
             uniq_float_neighb = unique(thefloat_neighb(ikcy));
             jkifin=0
             fulltitle=' ';
-            
+            clear finaltitle;
             for kn=1:length(uniq_float_neighb)
                 jkideb=jkifin+1;
                 ikn = find(ikcy&ismember(thefloat_neighb,uniq_float_neighb(kn)));
@@ -351,25 +351,29 @@ for k=1:length(uniq_float_to_check)
                     
                     % [thetitle]=plot_profile(FL,'psal','pres',theprofn,'LineColor','m','Mindepth', themindepth)
                     % keyboard
-                    % Difference de salinité sur les niveau theta
+                    % Difference de salinité sur les niveaux theta
                     jkifin=jkideb+length(theprofn)-1
                     for jki=1:length(theprofn)
                         jkicompt=jkideb+jki-1
                         [S_h,P_h]=interp_climatology(FL.psal.data(theprofn(jki),:)',FL.tpot.data(theprofn(jki),:)',FL.pres.data(theprofn(jki),:)',F.psal.data(theprof,:),F.tpot.data(theprof,:),F.pres.data(theprof,:)); % routine OW
                         difference_psal_theta=[F.psal.data(theprof,:)-S_h'];
                         difference_pres_theta=[F.pres.data(theprof,:)-P_h'];
-                        ip=find(abs(difference_pres_theta)<150);
-                        ipn=find(abs(difference_pres_theta)>150);
+                        ip=find(abs(difference_pres_theta)<500);
+                        ipn=find(abs(difference_pres_theta)>500);
                         difference_psal_theta(ipn)=NaN;
                         
                         kk=find(F.pres.data(theprof,ip)>PARAM.PRES_MIN );
+                        if length(kk)>10
                         themean(unique_cycle_to_check(icycle),jkicompt)=mean(difference_psal_theta(ip(kk)));
+                        else
+                        themean(unique_cycle_to_check(icycle),jkicompt)=NaN;
+                        end
                         thefloatused(unique_cycle_to_check(icycle),jkicompt)=uniq_float_neighb(kn);
                     end
                     %[thetitle]=plot_profile(FL,'psal','pres',theprofn,'LineColor','m','Mindepth', themindepth)
                     sav=F.psal.data(theprof,:);
                     F.delta_psal=F.psal;
-                    F.delta_psal.data(theprof,:)= F.psal.data(theprof,:)-S_h';
+                    F.delta_psal.data(theprof,:)= difference_psal_theta;%F.psal.data(theprof,:)-S_h';
                     [thetitlei] = plot_profile(F,'delta_psal','pres',theprof,'Mindepth', themindepth)
                     F.psal.data(theprof,:)=sav;
                     if length(uniq_float_neighb)>1&kn~=length(uniq_float_neighb)
@@ -378,7 +382,7 @@ for k=1:length(uniq_float_to_check)
                         fulltitle=[fulltitle thetitle];
                     end
                     %title(['Compared to ' thetitle])
-                    %keyboard
+                    
                 end
             end
             

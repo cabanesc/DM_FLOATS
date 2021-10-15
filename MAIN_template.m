@@ -33,8 +33,8 @@ n_prof=10; % numero de profil que l'on veut verifier avec VERIF_FLAG
 
 irun.LOAD_float      = 0;  % chargement des données: copie les fichiers netcdf depuis DIR_FTP_CORIOLIS vers DIR_FTP
 irun.PLOTDATA_raw    = 0;  % plots preliminaires (theta/S, sections, bathy...)
-irun.CORRECT_float   = 0;  % visualisation & correction des flags
-irun.VERIF_FLAG      = 1;  % comparaison d'un profil Argo (n_prof) aux profils les plus proches de la base de reference
+irun.CORRECT_float   = 1;  % visualisation & correction des flags
+irun.VERIF_FLAG      = 0;  % comparaison d'un profil Argo (n_prof) aux profils les plus proches de la base de reference
 irun.VERIF_PROF1_raw = 0;  % comparaison au profil CTD de mise a l'eau
 irun.FIND_CLOSE_float= 0;  % optionnel : comparaison aux profils Argo voisins 
 irun.OW              = 0;  % calcul correction OWC
@@ -100,13 +100,15 @@ if irun.VERIF_PROF1_raw
     init_path('clear',rep,rdir);
 end
 %===========================%
-% OPTIONNEL : comparaison des données Argo du flotteur a des profils (Argo) proches dans le temps et
-% l'espace
+% OPTIONNEL : comparaison des données Argo du flotteur a des profils (Argo) proches dans le temps et l'espace
 if irun.FIND_CLOSE_float
     rep='COMPARE_FLOAT_REF_TR';
     init_path('add',rep,rdir);
     eval(fullfile('cd ./',rep));
-    FIND_close_floats(floatname,dacname,'UPDATE',1,'PRINT',1,'DATATYPE','raw')
+    % carte et serie temporelle dans toute la zone
+    PLOT_GDAC_and_FLOAT(floatname,dacname,'UPDATE',0,'PRINT',1,'DATATYPE','raw','TPOT_MIN',8.2,'TPOT_MAX',8.3,'DEPTH_MIN',50)
+    % comparaison profil par profil
+    %FIND_close_floats(floatname,dacname,'UPDATE',0,'PRINT',1,'DATATYPE','raw')
     eval('cd ..');
     init_path('clear',rep,rdir);
 end
@@ -127,6 +129,7 @@ if irun.OW
     rep='DOC';
     init_path('add',rep,rdir);
     eval(fullfile('cd ./',rep));
+    %generate_doc_overleaf(floatname,dacname,numconfig_ow,'SUBTITLE',['Float ' floatname ' (' name_campaign ')'],'PROFREF',n_prof)%
     generate_doc_overleaf(floatname,dacname,numconfig_ow,'SUBTITLE',['Float ' floatname ' (' name_campaign ')'],'PROFREF',n_prof)%
     eval('cd ..');
     init_path('clear',rep,rdir);
@@ -172,7 +175,8 @@ if irun.DOC
     eval(fullfile('cd ./',rep));
     %n_prof=0;% A revoir avec CC
     %generate_doc_overleaf(floatname,dacname,numconfig_ow,'SUBTITLE',['Float ' floatname ' (' name_campaign ')'],'PROFREF',n_prof,'PROFFLAG','1D')%
-    generate_doc_overleaf(floatname,dacname,numconfig_ow,'SUBTITLE',['Float ' floatname ' (' name_campaign ')'],'PROFREF',n_prof)
+    %generate_doc_overleaf(floatname,dacname,numconfig_ow,'SUBTITLE',['Float ' floatname ' (' name_campaign ')'],'PROFREF',n_prof,'COMP_GDAC',1)
+    generate_doc_overleaf(floatname,dacname,numconfig_ow,'SUBTITLE',['Float ' floatname ' (' name_campaign ')'],'PROFREF',n_prof,'PROFCLOSE',1)
     eval('cd ..');
     init_path('clear',rep,rdir);
     % uploaderles fichiers qui se trouvent dans ./DOC/OVERLEAF/ sur
