@@ -436,7 +436,7 @@ fprintf(fw1,'%s\n', ['\subsection{Salinity corrections applied}']);
 
 
 dir_fig=[ DIR_PLOT 'verif_profil1/' float_list{ik} '/'];% Added By TR 28.09.20
-cpcor_filename=['CPCOR_analysis_' float_list{ik}   '_1.pdf'];
+cpcor_filename=['CPCOR_analysis_' float_list{ik}   '_1.png'];
 if exist([dir_fig,cpcor_filename])
     copyfile([dir_fig,cpcor_filename],[dir_tex,cpcor_filename]);
 end
@@ -706,7 +706,7 @@ for ik=1:length(float_list)
             fprintf(fw1,'%s\n', '\begin{figure}[h!]');
             fprintf(fw1,'%s\n', '\begin{center}');
             fprintf(fw1,'%s\n', '$$');
-            str=['\includegraphics[width=17cm,trim=  0 0 0 0, angle=0,clip=true]{'  filenamecmp '}'];
+            str=['\includegraphics[width=16cm,trim=  0 0 0 0, angle=0,clip=true]{'  filenamecmp '}'];
             fprintf(fw1,'%s\n', str);
             fprintf(fw1,'%s\n', '$$');
             if isstr(Profflag{ik}(gj))
@@ -729,7 +729,7 @@ for ik=1:length(float_list)
    
     if exist([dir_tex cpcor_filename])
         %% OPTION: FIGURE ANALYSE DU CPCOR
-        fprintf(fw1,'%s\n', '\clearpage');
+        fprintf(fw1,'%s\n', '\clearpage'); 
         fprintf(fw1,'%s\n', ['\subsection {Cpcor Analyse}']);
         fprintf(fw1,'%s\n', '%%%%%%%%%%%%%%%%%% FIGURE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%');
         fprintf(fw1,'%s\n', '\begin{figure}[h!]');
@@ -738,7 +738,7 @@ for ik=1:length(float_list)
         
         
         fprintf(fw1,'%s\n', '$$');
-        str=['\includegraphics[width=15cm,trim= 20 50 0 145, clip=true]{' cpcor_filename '}'];
+        str=['\includegraphics[width=13cm,trim= 0 0 0 0, clip=true]{' cpcor_filename '}'];
         fprintf(fw1,'%s\n', str);
         % fprintf(fw1,'%s\n', '$$');
         % fprintf(fw1,'%s\n', '\end{subfigure}');

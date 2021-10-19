@@ -216,7 +216,9 @@ MAP_VISU.proj='mercator';
 %--------------------------------------------------------------------------
 
 hf=figure;
-hf.Position=[.25,.75,9.5,8];
+%hf.Position=[.25,.75,9.5,8];
+hf.Position(3)=hf.Position(3)+hf.Position(3)*65/100;
+hf.Position(4)=hf.Position(4)+hf.Position(4)*75/100;
 hold on
 [hf,ha]=fct_pltmap(hf,MAP_VISU.zone_visu,MAP_VISU.reso,MAP_VISU.proj);
 set(gca,'fontsize',18);
@@ -229,7 +231,7 @@ ylabel('Latitude');
 dista=andoyer(F.longitude.data(nocycl,:),F.latitude.data(nocycl,:),CTD.longitude.data,CTD.latitude.data);
 m_text(MAP_VISU.min_lon-1,MAP_VISU.min_lat-1,['Dist: ' num2str(round(dista)) ' km'],'HorizontalAlignment','left','VerticalAlignment','bottom','fontsize',14)
 set(gcf,'papertype','usletter','paperunits','inches','paperorientation','landscape','paperposition',[.25,.75,9.5,8]);
-eval(['print -depsc2 ' [CONFIG.dir_enregistre '/' floatname '_map_prof' pfnu  thepostfix '.eps']]);
+%eval(['print -depsc2 ' [CONFIG.dir_enregistre '/' floatname '_map_prof' pfnu  thepostfix '.eps']]);
 eval(['print -dpng   ' [CONFIG.dir_enregistre '/' floatname '_map_prof' pfnu   thepostfix '.png']]);
 
 format short g
@@ -240,10 +242,11 @@ dlmwrite([CONFIG.dir_enregistre '/' floatname '_localisation_' pfnu   '.out'],lo
 %  FIGURE 2 : MAP & THETA/S
 %--------------------------------------------------------------------------
 h5 = figure;
-h5.Position=[.25,.75,9.5,8];
+h5.Position(3)=h5.Position(3)+h5.Position(3)*65/100;
+h5.Position(4)=h5.Position(4)+h5.Position(4)*75/100;
 % flag color
 tabcol=[0 1 0 ; 1 1 0 ; 1 0.5 0 ; 1 0 0 ; 0.5 0.5 0 ; 0.5 0.5 0 ; 0.5 0.5 0 ; 0.5 0.5 0; 0.5 0.5 0 ; 0.65 0.65 0.65]; 
-
+%keyboard
 PARAM.ptmpref='ptmp0';
 [h5,l,b2]=init_figure(h5,F,CTD,floatname,nocycl,pfnu,tabcol,MAP_VISU,PARAM,CAMPAIGN);
 
@@ -297,8 +300,8 @@ eval(['print   -dpng ' [CONFIG.dir_enregistre '/' floatname '_T_S_bathy_' PARAM.
 %--------------------------------------------------------------------------
 
 h6 = figure;
-h6.Position(3)=h6.Position(3)+h6.Position(3)*30/100;
-h6.Position(4)=h6.Position(4)+h6.Position(4)*10/100;
+h6.Position(3)=h6.Position(3)+h6.Position(3)*65/100;
+h6.Position(4)=h6.Position(4)+h6.Position(4)*75/100;
 [h6,l,b2]=init_figure(h6,F,CTD,floatname,nocycl,pfnu,tabcol,MAP_VISU,PARAM,CAMPAIGN,'surroundprof','off');
 
 subplot(1,12,[6:12])
@@ -328,8 +331,8 @@ eval(['print  -dpng ' [CONFIG.dir_enregistre '/' floatname '_diffPSAL_' PARAM.pt
 %--------------------------------------------------------------------------
 
 h7 = figure;
-h7.Position(3)=h7.Position(3)+h7.Position(3)*30/100;
-h7.Position(4)=h7.Position(4)+h7.Position(4)*10/100;
+h7.Position(3)=h7.Position(3)+h7.Position(3)*65/100;
+h7.Position(4)=h7.Position(4)+h7.Position(4)*75/100;
 [h7,l,b2]=init_figure(h7,F,CTD,floatname,nocycl,pfnu,tabcol,MAP_VISU,PARAM,CAMPAIGN,'surroundprof','on');
 
 
@@ -387,8 +390,8 @@ eval(['print  -dpng ' [CONFIG.dir_enregistre '/' floatname '_profiles_' PARAM.pt
 %--------------------------------------------------------------------------
 
 h8 = figure;
-h8.Position(3)=h8.Position(3)+h8.Position(3)*30/100;
-h8.Position(4)=h8.Position(4)+h8.Position(4)*10/100;
+h8.Position(3)=h8.Position(3)+h8.Position(3)*65/100;
+h8.Position(4)=h8.Position(4)+h8.Position(4)*75/100;
 %[h8,l,b2]=init_figure(h8,F,CTD,floatname,nocycl,pfnu,tabcol,MAP_VISU,PARAM,CAMPAIGN,'surroundprof','on');
 
 subplot(1,3,1)
@@ -505,7 +508,7 @@ end
 grid on
 box on
 axis([TheXLim TheYLim])
-title({['Zoom on depths deeper than ' num2str(PARAM.ZOOM) 'm'];['Diff. PSAL on theta levels: ' num2str(correction_0)]},'FontWeight','bold','Fontsize',11);
+title({['Zoom on depths deeper than ' num2str(PARAM.ZOOM) 'm'];['Diff. PSAL on theta levels: ' num2str(correction_0)]},'FontWeight','bold','Fontsize',10);
 
 set(gcf,'papertype','usletter','paperunits','inches','paperorientation','landscape','paperposition',[.25,.75,9.5,8]);
 eval(['print  -dpsc2 ' [CONFIG.dir_enregistre '/' floatname '_T_S_zoom_' PARAM.ptmpref thepostfix ]  '.eps']);

@@ -376,9 +376,14 @@ plot_prof_closest(CTD,F,'pres','tpot',index_closest_dist,index_closest_date,PARA
 %set(hs,'fontsize',11);
 ymin;
 ymax;
-set(gca,'ylim',[ymin ymax]);
-set(gca,'xlim',[xmin xmax]);
-
+%set(gca,'ylim',[ymin ymax]);
+%set(gca,'xlim',[xmin xmax]);
+if ~isnan(ymin)&~isnan(ymax)
+    set(gca,'ylim',[ymin ymax]);
+end
+if ~isnan(xmin)&~isnan(xmax)
+    set(gca,'xlim',[xmin xmax]);
+end
 
 subplot(2,2,3)
 hold on, grid on, box on
@@ -390,8 +395,14 @@ ylabel('Pressure (db)');
 plot_prof_closest(CTD,F,'pres','psal',index_closest_dist,index_closest_date,PARAM,'mindepth',mindepth,'reshapex',reshapef);
 ymin;
 ymax;
-set(gca,'ylim',[ymin ymax]);
-set(gca,'xlim',[xmin xmax]);
+if ~isnan(ymin)&~isnan(ymax)
+    set(gca,'ylim',[ymin ymax]);
+end
+if ~isnan(xmin)&~isnan(xmax)
+    set(gca,'xlim',[xmin xmax]);
+end
+%set(gca,'ylim',[ymin ymax]);
+%set(gca,'xlim',[xmin xmax]);
 
 mindepth=PARAM.DEPTH_ZOOM;
 subplot(1,2,2)
@@ -403,8 +414,14 @@ xlabel('Potential density')
 ylabel('Pressure (db)');
 ymin;
 ymax;
-set(gca,'ylim',[ymin ymax]);
-set(gca,'xlim',[xmin xmax]);
+if ~isnan(ymin)&~isnan(ymax)
+    set(gca,'ylim',[ymin ymax]);
+end
+if ~isnan(xmin)&~isnan(xmax)
+    set(gca,'xlim',[xmin xmax]);
+end
+% set(gca,'ylim',[ymin ymax]);
+% set(gca,'xlim',[xmin xmax]);
 theax=gca;
 
 if strcmp(PARAM.DATATYPE,'raw') == 1
@@ -550,22 +567,36 @@ ideF = find(F.pres.data>mindepth);
 if isempty (ideC)==0&isempty(ideF)==0
     xmin = floor(min(min(CTD.(param2).data(ideC),min(F.(param2).data(ideF))))*reshapex)/reshapex;
     xmax = ceil(max(max(CTD.(param2).data(ideC),max(F.(param2).data(ideF))))*reshapex)/reshapex;
+ 
+if ~isnan(xmin)&~isnan(xmax)
     set(gca,'xlim',[xmin xmax]);
+end
+    %set(gca,'xlim',[xmin xmax]);
     %if ~strcmp(param1,'pres')
     ymin = floor(min(min(F.(param1).data(ideF)))*reshapey)/reshapey;
     ymax = ceil(max(max(F.(param1).data(ideF)))*reshapey)/reshapey;
-    
+    if ~isnan(ymin)&~isnan(ymax)
     set(gca,'ylim',[ymin ymax]);
+    end
+
+    %set(gca,'ylim',[ymin ymax]);
 elseif isempty (ideC)==0
     xmin = floor(min(CTD.(param2).data(ideC))*reshapex)/reshapex;
     xmax = ceil(max(CTD.(param2).data(ideC))*reshapex)/reshapex;
+    
+if ~isnan(xmin)&~isnan(xmax)
     set(gca,'xlim',[xmin xmax]);
+end
+    %set(gca,'xlim',[xmin xmax]);
     %if ~strcmp(param1,'pres')
     
     ymin = floor(min(CTD.(param1).data(ideC))*reshapey)/reshapey;
     ymax = ceil(max(CTD.(param1).data(ideC))*reshapey)/reshapey;
-    
+    if ~isnan(ymin)&~isnan(ymax)
     set(gca,'ylim',[ymin ymax]);
+    end
+
+    %set(gca,'ylim',[ymin ymax]);
 else
     xmin=NaN;xmax=NaN;ymin=NaN;ymax=NaN;
 end
@@ -640,8 +671,11 @@ ideF = find(F.pres.data>mindepth);
 if isempty (ideC)==0&isempty(ideF)==0
     xmin = floor(min(min(CTD.(param2).data(ideC),min(F.(param2).data(ideF))))*reshapex)/reshapex;
     xmax = ceil(max(max(CTD.(param2).data(ideC),max(F.(param2).data(ideF))))*reshapex)/reshapex;
-    
+   
+if ~isnan(xmin)&~isnan(xmax)
     set(gca,'xlim',[xmin xmax]);
+end
+    %set(gca,'xlim',[xmin xmax]);
     mindepth;
     if (mindepth)==0
         ymin = floor(min(min(CTD.(param1).data(ideC),min(F.(param1).data(ideF))))*reshapey)/reshapey;
@@ -653,7 +687,11 @@ if isempty (ideC)==0&isempty(ideF)==0
     %ymin = floor(min(min(CTD.(param1).data(ideC),min(F.(param1).data(ideF))))*reshapey)/reshapey;
     %ymax = ceil(max(max(CTD.(param1).data(ideC),max(F.(param1).data(ideF))))*reshapey)/reshapey;
     [ymin ymax];
+    if ~isnan(ymin)&~isnan(ymax)
     set(gca,'ylim',[ymin ymax]);
+    end
+
+   % set(gca,'ylim',[ymin ymax]);
 else
     xmin=NaN;xmax=NaN;ymin=NaN;ymax=NaN;
 end

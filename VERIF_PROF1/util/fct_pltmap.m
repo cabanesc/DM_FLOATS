@@ -66,8 +66,8 @@ xt_max= ceil( zone_visu(4)*fact)/fact;
 
 fact=1;
 m_proj(proj,'longitude',[xt_min xt_max],'latitude',[yt_min yt_max]);
-m_grid('xtick',[xt_min:1/fact:xt_max],'ytick',[yt_min:1/fact:yt_max],'color',[0 0 0],'linestyle','-.');
-
+%m_grid('xtick',[xt_min:1/fact:xt_max],'ytick',[yt_min:1/fact:yt_max],'color',[0 0 0],'linestyle','-.');
+m_grid
 
 % Commented by T. Reynaud 17.09.2020
 %m_proj(proj,'long',[zone_visu(3) zone_visu(4)],...
