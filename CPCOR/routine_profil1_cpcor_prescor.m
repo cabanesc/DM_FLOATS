@@ -83,7 +83,8 @@ isurf=find(findstr_tab(cellstr(T.technical_parameter_name.data),'PRES_SurfaceOff
 cycl=T.cycle_number.data(isurf);
 cyc1=(cycl==1);
 if nocycl==1|nocycl==2
-    press_offset= str2num(T.technical_parameter_value.data(isurf(cyc1),:));
+    %press_offset= str2num(T.technical_parameter_value.data(isurf(cyc1),:));
+    press_offset=0;
 else
     press_offset=0;
 end
@@ -151,6 +152,7 @@ if nocycl<=length(F.cycle_number.data)
         [distascend,isort] = sort(dista1);
         iok=1;
         profil_ok = isort(iok);
+        disp(['Station de reference:' num2str(profil_ok)])
         lat_campagne = double(lo_float_source_data.LAT(profil_ok));
         lon_campagne = double(lo_float_source_data.LONG(profil_ok));
         %juld_campagne = lo_float_source_data.DATES(profil_ok);
@@ -176,6 +178,9 @@ if nocycl<=length(F.cycle_number.data)
     difference_pres_theta = [pres_argo-pres_i_campagne'];
     ip = find(difference_pres_theta<150);
     difference_psal_theta = psal_argo-psal_i_campagne';
+    figure(5)
+    hold on
+    plot(difference_pres_theta,pres_argo,'g+')
     
     % on cherche une valeur optimale pour le cpcor et l'offset => resultat
     % dans cnew.
@@ -201,7 +206,7 @@ if nocycl<=length(F.cycle_number.data)
     
     
     pres_argo_corr = pres_argo + press_offset;
-    
+    %psal_argo_nominal = change_cpcor([CPcor,cnew2(1)]);
     difference_psal_theta_raw = [psal_argo-psal_i_campagne'];
     
     cond_argo = gsw_C_from_SP(psal_argo,temp_argo,pres_argo);
@@ -210,19 +215,24 @@ if nocycl<=length(F.cycle_number.data)
     difference_psal_theta_corr = [psal_argo_corr-psal_i_campagne'];
     
     
-    psal_argo_nominal = change_cpcor([CPcor,cnew2(1)]);
+    %psal_argo_nominal = change_cpcor([CPcor,cnew2(1)]);
+    psal_argo_nominal = change_cpcor([CPcor,1]);
     sa_argo = gsw_SA_from_SP(psal_argo_nominal,pres_argo_corr,lon_argo,lat_argo);
     ct_argo2 = gsw_CT_from_t(sa_argo,temp_argo,pres_argo_corr);
     [psal_i_campagne,pres_i_campagne]=interp_climatology(psal_campagne',ct_campagne',pres_campagne',psal_argo_nominal,ct_argo2,pres_argo_corr); % routine OW
     difference_psal_theta_nominal=[psal_argo_nominal-psal_i_campagne'];
+    difference_pres_theta = [pres_argo_corr-pres_i_campagne'];
+    ip = find(difference_pres_theta<1500);
     
-    psal_argo_optim = change_cpcor([cnew(1),cnew(2)]);
+    %psal_argo_optim = change_cpcor([cnew(1),cnew(2)]);
+    psal_argo_optim = change_cpcor([cnew(1),1]);
     sa_argo = gsw_SA_from_SP(psal_argo_optim,pres_argo_corr,lon_argo,lat_argo);
     ct_argo2 = gsw_CT_from_t(sa_argo,temp_argo,pres_argo_corr);
     [psal_i_campagne_o,pres_i_campagne_o]=interp_climatology(psal_campagne',ct_campagne',pres_campagne',psal_argo_optim,ct_argo2,pres_argo_corr); % routine OW
     difference_psal_theta_optim=[psal_argo_optim-psal_i_campagne_o'];
     
-    psal_argo_median = change_cpcor([CPcor_fixed,cnew3(1)]);
+    %psal_argo_median = change_cpcor([CPcor_fixed,cnew3(1)]);
+    psal_argo_median = change_cpcor([CPcor_fixed,1]);
     sa_argo = gsw_SA_from_SP(psal_argo_median,pres_argo_corr,lon_argo,lat_argo);
     ct_argo2 = gsw_CT_from_t(sa_argo,temp_argo,pres_argo_corr);
     [psal_i_campagne_m,pres_i_campagne_m] = interp_climatology(psal_campagne',ct_campagne',pres_campagne',psal_argo_median,ct_argo2,pres_argo_corr); % routine OW
@@ -241,46 +251,44 @@ if nocycl<=length(F.cycle_number.data)
     if exist(dir_enregistre)==0
         mkdir(dir_enregistre)
     end
+    %dir_enregistre=['/tmp/'];
     
     PRINT=1;
     if PRINT==1
-        h1=figure(1);
-        h1.Position(3)=h1.Position(3)+h1.Position(3)*10/100;
-        h1.Position(4)=h1.Position(4)+h1.Position(4)*50/100;
+        figure(1)
         hold on
-        box on
         grid on
         %plot(difference_psal_theta_corr,pres_argo_corr,'ok')
-        plot(difference_psal_theta_nominal,pres_argo_corr,'ok')
-        plot(difference_psal_theta_optim,pres_argo_corr,'+r')
-        plot(difference_psal_theta_median,pres_argo_corr,'+g')
+        plot(difference_psal_theta_nominal(ip),pres_argo_corr(ip),'ok')
+        plot(difference_psal_theta_optim(ip),pres_argo_corr(ip),'+r')
+        plot(difference_psal_theta_median(ip),pres_argo_corr(ip),'+g')
         
-        maxval=max(abs(difference_psal_theta_raw(pres_argo>str2num(minDEPTH))));
+        maxval=max(abs(difference_psal_theta_raw(pres_argo(ip)>str2num('1000'))));
         if isempty(maxval)||isnan(maxval)
-            maxval=max(abs(difference_psal_theta_median(pres_argo>str2num('1000'))));
+            maxval=max(abs(difference_psal_theta_median(pres_argo(ip)>str2num('1000'))));
         end
         if isempty(maxval)||isnan(maxval)
-            maxval=max(abs(difference_psal_theta_median(pres_argo>str2num('500'))));
+            maxval=max(abs(difference_psal_theta_median(pres_argo(ip)>str2num('500'))));
         end
         set(gca,'XLim',[-maxval-0.001,maxval+0.001])
+        %set(gca,'XLim',[-0.04,0.04])
         set(gca,'Ydir','reverse')
-        title({['Salinity deviation from the shipboard reference.'];[ 'Float ' floatname ', Cycle ' nocyclstr ]})
+        title({['Salinity deviation from the shipboard reference.'];['Float ' floatname ', Cycle ' nocyclstr ]},'Fontsize',14)
         xlabel('Salinity deviation on float theta levels','Fontsize',12)
         %legend({'Original  profile (press corrected): nominal CPCOR  (-9.57e-8) , no offset corrected',['Modified profile: nominal CPCOR  (-9.57e-8) , optimal offset  (' num2str(theoffsset_nom) ')' ],['Modified profile: optimal CPCOR (', num2str(cnew(1)), ') , optimal offset (', num2str(theoffsset_op), ')']},'location','SouthOutside','Fontsize',14,'FontWeight','bold')
         %legend({'Original  profile (press corrected): nominal CPCOR  (-9.57e-8) , no offset corrected',['Modified profile: nominal CPCOR  (-9.57e-8) , optimal offset  (' num2str(theoffsset_nom) ')' ],['Modified profile: median CPCOR (', num2str(CPcor_fixed), ') , optimal offset (', num2str(theoffsset_med), ')']},'location','SouthOutside','Fontsize',14,'FontWeight','bold')
         %legend({['Modified profile: nominal CPCOR  (-9.57e-8) , optimal offset  (' num2str(theoffsset_nom) ')' ],['Modified profile: optimal CPCOR (', num2str(cnew(1)), ') , optimal offset (', num2str(theoffsset_op), ')'],['Modified profile: WG suggested CPCOR (', num2str(CPcor_fixed), ') , optimal offset (', num2str(theoffsset_med), ')']},'location','SouthOutside','Fontsize',12)
-        legend({['Modified profile: nominal CPCOR  (-9.57e-8) , optimal M  (' num2str(cnew2(1)) ')' ],['Modified profile: optimal CPCOR (', num2str(cnew(1)), ') , optimal M (', num2str(cnew(2)), ')'],['Modified profile: WG suggested CPCOR (', num2str(CPcor_fixed), ') , optimal M (', num2str(cnew3(1)), ')']},'location','SouthOutside','Fontsize',9)
+        
+        legend({['Modified profile: nominal CPCOR  (-9.57e-8) , M=1' ],['Modified profile: optimal CPCOR (', num2str(cnew(1)), ') , M=1'],['Modified profile: WG suggested CPCOR (', num2str(CPcor_fixed), ') , M=1']},'location','SouthOutside','Fontsize',12)
+        %legend({['Modified profile: nominal CPCOR  (-9.57e-8) , optimal M  (' num2str(cnew2(1)) ')' ],['Modified profile: optimal CPCOR (', num2str(cnew(1)), ') , optimal M (', num2str(cnew(2)), ')'],['Modified profile: WG suggested CPCOR (', num2str(CPcor_fixed), ') , optimal M (', num2str(cnew3(1)), ')']},'location','SouthOutside','Fontsize',12)
         ylabel('pressure','Fontsize',12)
         box on
         set(gcf,'papertype','A4','paperunits','centimeters','paperorientation','portrait','paperposition',[.25,.75,20,25]);
-        eval(['print -dpdf ' dir_enregistre '/CPCOR_analysis_' floatname   '_1.pdf']);
+        eval(['print -dpng ' dir_enregistre '/CPCOR_analysis_' floatname   '_1.png']);
         
-        h2=figure(2)
-        h2.Position(3)=h2.Position(3)+h2.Position(3)*10/100;
-        h2.Position(4)=h2.Position(4)+h2.Position(4)*50/100;
+        figure(2)
         hold on
         grid on
-        box on
         plot(difference_psal_theta_raw,pres_argo,'.k')
         plot(difference_psal_theta_corr,pres_argo_corr,'ok')
         set(gca,'Ydir','reverse')
@@ -294,16 +302,14 @@ if nocycl<=length(F.cycle_number.data)
         end
         set(gca,'XLim',[-maxval-0.001,maxval+0.001])
         
-        title({['Salinity deviation from the shipboard reference. Float '];[ floatname ', Cycle ' nocyclstr ]})
+        title({['Salinity deviation from the shipboard reference. Float ' floatname ', Cycle ' nocyclstr ]},'Fontsize',12)
         xlabel('Salinity deviation on float theta levels','Fontsize',12)
-        legend({'Original  profile: nominal CPCOR  (-9.57e-8) , no offset corrected',['Original  profile with pressure offset corrected (' num2str(press_offset) 'db), salinity is re-calculated']},'location','SouthOutside','Fontsize',9,'FontWeight','bold')
+        legend({'Original  profile: nominal CPCOR  (-9.57e-8) , no offset corrected',['Original  profile with pressure offset corrected (' num2str(press_offset) 'db), salinity is re-calculated']},'location','SouthOutside','Fontsize',14,'FontWeight','bold')
         ylabel('pressure','Fontsize',12)
         set(gcf,'papertype','A4','paperunits','centimeters','paperorientation','portrait','paperposition',[.25,.75,20,25]);
-        eval(['print -dpdf ' dir_enregistre '/press_correction_cycle1_' floatname '_2.pdf']);
-        
-        h3=figure(3)
-        h3.Position(3)=h3.Position(3)+h3.Position(3)*10/100;
-        h3.Position(4)=h3.Position(4)+h3.Position(4)*50/100;
+        eval(['print -dpng ' dir_enregistre '/press_correction_cycle1_' floatname '_2.png']);
+        dir_enregistre
+        figure(3)
         hold on
         grid on
         %plot(psal_campagne,pres_campagne,'+r')
@@ -324,9 +330,9 @@ if nocycl<=length(F.cycle_number.data)
         set(gca,'Ydir','reverse')
         grid on
         box on
-        title({['Salinity . Float ' floatname ', Cycle ' nocyclstr ]},'Fontsize',14)
+        title({['Salinity . Float ' floatname ', Cycle ' nocyclstr ]},'Fontsize',12)
         xlabel('Salinity ','Fontsize',12)
-        legend({['Modified profile: optimal CPCOR (', num2str(cnew(1)), ') , optimal offset (', num2str(theoffsset_op), ')'],['Modified profile: median CPCOR (', num2str(CPcor_fixed), ') , optimal offset (', num2str(theoffsset_med), ')']},'location','SouthOutside','Fontsize',9,'FontWeight','bold')
+        legend({['Modified profile: optimal CPCOR (', num2str(cnew(1)), ') , optimal offset (', num2str(theoffsset_op), ')'],['Modified profile: median CPCOR (', num2str(CPcor_fixed), ') , optimal offset (', num2str(theoffsset_med), ')']},'location','SouthOutside','Fontsize',14,'FontWeight','bold')
         %legend({'Reference profile from the shipboard CTD', ['Modified profile: optimal CPCOR (', num2str(cnew(1)), ')' ],['Modified profile: median CPCOR (', num2str(CPcor_fixed), ')']},'location','SouthOutside','Fontsize',14,'FontWeight','bold')
         
         ylabel('pressure','Fontsize',12)
@@ -334,7 +340,7 @@ if nocycl<=length(F.cycle_number.data)
         
         
         set(gcf,'papertype','A4','paperunits','centimeters','paperorientation','portrait','paperposition',[.25,.75,20,25]);
-        eval(['print -dpdf ' dir_enregistre '/CPCOR_analysis_median_' floatname '_3.pdf']);
+        eval(['print -dpng ' dir_enregistre '/CPCOR_analysis_median_' floatname '_3.png']);
         % eval(['print -dpdf ' 'test.pdf']);
         fprintf(fw,'%s\n',[floatname ', ' nocyclstr ', ' minDEPTH  ', ' num2str(cnew(1)) ', ' num2str(theoffsset_nom) ', ' num2str(theoffsset_op) ', ' num2str(theoffsset_med) ', ' num2str(theoffsset_pres) ', ' num2str(cnew(2)) ])
         %fprintf(fw,'%s\n',[floatname ', ' nocyclstr   ', ' num2str(cnew(1)) ', ' num2str(theoffsset_op)])
@@ -415,7 +421,7 @@ dcco_opt = cco_argo_opt-cco_i_campagne';
 %  end
 %  dcco_opt=dcco_opt_gliss;
 
-ii=find(isfinite(dcco_opt)==1 & pres_argo_corr > str2num(minDEPTH) & abs(difference_pres_theta)<1500);
+ii=find(isfinite(dcco_opt)==1 & pres_argo_corr > str2num(minDEPTH)  &pres_argo_corr <5360& abs(difference_pres_theta)<1500);
 if isempty(ii)
     ii=find(isfinite(dcco_opt)==1 & pres_argo_corr > 1000 & abs(difference_pres_theta)<1500);
 end

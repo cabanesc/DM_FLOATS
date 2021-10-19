@@ -18,9 +18,9 @@
 %   HISTORY  : created C. Cabanes - 2020
 % ========================================================
 function RUN_CPCOR(floatname,dacname,numcycle,config_campaign_file,varargin)
-close all
+%close all
 
-init_path
+%init_path
 
 CONFIG=load_configuration('config.txt');
 
@@ -54,7 +54,6 @@ disp([datestr(now) ' Working on float ' flt_name])
 % Préparation du répertoire de sauvegarde
 %--------------------------------------------------------------------------
 dir_enregistre = [CONFIG.DIR_PLOT 'verif_profil1/'  flt_name];
-
 if ~exist(dir_enregistre,'dir')
 	mkdir(dir_enregistre);
 end

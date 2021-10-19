@@ -69,7 +69,7 @@ switch lower(rep)
                 addpath(fullfile(rdir,'/CPCOR/util'));
                 addpath(fullfile(rdir,'/VERIF_PROF1/config_campagne'));
                 addpath(fullfile(rdir,'/lib/tool_Ocean/cmocean'));
-				addpath(fullfile(rdir,'/lib/gsw_matlab_v3_01'));
+                addpath(genpath('/home1/triagoz/matlab/outils_matlab/seawater/gsw_matlab_v3_04_TR'))
                 addpath('/home1/homedir5/perso/ccabanes/matlab/util/m_map1.4m');
             case lower('clear')
                 path(pathdef)
