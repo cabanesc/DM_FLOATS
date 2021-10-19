@@ -95,7 +95,7 @@ if irun.VERIF_PROF1_raw
     rep='VERIF_PROF1';
     init_path('add',rep,rdir);
     eval(fullfile('cd ./',rep));
-    VERIF_PROFIL1(floatname,dacname,1,config_campaign,'NB_PROF',10,'DIRECTION','A','ZOOM',1000);  % ici on compare le 1D avec le profil campagne, on trace les 10 premiers profils argo
+    VERIF_PROFIL1(floatname,dacname,1,config_campaign,'NB_PROF',10,'DIRECTION','A','ZOOM',1000);  % ici on compare le 1A avec le profil campagne, on trace les 10 premiers profils argo
     eval('cd ..');
     init_path('clear',rep,rdir);
 end
@@ -106,9 +106,9 @@ if irun.FIND_CLOSE_float
     init_path('add',rep,rdir);
     eval(fullfile('cd ./',rep));
     % carte et serie temporelle dans toute la zone
-    PLOT_GDAC_and_FLOAT(floatname,dacname,'UPDATE',0,'PRINT',1,'DATATYPE','raw','TPOT_MIN',8.2,'TPOT_MAX',8.3,'DEPTH_MIN',50)
+    % PLOT_GDAC_and_FLOAT(floatname,dacname,'UPDATE',0,'PRINT',1,'DATATYPE','raw','TPOT_MIN',8.2,'TPOT_MAX',8.3,'DEPTH_MIN',50)
     % comparaison profil par profil
-    %FIND_close_floats(floatname,dacname,'UPDATE',0,'PRINT',1,'DATATYPE','raw')
+    FIND_close_floats(floatname,dacname,'UPDATE',0,'PRINT',1,'DATATYPE','raw')
     eval('cd ..');
     init_path('clear',rep,rdir);
 end
