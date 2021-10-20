@@ -478,7 +478,7 @@ if exist([dir_tex,cpcor_filename])==0
 else % si le CPCOR a ete corrige
     % lit le fichier texte des corrections appliquees,
     if exist(file_cor)~=0
-        [num,wmo_corr,col1,col2_1,col2_2,col3,col4,col5]=get_txtfile_col(file_cor,';');
+        %[num,wmo_corr,col1,col2_1,col2_2,col3,col4,col5]=get_txtfile_col(file_cor,';');
         
         if sum(ismember(wmo_corr,float_list))>=1 % on fait un tableau
             fprintf(fw1,'%s\n', ['\renewcommand\arraystretch{1.2}']);

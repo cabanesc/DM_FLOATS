@@ -35,7 +35,7 @@ DIR_OWC=/home5/pharos/argo/DMARGO/OW/
 VERSION_OWC=matlab_ow-3.0.0_a
 
 % Reference data are in /home5/pharos/argo/DMARGO/OW/matlab_ow-3.0.0_a/data/climatology/
-% if run ./LPO_CODES_ATLN_NEW/genere_wmoboxes_matfile.m to generate /home5/pharos/argo/DMARGO/OW/matlab_ow-3.0.0_a/data/constants/wmo_boxes_ctd.mat, wmo_boxes_argo.mat and wmo_boxes_ctdandargo.mat
+% run ./LPO_CODES_ATLN_NEW/genere_wmoboxes_matfile.m to generate /home5/pharos/argo/DMARGO/OW/matlab_ow-3.0.0_a/data/constants/wmo_boxes_ctd.mat, wmo_boxes_argo.mat and wmo_boxes_ctdandargo.mat
 
 % Bathymetry files:
 FILE_TOPO=/home5/pharos/argo/DMARGO/OW/TOPO/topo.onetenthdeg.nc
