@@ -94,7 +94,8 @@ for ifloat=1:length(floatname)
 	plotpathini=[CONFIG.DIR_PLOT '/verif_flag/'];
 
 	if exist([plotpathini floatname_i]) == 0
-		eval(['!mkdir ' plotpathini floatname_i]);
+		%eval(['!mkdir ' plotpathini floatname_i]);
+		mkdir( [plotpathini floatname_i])
 	end
 
 		 

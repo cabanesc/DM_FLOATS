@@ -1412,6 +1412,9 @@ if isempty(iver)
 else
     for ik=1:length(float_list)
         theconfig_file = [DIR_CODES '/CORRECTIONS/paramlog/config_' float_list{ik} '.txt'];
+		if exist([DIR_CODES '/CORRECTIONS/paramlog/'])==0
+			mkdir([DIR_CODES '/CORRECTIONS/paramlog/'])
+		end
         theconfig_owc  = [DIR_CODES '/LPO_CODES_ATLN_NEW/ow_config/ow_config_' Num_Config{ik} '.txt'];
         ow_conf=load_configuration(theconfig_owc);
         
