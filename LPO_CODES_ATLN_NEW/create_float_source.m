@@ -193,7 +193,7 @@ else
     %keyboard
     FLm=[];
     DIMm=[];
-    isreduced=0; %max one level every 10db, if 0 keep the original vertical sampling
+    isreduced=1; %max one level every 10db, if 0 keep the original vertical sampling
     for k=1:length(core_Asc_files)
         
         [FL,DIM,Globatt] = read_netcdf_allthefile([root_in   core_Asc_files{k}],Param);

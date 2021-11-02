@@ -32,7 +32,7 @@ if lo_system_configuration.MAP_USE_PV==1
 fprintf(fw1,'%s\n', ['MAPSCALE\_PHI\_LARGE	 	& ' lo_system_configuration.MAPSCALE_PHI_LARGE '      \\']);
 fprintf(fw1,'%s\n', ['MAPSCALE\_PHI\_SMALL	 	& ' lo_system_configuration.MAPSCALE_PHI_SMALL '    \\']);
 end
-fprintf(fw1,'%s\n', ['MAPSCALE\_AGE		 	& ' lo_system_configuration.MAPSCALE_AGE '    \\']);
+fprintf(fw1,'%s\n', ['MAPSCALE\_AGE		 	& ' lo_system_configuration.MAPSCALE_AGE_SMALL '    \\']);
 fprintf(fw1,'%s\n', ['MAPSCALE\_AGE\_LARGE		& ' lo_system_configuration.MAPSCALE_AGE_LARGE '    	\\']);
 fprintf(fw1,'%s\n', ['MAP\_P\_EXCLUDE		 	& ' lo_system_configuration.MAP_P_EXCLUDE '      \\']);
 fprintf(fw1,'%s\n', ['MAP\_P\_DELTA		 	& ' lo_system_configuration.MAP_P_DELTA '      \\']);
