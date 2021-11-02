@@ -31,7 +31,8 @@ if isfield(CHECK,param)
     ylabel([ param ' units'])
     
     xlim=get(gca,'XLim');
-    xlim1=get(gca,'XLim');
+    xlim1=[xlim(1) max(CHECK.n_cycle_for_plot)];
+    xlim=xlim1;
     
     ylim1(1)=libargo.sd_round(min(CHECK.(param).n_correction),5);
     ylim1(2)=libargo.sd_round(max(CHECK.(param).n_correction),5);
