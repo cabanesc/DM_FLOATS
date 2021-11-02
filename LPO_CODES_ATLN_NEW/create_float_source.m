@@ -20,6 +20,7 @@
 %     email      (char)      your email, in case you want to download  the netcdf file from ftp://ftp.ifremer.fr/ifremer/argo/dac/ (user anonymous, psswd: email)
 %                             e.g. create_float_source(flt_name,'email','myname@ifremer.fr')
 %                             @l.95  Change 'System' to 'WINDOWS' if needed
+%     noqc       (logical)   1 : psal qc are not taken into account when loading the data, 0 psal_qc=4 are not loaded (default)
 % -----------------------------------
 %   OUTPUT :
 %     mat file: /data/float_source/{flt_name}.mat with the following
@@ -51,8 +52,9 @@
 %  CONFIGURATION file: config.txt;
 %==================================================
 
-function create_float_source(flt_name, dacname, varargin )
+function [STOPHERE]=create_float_source(flt_name, dacname, varargin )
 
+STOPHERE=0;
 n=length(varargin);
 
 if n/2~=floor(n/2)
@@ -62,6 +64,12 @@ end
 f=varargin(1:2:end);
 c=varargin(2:2:end);
 s = cell2struct(c,f,2);
+NOQC=0;
+if isfield(s,'noqc')==1
+   if s.noqc==1
+      NOQC=1;
+   end
+end
 
 if ischar(flt_name)==0
 flt_name      = num2str(flt_name);
@@ -185,7 +193,7 @@ else
     %keyboard
     FLm=[];
     DIMm=[];
-    isreduced=1; %max one level every 10db, if 0 keep the original vertical sampling
+    isreduced=0; %max one level every 10db, if 0 keep the original vertical sampling
     for k=1:length(core_Asc_files)
         
         [FL,DIM,Globatt] = read_netcdf_allthefile([root_in   core_Asc_files{k}],Param);
@@ -205,13 +213,16 @@ else
         %437 of this code)
         %keyboard
        if isreduced==1   
+	   
             Fi=replace_fill_bynan(FL);
             thepres=floor(Fi.pres.data/10);     % 23/08/2019 max one level every 10db (floor instead of round => less gaps)
            [up,ip]=unique(thepres,'legacy');    % 23/08/2019 'legacy': take the deepest level on the 10db layer
-            if length(up)< length(thepres)
-            display(['Reduce vertical sampling - max 1 level every 10db -(' num2str(DIM.n_levels.dimlength) ' to ' num2str(length(ip)) ')'])
+            up2=up(~isnan(up));                 %02/07/2021   elimination des NaN 
+			ip2=ip(~isnan(up));
+			if length(up2)< length(thepres)
+            display(['Reduce vertical sampling - max 1 level every 10db -(' num2str(DIM.n_levels.dimlength) ' to ' num2str(length(ip2)) ')'])
             end
-            [FL,DIM] = extract_profile_dim(FL,DIM,'N_LEVELS',ip);
+            [FL,DIM] = extract_profile_dim(FL,DIM,'N_LEVELS',ip2);
             FL = check_FirstDimArray_is(FL,'N_PROF');
         end
         
@@ -415,13 +426,21 @@ else
     % MEASUREMENTS PRES-TEMP-PSAL
     
     qc = zeros(size(TEMPINI));
+	
+	if NOQC==0
     
-    for I = 1:length(TEMPINI(:))
-        if ( str2num(pres_qc(I)) ~= 3 & str2num(pres_qc(I)) ~= 4 & str2num(temp_qc(I)) ~= 4 & str2num(psal_qc(I)) ~= 4 )
-            qc(I) = 1;
-        end
-    end
-   
+		for I = 1:length(TEMPINI(:))
+			if ( str2num(pres_qc(I)) ~= 3 & str2num(pres_qc(I)) ~= 4 & str2num(temp_qc(I)) ~= 4 & str2num(psal_qc(I)) ~= 4 )
+				qc(I) = 1;
+			end
+		end
+   elseif NOQC==1
+		for I = 1:length(TEMPINI(:))
+			if ( str2num(pres_qc(I)) ~= 3 & str2num(pres_qc(I)) ~= 4 & str2num(temp_qc(I)) ~= 4  )
+				qc(I) = 1;
+			end
+		end
+	end
     
     % Exclude dummies
     I = find( SALINI  > 50  | SALINI  <   0 | ...
@@ -432,6 +451,7 @@ else
     if sum(sum(qc==1))==0 % all data have been discarded
         warning('All data have been discarded because either PSAL_QC  or TEMP_QC is filled with 4 or PRES_QC is filled with 3 or 4')
         disp('NO SOURCE FILE WILL BE GENERATED !!!')
+		STOPHERE=1
         return
     end
     
@@ -518,8 +538,8 @@ else
     
     %---------------------------------------------------------------
     % WRITE MAT FILE
-    
-    
+    %keyboard
+    %keyboard
     save(mat_filename,'DATES','LAT','LONG','PRES','TEMP','SAL','PTMP','PROFILE_NO')
 end
 display('________________________________________')

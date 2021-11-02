@@ -83,7 +83,7 @@ MAPSCALE_PHI_LARGE=0.1
 MAPSCALE_PHI_SMALL=0.02
 
 % temporal decorrelation scale, in years when mapping the small scales
-MAPSCALE_AGE=0.69 
+MAPSCALE_AGE_SMALL=0.69 
 % temporal decorrelation scale, in years when mapping the large scales
 MAPSCALE_AGE_LARGE=2
 

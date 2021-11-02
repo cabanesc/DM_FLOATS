@@ -38,7 +38,11 @@ latitude_large  = str2double( po_system_configuration.MAPSCALE_LATITUDE_LARGE );
 latitude_small  = str2double( po_system_configuration.MAPSCALE_LATITUDE_SMALL );
 phi_large = str2double( po_system_configuration.MAPSCALE_PHI_LARGE );
 phi_small = str2double( po_system_configuration.MAPSCALE_PHI_SMALL );
-map_age = str2double( po_system_configuration.MAPSCALE_AGE );
+if isfield(po_system_configuration,'MAPSCALE_AGE_SMALL')
+    map_age = str2double( po_system_configuration.MAPSCALE_AGE_SMALL );
+else
+    map_age = str2double( po_system_configuration.MAPSCALE_AGE );
+end
 %% added CC
 map_age_large = str2double( po_system_configuration.MAPSCALE_AGE_LARGE );
 %%
