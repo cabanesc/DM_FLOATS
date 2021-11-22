@@ -159,7 +159,7 @@ if isfield(CHECK,param)
             ylim3(1)=-1;
             ylim3(2)=1;
     end
-    axis([xlim3(1) xlim3(2)+0.5 ylim3(1) ylim3(2)])
+    axis([xlim(1) xlim(2)+0.5 ylim3(1) ylim3(2)])
     %  h1=gca;
     %  set(h1,'YAxisLocation','left','TickLength',[0 0])
     %  h2=axes('position',get(h1,'position'),'color','none');
@@ -222,7 +222,7 @@ if isfield(CHECK,param)
     subplot(4,1,4)
     plot( CHECK.n_cycle_for_plot, CHECK.(param).adj_err,'-+r');
     %keyboard
-    axis([xlim3(1) xlim3(2)+0.5 ylim3(1) ylim3(2)])
+    axis([xlim(1) xlim(2)+0.5 ylim3(1) ylim3(2)])
     drawnow
     %  plot (C_FILE.PROFILE_NO,cal_sal,'g')
     %  plot (n_cycle,adj_sal,'+r')
