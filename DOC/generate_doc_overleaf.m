@@ -79,6 +79,8 @@ end
 
 COMP_GDAC=0;
 PLOTDEPTHDEP=0;
+FORCE_DEEP=0;
+
 if isfield(s,'PROFREF')==1;Profref=s.PROFREF;end;
 if isfield(s,'PROFREFADJ')==1;Profrefadj=s.PROFREFADJ;end;
 if isfield(s,'PROFFLAG')==1;Profflag=s.PROFFLAG;end;
@@ -87,11 +89,13 @@ if isfield(s,'TITLE')==1;TITLE=s.TITLE;end;
 if isfield(s,'SUBTITLE')==1;SUBTITLE=s.SUBTITLE;end;
 if isfield(s,'COMP_GDAC')==1;COMP_GDAC=s.COMP_GDAC;end;
 if isfield(s,'PLOTDEPTHDEP')==1;PLOTDEPTHDEP=s.PLOTDEPTHDEP;end;
+if isfield(s,'FORCE_DEEP')==1;FORCE_DEEP=s.FORCE_DEEP;end;
 
 if iscell(Profref)==0;Profref={Profref};end
 if iscell(Profrefadj)==0;Profrefadj={Profrefadj};end
 if iscell(Profclose)==0;Profclose={Profclose};end
 if iscell(Profflag)==0;Profflag={Profflag};end
+
 
 if length(unique(Num_Config))>1 ;
     str_conf=['configurations ' strjoin(unique(Num_Config), ', ')];
@@ -441,7 +445,7 @@ if exist([dir_fig,cpcor_filename])
     copyfile([dir_fig,cpcor_filename],[dir_tex,cpcor_filename]);
 end
 
-if exist([dir_tex,cpcor_filename])==0
+if exist([dir_tex,cpcor_filename])==0&FORCE_DEEP==0
     % lit le fichier texte des corrections appliquees,
     if exist(file_cor)~=0
         %[num,wmo_corr,col1,col2_1,col2_2,col3,col4,col5]=get_txtfile_col(file_cor,';');
