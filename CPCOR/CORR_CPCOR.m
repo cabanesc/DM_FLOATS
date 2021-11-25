@@ -171,7 +171,7 @@ for ifloat=1:length(floatname)
 		end
 		
 		
-        thestr=(['CPcor_new = ' num2str(PARAM.NEW_CPCOR) ', CPcor_SBE = ' num2str(CPcor_SBE) ', delta = ' num2str(CTcor)]);		l_thestr=length(thestr);
+        thestr=(['CPcor_new = ' num2str(PARAM.NEW_CPCOR) '; CPcor_SBE = ' num2str(CPcor_SBE) '; delta = ' num2str(CTcor)]);		l_thestr=length(thestr);
 		F.scientific_calib_coefficient.data(isprimary,n_calib,ind_psal,:) = F.scientific_calib_coefficient.FillValue_;
 		F.scientific_calib_coefficient.data(isprimary,n_calib,ind_psal,1:l_thestr) = thestr;   
 		if ~isempty (notisprimary)
