@@ -17,12 +17,14 @@ function [hf] = pcolor_argodata(cycnum,pres,param,paramname,vshading);
 regpress=repmat([1:1:max(max(pres))]',1,nprf);
 
 for ik=1:nprf
-
-    iin=~isnan(pres(:,ik));
+    [a,b]=unique(pres(:,ik));   % correction cc 29/11/2021 : bug si pres n'est pas unique
+    presuniq=unique(pres(:,ik));
+    paramuniq=param(:,ik);
+    iin=~isnan(presuniq);
     if sum(iin)>=2
-    regparam(:,ik)=interp1(pres(iin,ik),param(iin,ik),regpress(:,ik));
+        regparam(:,ik)=interp1(presuniq(iin),paramuniq(iin),regpress(:,ik));
     else
-    regparam(:,ik)=NaN*regpress(:,ik);
+        regparam(:,ik)=NaN*regpress(:,ik);
     end
 end
 param=regparam;

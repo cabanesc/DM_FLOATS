@@ -15,17 +15,24 @@ function [hf] = pcolor_argodata_sig(cycnum,pres,sig0,param,paramname,vshading);
 % interpolation sur une grille pres reguliere.
 regpress=repmat([1:1:max(max(pres))]',1,nprf);
 for ik=1:nprf
-    iin=~isnan(pres(:,ik));
+    [a,b]=unique(pres(:,ik));
+     presuniq=unique(pres(:,ik));       % correction 29/11/2021 bug si point de pression non unique
+     paramuniq=param(:,ik);
+     iin=~isnan(presuniq);
+    
     if sum(iin)>=2
-    regparam(:,ik)=interp1(pres(iin,ik),param(iin,ik),regpress(:,ik));
+    regparam(:,ik)=interp1(presuniq(iin),paramuniq(iin),regpress(:,ik));
     else
     regparam(:,ik)=NaN*regpress(:,ik);
     end
 end
 for ik=1:nprf
-    iin=~isnan(pres(:,ik));
+    [a,b]=unique(pres(:,ik));                % correction 29/11/2021 bug si point de pression non unique
+     presuniq=unique(pres(:,ik));
+     paramuniq=sig0(:,ik);
+     iin=~isnan(presuniq);
     if sum(iin)>=2
-    regsig0(:,ik)=interp1(pres(iin,ik),sig0(iin,ik),regpress(:,ik));
+    regsig0(:,ik)=interp1(presuniq(iin),paramuniq(iin),regpress(:,ik));
     else
     regsig0(:,ik)=NaN*regpress(:,ik);
     end
