@@ -18,8 +18,8 @@
 %    'LIM_SURF_DEEP' (float)  500  (default): Limit depth (m) between surface and deep layers
 %    'STEP_SURF'     (float)   10  (default): Distance (m) between measurements in the surface layer
 %    'STEP_DEEP'     (float)   20  (default): Distance (m) between measurements in the deep  layer
-%
-%    used for plot
+%    'NO_FLAG'        (logical)  0 (default): salinity data with a flag 4 are ignored (plots and bias computation)
+%                                             if 1, salinity data with a flag 4 are plotted and used to compute the mean bias                                    
 %    'ZOOM'           (float) 1000 (default): zoom on  layers below 1000db
 % -----------------------------------
 %   OUTPUT :
@@ -73,6 +73,7 @@ if isempty(config_campaign_file)==0
     PARAM.NB_PROF=1;
     PARAM.ZOOM=1000;
     PARAM.DATAREP='DIR_FTP';
+    PARAM.NO_FLAG=0;
     
     % Input CONFIG
     if isfield(s,'DATATYPE')==1;PARAM.DATATYPE=s.DATATYPE;end;
@@ -83,6 +84,7 @@ if isempty(config_campaign_file)==0
     if isfield(s,'NB_PROF')==1;PARAM.NB_PROF=s.NB_PROF;end;
     if isfield(s,'ZOOM')==1;PARAM.ZOOM=s.ZOOM;end;
     if isfield(s,'DATAREP')==1;PARAM.DATAREP=s.DATAREP;end;
+    if isfield(s,'NO_FLAG')==1;PARAM.NO_FLAG=s.NO_FLAG;end;
     %--------------------------------------------------------------------------
     % Entree des parametres
     %--------------------------------------------------------------------------

@@ -105,8 +105,15 @@ thepostfix='';
 end
 
 
-
+if PARAM.NO_FLAG==0
 F.psal.data(F.psal_qc.data>3)=NaN;
+elseif   PARAM.NO_FLAG==1
+F.psal.data(F.psal_qc.data>4)=NaN;
+else
+    warning('Bad value for the option NO_FLAG - should be 0 or 1')
+end
+  
+   
 
 F.date.data = datevec(datenum(1950,1,1,0,0,0) + F.juld.data);
 F.date_str.data = datestr(datenum(1950,1,1,0,0,0) + F.juld.data,1);
