@@ -199,8 +199,10 @@ if length( missing_profile_index )>0
         gg=find(la_grid_long>180);
         la_grid_long1(gg)=la_grid_long(gg)-360; % m_tbase inputs longitudes from 0 to +/- 180
         
-        m_proj('mercator','long', [min(la_grid_long1)-1, max(la_grid_long1)+1], 'lat', [min(la_grid_lat)-1, max(la_grid_lat)+1] );
-        [elev,x,y] = m_tbase( [min(la_grid_long1)-1, max(la_grid_long1)+1, min(la_grid_lat)-1, max(la_grid_lat)+1] );
+        %m_proj('mercator','long', [min(la_grid_long1)-1, max(la_grid_long1)+1], 'lat', [min(la_grid_lat)-1, max(la_grid_lat)+1] );
+        m_proj('mercator','long', [min(la_grid_long1)-1, max(la_grid_long1)+1], 'lat', [max(min(la_grid_lat)-1,-90), min(max(la_grid_lat)+1,90)] );% correction ccabanes : problem if LAT=90
+        %[elev,x,y] = m_tbase( [min(la_grid_long1)-1, max(la_grid_long1)+1, min(la_grid_lat)-1, max(la_grid_lat)+1] );
+        [elev,x,y] = m_tbase( [min(la_grid_long1)-1, max(la_grid_long1)+1,max(min(la_grid_lat)-1,-90), min(max(la_grid_lat)+1,90)]  );% correction ccabanes : problem if LAT=90
         la_grid_Z = -interp2( x,y,elev, la_grid_long1, la_grid_lat, 'linear'); % -ve bathy values
         
         % find best history
@@ -229,8 +231,10 @@ if length( missing_profile_index )>0
                 else
                     LONG1=LONG;
                 end
-                m_proj('mercator','long', [min(LONG1)-1, max(LONG1)+1], 'lat', [min(LAT)-1, max(LAT)+1] );
-                [elev,x,y] = m_tbase( [min(LONG1)-1, max(LONG1)+1, min(LAT)-1, max(LAT)+1] );
+                %m_proj('mercator','long', [min(LONG1)-1, max(LONG1)+1], 'lat', [min(LAT)-1, max(LAT)+1] );
+                %[elev,x,y] = m_tbase( [min(LONG1)-1, max(LONG1)+1, min(LAT)-1, max(LAT)+1] );
+                m_proj('mercator','long', [min(LONG1)-1, max(LONG1)+1], 'lat', [max(min(LAT)-1,-90), min(max(LAT)+1,90)] );
+                [elev,x,y] = m_tbase( [min(LONG1)-1, max(LONG1)+1, max(min(LAT)-1,-90), min(max(LAT)+1,90)] ); % correction ccabanes : problem if LAT=90
                 Z = -interp2( x,y,elev, LONG1, LAT, 'linear'); % -ve bathy values
                 
                 
@@ -332,8 +336,10 @@ if length( missing_profile_index )>0
             else
                 LONG1=LONG;
             end
-            m_proj('mercator','long', [min(LONG1)-1, max(LONG1)+1], 'lat', [min(LAT)-1, max(LAT)+1] );
-            [elev,x,y] = m_tbase( [min(LONG1)-1, max(LONG1)+1, min(LAT)-1, max(LAT)+1] );
+            %m_proj('mercator','long', [min(LONG1)-1, max(LONG1)+1], 'lat', [min(LAT)-1, max(LAT)+1] );
+            %[elev,x,y] = m_tbase( [min(LONG1)-1, max(LONG1)+1, min(LAT)-1, max(LAT)+1] );
+            m_proj('mercator','long', [min(LONG1)-1, max(LONG1)+1], 'lat', [max(min(LAT)-1,-90), min(max(LAT)+1,90)] );
+            [elev,x,y] = m_tbase( [min(LONG1)-1, max(LONG1)+1, max(min(LAT)-1,-90), min(max(LAT)+1,90)] );  % correction ccabanes : problem if LAT=90
             Z = -interp2( x,y,elev, LONG1, LAT, 'linear'); % -ve bathy values
             
             
