@@ -39,40 +39,41 @@ for icyc=1:nprf
     niv_inv=find(is_inv_dens == 1);
     if length(niv_inv)>=10
         disp([   'Cycle ' num2str(cycnum(icyc)) ' - density inversions on a large number of levels. More details in ' filename]);
-        for ip=1:length(niv_inv)
-            texte_sauve1 = [   'Cycle ' num2str(cycnum(icyc)) ' - Niv ' num2str(niv_inv(ip)) ' (P=' num2str(pres(icyc,niv_inv(ip))) ')'];
-            fprintf(sauv,'%s\n',texte_sauve1); 
-            texte_sauve = [   '..... upbot ' num2str(delta_upbot(niv_inv(ip))) ' - botup ' num2str(delta_botup(niv_inv(ip)))];
-            fprintf(sauv,'%s\n',texte_sauve);
-            
-            if length(niv_inv)<10
-                
-                disp (texte_sauve1)
-                 disp(texte_sauve)
-                h=figure('visible','off');
-                hold on
-                title(['WMO ' float ' - Cycle ' num2str(cycnum(icyc)) ' - Niveau ' num2str(niv_inv(ip))  ' - Ecart ' num2str(rhop_i(niv_inv(ip))-rhop_ip(niv_inv(ip)))]);
-                ideb = niv_inv(ip)-10;
-                ifin = niv_inv(ip)+10;
-                
-                if  niv_inv(ip) < 21
-                    ideb = 1;
-                end
-                if  niv_inv(ip) > length(Pref)-10
-                    ifin = length(Pref);
-                end
-                grid
-                plot(rhop_i(ideb:ifin),-pres(icyc,ideb:ifin),'.g',rhop_i(niv_inv(ip)),-pres(icyc,niv_inv(ip)),'.r','MarkerSize',17);
-                plot(rhop_ip(ideb:ifin),-pres(icyc,ideb+1:ifin+1),'.c',rhop_ip(niv_inv(ip)),-pres(icyc,niv_inv(ip)+1),'*r','MarkerSize',17);
-                xlabel('Potential density');
-                ylabel('Pressure (db)');
-                
-                eval(['print -dpng ' plotpath float '/' float '_cyc' num2str(cycnum(icyc)) '_niv' num2str(niv_inv(ip)) '_densityanom.png']);
-                
-                close(h);
+    end
+    for ip=1:length(niv_inv)
+        texte_sauve1 = [   'Cycle ' num2str(cycnum(icyc)) ' - Niv ' num2str(niv_inv(ip)) ' (P=' num2str(pres(icyc,niv_inv(ip))) ')'];
+        fprintf(sauv,'%s\n',texte_sauve1); 
+        texte_sauve = [   '..... upbot ' num2str(delta_upbot(niv_inv(ip))) ' - botup ' num2str(delta_botup(niv_inv(ip)))];
+        fprintf(sauv,'%s\n',texte_sauve);
+
+        if length(niv_inv)<10
+
+            disp (texte_sauve1)
+             disp(texte_sauve)
+            h=figure('visible','off');
+            hold on
+            title(['WMO ' float ' - Cycle ' num2str(cycnum(icyc)) ' - Niveau ' num2str(niv_inv(ip))  ' - Ecart ' num2str(rhop_i(niv_inv(ip))-rhop_ip(niv_inv(ip)))]);
+            ideb = niv_inv(ip)-10;
+            ifin = niv_inv(ip)+10;
+
+            if  niv_inv(ip) < 21
+                ideb = 1;
             end
+            if  niv_inv(ip) > length(Pref)-10
+                ifin = length(Pref);
+            end
+            grid
+            plot(rhop_i(ideb:ifin),-pres(icyc,ideb:ifin),'.g',rhop_i(niv_inv(ip)),-pres(icyc,niv_inv(ip)),'.r','MarkerSize',17);
+            plot(rhop_ip(ideb:ifin),-pres(icyc,ideb+1:ifin+1),'.c',rhop_ip(niv_inv(ip)),-pres(icyc,niv_inv(ip)+1),'*r','MarkerSize',17);
+            xlabel('Potential density');
+            ylabel('Pressure (db)');
+
+            eval(['print -dpng ' plotpath float '/' float '_cyc' num2str(cycnum(icyc)) '_niv' num2str(niv_inv(ip)) '_densityanom.png']);
+
+            close(h);
         end
     end
+
     
 end
 
