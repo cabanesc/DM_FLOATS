@@ -1042,7 +1042,7 @@ for ik=1:length(float_list)
         copyfile([dir_fig,file],[dir_tex,file]);
     end
     %str=['\includegraphics[angle=0,origin=c,width=\textwidth,trim= 30 90 70 400, clip=true]{' DIR_PLOTOW Num_Config{ik} '/'  float_list{ik} '/' float_list{ik} '_6_1_1.pdf}'];
-    str=['\includegraphics[angle=0,origin=c,width=\textwidth,trim= 30 90 70 400, clip=true]{' file '}'];
+    str=['\includegraphics[angle=0,origin=c,width=\textwidth,trim= 30 400 70 90, clip=true]{' file '}'];
     
     if exist([DIR_PLOTOW Num_Config{ik} '/'  float_list{ik} '/' float_list{ik} '_6_1_1.pdf'])==0
         dir_fig=[ DIR_PLOTOW Num_Config{ik} '/'  float_list{ik} '/' ];% Added By TR 29.09.20
@@ -1051,7 +1051,7 @@ for ik=1:length(float_list)
             copyfile([dir_fig,file],[dir_tex,file]);
         end
         %str=['\includegraphics[angle=0,origin=c,width=\textwidth,trim= 30 90 70 400, clip=true]{' DIR_PLOTOW Num_Config{ik} '/'  float_list{ik} '/' float_list{ik} '_6_1_2.pdf}'];
-        str=['\includegraphics[angle=0,origin=c,width=\textwidth,trim= 30 90 70 400, clip=true]{'  file '}'];
+        str=['\includegraphics[angle=0,origin=c,width=\textwidth,trim= 30 400 70 90, clip=true]{'  file '}'];
     end
     fprintf(fw1,'%s\n', str);
     fprintf(fw1,'%s\n','\end{minipage}');
