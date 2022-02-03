@@ -17,7 +17,9 @@
 %    'OPTIM'        (logical)  OPTIM=1 uses optimization toolbox (default), otherwise use LMA function 
 %    'USE_PRES_LT'      (float)      e.g 1500 (default is empty)
 %    'USE_PRES_GT'      (float)      e.g 2000 (default is empty)
-%     POSTFIX            (char)      'eg _1500_2000' used to document the set_calseries options (default is empty)
+%    'POSTFIX'            (char)      'eg _1500_2000' used to document the set_calseries options (default is empty)
+%    'USE_QC'         (logical)   USE_QC=1 (default) uses PSAL_QC and remove PSAL data with QC=4
+%                                 USE_QC=0           do not use PSAL_QC (do not remove data with QC=4)  
 % -----------------------------------
 %   OUTPUT :
 % -----------------------------------
@@ -71,12 +73,16 @@ POSTFIX='';
 FORCE='';
 USE_PRES_LT=[];
 USE_PRES_GT=[];
+USE_QC=1;
 if isfield(s,'RECREATE_MAT')==1;RECREATE_MAT=s.RECREATE_MAT;end;
 if isfield(s,'OPTIM')==1;OPTIM=s.OPTIM;end;
 if isfield(s,'POSTFIX')==1;POSTFIX=s.POSTFIX;end;
 if isfield(s,'FORCE')==1;FORCE=s.FORCE;end;
 if isfield(s,'USE_PRES_GT')==1;USE_PRES_GT=s.USE_PRES_GT;end;
 if isfield(s,'USE_PRES_LT')==1;USE_PRES_LT=s.USE_PRES_LT;end;
+if isfield(s,'USE_QC')==1;USE_QC=s.USE_QC;end;
+
+
 RECREATE_MAT
 % VERSION of the code/reference data:
 VERSION_OW = C.VERSION_OWC;
@@ -199,9 +205,9 @@ for ifloat=1:length(tabfloat)
 			end
 		end
 		if isempty(FORCE)
-        create_float_source(flt_name,dacname)
+        create_float_source(flt_name,dacname,'useqc',USE_QC)
 		else
-		create_float_source(flt_name,dacname,'force',FORCE);
+		create_float_source(flt_name,dacname,'force',FORCE,'useqc',USE_QC);
 		end
         
         

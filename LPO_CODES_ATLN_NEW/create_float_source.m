@@ -20,7 +20,7 @@
 %     email      (char)      your email, in case you want to download  the netcdf file from ftp://ftp.ifremer.fr/ifremer/argo/dac/ (user anonymous, psswd: email)
 %                             e.g. create_float_source(flt_name,'email','myname@ifremer.fr')
 %                             @l.95  Change 'System' to 'WINDOWS' if needed
-%     noqc       (logical)   1 : psal qc are not taken into account when loading the data, 0 psal_qc=4 are not loaded (default)
+%     useqc       (logical)   0 : psal qc are not taken into account when loading the data, 1 psal_qc=4 are not loaded (default)
 % -----------------------------------
 %   OUTPUT :
 %     mat file: /data/float_source/{flt_name}.mat with the following
@@ -64,10 +64,10 @@ end
 f=varargin(1:2:end);
 c=varargin(2:2:end);
 s = cell2struct(c,f,2);
-NOQC=0;
-if isfield(s,'noqc')==1
-   if s.noqc==1
-      NOQC=1;
+USEQC=1;
+if isfield(s,'useqc')==1
+   if s.useqc==0
+      USEQC=0;
    end
 end
 
@@ -427,14 +427,14 @@ else
     
     qc = zeros(size(TEMPINI));
 	
-	if NOQC==0
+	if USEQC==1
     
 		for I = 1:length(TEMPINI(:))
 			if ( str2num(pres_qc(I)) ~= 3 & str2num(pres_qc(I)) ~= 4 & str2num(temp_qc(I)) ~= 4 & str2num(psal_qc(I)) ~= 4 )
 				qc(I) = 1;
 			end
 		end
-   elseif NOQC==1
+   elseif USEQC==0
 		for I = 1:length(TEMPINI(:))
 			if ( str2num(pres_qc(I)) ~= 3 & str2num(pres_qc(I)) ~= 4 & str2num(temp_qc(I)) ~= 4  )
 				qc(I) = 1;
