@@ -146,6 +146,7 @@ initvar=NaN*ones(maxptvert,nbox*NPROFMAX);
 [CTD,DIM_CTD]=fill_structure(initvar,'PRES',{'N_LEVELS','N_PROF'});
 [CTD,DIM_CTD]=fill_structure(initvar,'PSAL',{'N_LEVELS','N_PROF'},CTD,DIM_CTD);
 [CTD,DIM_CTD]=fill_structure(initvar,'TPOT',{'N_LEVELS','N_PROF'},CTD,DIM_CTD);
+[CTD,DIM_CTD]=fill_structure(initvar,'TEMP',{'N_LEVELS','N_PROF'},CTD,DIM_CTD);
 initvar=NaN*ones(nbox*NPROFMAX,1);
 [CTD,DIM_CTD]=fill_structure(initvar,'LONGITUDE',{'N_PROF'},CTD,DIM_CTD);
 [CTD,DIM_CTD]=fill_structure(initvar,'LATITUDE',{'N_PROF'},CTD,DIM_CTD);
@@ -214,6 +215,7 @@ for ibox=1:nbox
     CTD.pres.data(1:np,ideb:ifin) = wmo.pres(1:np,isort(1:nprf));
     CTD.psal.data(1:np,ideb:ifin) = wmo.sal(1:np,isort(1:nprf));
     CTD.tpot.data(1:np,ideb:ifin) = wmo.ptmp(1:np,isort(1:nprf));
+	CTD.temp.data(1:np,ideb:ifin) = wmo.temp(1:np,isort(1:nprf));
     CTD.longitude.data(ideb:ifin) = wmo.long(isort(1:nprf));
     CTD.latitude.data(ideb:ifin) = wmo.lat(isort(1:nprf));
     CTD.dates.data(ideb:ifin) = wmo.dates(isort(1:nprf));
@@ -321,9 +323,9 @@ hold on, grid on, box on
 
 
 reshapef=10;
-plot_prof_closest(CTD,F,'pres','tpot',index_closest_dist,index_closest_date,PARAM,'reshapex',reshapef);
+plot_prof_closest(CTD,F,'pres','temp',index_closest_dist,index_closest_date,PARAM,'reshapex',reshapef);
 
-xlabel('Potential temperature')
+xlabel('In situ temperature')
 ylabel('Pressure (db)');
 
 
@@ -367,10 +369,10 @@ subplot(2,2,1)
 hold on, grid on, box on
 mindepth=0;
 reshapef=10;
-[xmin,xmax,ymin,ymax]=plot_prof_hist(CTD,F,'pres','tpot',index_closest_dist,index_closest_date,PARAM,'mindepth',mindepth,'reshapex',reshapef);
-xlabel('Potential temperature')
+[xmin,xmax,ymin,ymax]=plot_prof_hist(CTD,F,'pres','temp',index_closest_dist,index_closest_date,PARAM,'mindepth',mindepth,'reshapex',reshapef);
+xlabel('In situ temperature')
 ylabel('Pressure (db)');
-plot_prof_closest(CTD,F,'pres','tpot',index_closest_dist,index_closest_date,PARAM,'mindepth',mindepth,'reshapex',reshapef);
+plot_prof_closest(CTD,F,'pres','temp',index_closest_dist,index_closest_date,PARAM,'mindepth',mindepth,'reshapex',reshapef);
 
 
 %set(hs,'fontsize',11);
