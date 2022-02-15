@@ -348,7 +348,6 @@ if nocycl<=length(F.cycle_number.data)
     %close all
 end
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function res = myfun(inp)
 global CPcor

@@ -563,7 +563,7 @@ for icas=1:ncas
         xlabel('Date')
         if PARAM.PRINT==1
             set(gcf,'papertype','usletter','paperunits','inches','paperorientation','landscape','paperposition',[.25,.75,9.5,8]);
-            ['print -f' num2str(hf.Number) ' -dpng ' plotpath floatnum '_' nomval '_interp_' titflag titsavedata '.png']
+            %['print -f' num2str(hf.Number) ' -dpng ' plotpath floatnum '_' nomval '_interp_' titflag titsavedata '.png']
             eval(['print -f' num2str(hf.Number) ' -dpng ' plotpath floatnum '_' nomval '_interp_' titflag titsavedata '.png'])
             %eval(['print -depsc2 ' plotpath floatnum '_' nomval '_interp_' titflag titsavedata '.eps'])
         end
