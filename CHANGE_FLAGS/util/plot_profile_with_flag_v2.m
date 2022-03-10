@@ -20,7 +20,7 @@
 
 function [thetitle]=plot_profile_with_flag(S,ParamX,ParamY,profile_number,varargin)
 
-
+global CONFIG
 
 n=length(varargin);
 p=struct;
@@ -122,10 +122,17 @@ for ikk=1:nn
                                     sub2(the_qc~=2)=NaN;
                                     plot(sub2,level ,colorp,'LineWidth',p.LineWidth) ;
                                     
-                                    colorp=['m' p.Marker];
-                                    sub2=subX;
-                                    sub2(the_qc~=3)=NaN;
-                                    plot(sub2,level ,colorp,'LineWidth',p.LineWidth*2) ;
+                                    if CONFIG.KEEPZOOM==0
+                                        colorp=['m' p.Marker];
+                                        sub2=subX;
+                                        sub2(the_qc~=3)=NaN;
+                                        plot(sub2,level ,colorp,'LineWidth',p.LineWidth*2) ;
+                                    elseif CONFIG.KEEPZOOM==1
+                                        colorp=[p.Marker];
+                                        sub2=subX;
+                                        sub2(the_qc~=3)=NaN;
+                                        plot(sub2,level ,colorp,'Color',[1 0.7 0],'LineWidth',p.LineWidth*2) ;
+                                    end
                                     
                                     colorp=['r' p.Marker];
                                     sub2=subX;

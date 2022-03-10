@@ -24,7 +24,7 @@ function CORRECT_float_flag(floatname,dacname,varargin)
 
 % Commented by T. Reynaud 08/09/2020
 %init_path
-
+global CONFIG
 C=load_configuration('config.txt');
 
 DIR_FTP_CORIOLIS=C.DIR_FTP_CORIOLIS;
@@ -48,13 +48,19 @@ ERASE=0;
 VPN=1;
 FLAG=1;
 NB_PROF=1;
+KEEPZOOM=0;
+
 if isfield(s,'ERASE')==1;ERASE=s.ERASE;end;
 if isfield(s,'VPN')==1;VPN=s.VPN;end;
 if isfield(s,'FLAG')==1;FLAG=s.FLAG;end;
 if isfield(s,'NB_PROF')==1;NB_PROF=s.NB_PROF;end;
+if isfield(s,'KEEPZOOM')==1;KEEPZOOM=s.KEEPZOOM;end;
+
 CONFIG.VPN=VPN;
 CONFIG.FLAG=FLAG;
 CONFIG.NB_PROF=NB_PROF;
+CONFIG.KEEPZOOM=KEEPZOOM;
+
 
 % if ERASE==1
     % destinf=[CONFIG.DIR_FTP '/' CONFIG.dacname '/' CONFIG.floatname '/'];
