@@ -870,13 +870,13 @@ for ifile=1:length(therep)  % WORK ON EACH FILE
                     end
                 else
                     n_calib= DIMD.n_calib.dimlength+1;
-                    
-                    if  DIMD.n_calib.dimlength==1 % test if the field scientific_calib_comment is fillvalue
+                    % test if the last field scientific_calib_comment is fillvalue
+                    %if  DIMD.n_calib.dimlength==1 
                         testfill =FLD.scientific_calib_comment.data(:,DIMD.n_calib.dimlength,:,:)==FLD.scientific_calib_comment.FillValue_;
                         if libargo.sumel(testfill)==numel(testfill) % parameter est a fillvalue
                             n_calib= DIMD.n_calib.dimlength
                         end
-                    end
+                    %end
                     display(n_calib)
                     FLD.parameter.data(:,n_calib,:,:) = FLD.station_parameters.data;
                     
