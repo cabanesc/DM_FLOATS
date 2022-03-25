@@ -319,7 +319,9 @@ vxmax=max(ceil(psal(:)*100))/100;
 vxmin=min(floor(psal(:)*100))/100;
 vymax=max(ceil(temp(:)*100))/100;
 vymin=min(floor(temp(:)*100))/100;
+if ~isnan(vxmax*vxmin*vymax*vymin)
 set(gca,'xlim',[vxmin vxmax],'ylim',[vymin vymax]);
+end
 if strcmp(PARAM.DATATYPE,'adj')
     ylabel('Temperature Adj.')
     xlabel('Salinity Adj.')
@@ -344,29 +346,32 @@ hold on
 for iprof=1:ncyc
     plot(psal(iprof,:),tpot(iprof,:),'color',map(iprof,:),'marker','.','linewidth',2);
 end
-ctpot=[floor(min(tpot(:)))-1:0.1:ceil(max(tpot(:)))+1]';
-cpsal=[floor(10*min(psal(:)))/10-0.1:0.1:ceil(max(psal(:))*10)/10+0.1]';
-[tabct,tabcp]=meshgrid(ctpot,cpsal);
-[~,csig]=swstat90(tabcp,tabct,0);
-if size(csig,1)~=size(tabcp,1)
-    csig=csig';
+if ~isnan(min(tpot(:)).*max(tpot(:)))
+    ctpot=[floor(min(tpot(:)))-1:0.1:ceil(max(tpot(:)))+1]';
+    cpsal=[floor(10*min(psal(:)))/10-0.1:0.1:ceil(max(psal(:))*10)/10+0.1]';
+    [tabct,tabcp]=meshgrid(ctpot,cpsal);
+    [~,csig]=swstat90(tabcp,tabct,0);
+    if size(csig,1)~=size(tabcp,1)
+        csig=csig';
+    end
+    [c,h]=contour(tabcp,tabct,csig,[20:0.5:35],'k');
+    %keyboard
+    clabel(c,h,'LabelSpacing',144*2,'FontSize',10,'FontWeight','normal')
+    if strcmp(PARAM.DATATYPE,'adj')
+        ylabel('Potential Temp. Adj. (ref. to 0db)')
+        xlabel('Salinity Adj.')
+    else
+        ylabel('Potential Temp. (ref. to 0db)')
+        xlabel('Salinity')
+    end
+    vxmax=max(ceil(psal(:)*100))/100;
+    vxmin=min(floor(psal(:)*100))/100;
+    vymax=max(ceil(tpot(:)*100))/100;
+    vymin=min(floor(tpot(:)*100))/100;
+    if ~isnan(vxmax*vxmin*vymax*vymin)
+        set(gca,'xlim',[vxmin vxmax],'ylim',[vymin vymax]);
+    end
 end
-[c,h]=contour(tabcp,tabct,csig,[20:0.5:35],'k');
-%keyboard
-clabel(c,h,'LabelSpacing',144*2,'FontSize',10,'FontWeight','normal')
-if strcmp(PARAM.DATATYPE,'adj')
-    ylabel('Potential Temp. Adj. (ref. to 0db)')
-    xlabel('Salinity Adj.')
-else
-    ylabel('Potential Temp. (ref. to 0db)')
-    xlabel('Salinity')
-end
-vxmax=max(ceil(psal(:)*100))/100;
-vxmin=min(floor(psal(:)*100))/100;
-vymax=max(ceil(tpot(:)*100))/100;
-vymin=min(floor(tpot(:)*100))/100;
-set(gca,'xlim',[vxmin vxmax],'ylim',[vymin vymax]);
-
 grid on
 box on
 title([floatnum ', theta/S diagram']);
@@ -468,7 +473,9 @@ if strcmp(pltoxy,'o')
     vxmin=min(floor(doxy(:)*100))/100;
     vymax=max(ceil(tpot1(:)*100))/100;
     vymin=min(floor(tpot1(:)*100))/100;
+    if ~isnan(vxmax*vxmin*vymax*vymin)
     set(gca,'xlim',[vxmin vxmax],'ylim',[vymin vymax]);
+    end
     %set(gca,'xlim',[cdoxy(1) cdoxy(end)],'ylim',[ctpot(1) ctpot(end)]);
     grid
     title(['Float WMO ' floatnum ', theta/O2 diagram']);
@@ -538,8 +545,13 @@ for icas=1:ncas
     %keyboard
     tabtime=(juld-juld(1))*ones(1,size(pres,2));
     if length(cycnum)>2
+        if (sum(sum(isnan(sig0)))<numel(sig0))&(sum(sum(isnan(tabval)))<numel(tabval))
         [hf] = pcolor_argodata_sig(tabtime(:,1),pres',sig0',tabval',nomval,'interp');
-        
+        else
+         hf=figure;
+         grid on
+         box on
+        end
         %    plot(tabtime,tabmld','w-','linewidth',2);
         %    plot(cycnum,tabmld','w-','linewidth',2);
         
@@ -568,8 +580,14 @@ for icas=1:ncas
             %eval(['print -depsc2 ' plotpath floatnum '_' nomval '_interp_' titflag titsavedata '.eps'])
         end
         if icas ~= 2 && icas ~= 5
+             
+            if (sum(sum(isnan(valini)))<numel(valini))
             [hf] = pcolor_argodata(cycnum,pres',valini',nomvalini,'flat');
-            
+            else
+                hf=figure;
+                grid on
+                box on
+            end
             ylabel('Pressure (db)')
             xlabel('Cycle number')
             if strcmp(PARAM.DATATYPE,'adj')
