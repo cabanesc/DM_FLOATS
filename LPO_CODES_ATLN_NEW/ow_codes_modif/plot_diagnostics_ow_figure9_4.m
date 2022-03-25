@@ -737,6 +737,9 @@ if(isempty(find(isnan(PRES)==0))==0) % if no data exists, terminate here, no plo
                         ellipse_small = sqrt( (la_bhist_long1-fl_LONG1).^2./(str2num(po_system_configuration.MAPSCALE_LONGITUDE_SMALL)).^2 + (la_bhist_lat-fl_LAT).^2./(str2num(po_system_configuration.MAPSCALE_LATITUDE_SMALL)).^2 +...
                             ((PV_float-PV_bhist)./sqrt( PV_float.^2+PV_bhist.^2 )./str2num(po_system_configuration.MAPSCALE_PHI_SMALL)).^2 ) ;
                     else % if PV is unwanted ---
+                       ellipse_large = sqrt( (la_bhist_long1-fl_LONG1).^2./(str2num(po_system_configuration.MAPSCALE_LONGITUDE_LARGE)).^2 + (la_bhist_lat-fl_LAT).^2./(str2num(po_system_configuration.MAPSCALE_LATITUDE_LARGE)).^2 );
+                        ellipse_small = sqrt( (la_bhist_long1-fl_LONG1).^2./(str2num(po_system_configuration.MAPSCALE_LONGITUDE_SMALL)).^2 + (la_bhist_lat-fl_LAT).^2./(str2num(po_system_configuration.MAPSCALE_LATITUDE_SMALL)).^2 );
+                    
                         %ellipse = sqrt((grid_long-LONG).^2./(longitude_large*3).^2 + (grid_lat-LAT).^2./(latitude_large*3).^2) ;
                     end
                     
