@@ -20,6 +20,8 @@
 %    'POSTFIX'            (char)      'eg _1500_2000' used to document the set_calseries options (default is empty)
 %    'USE_QC'         (logical)   USE_QC=1 (default) uses PSAL_QC and remove PSAL data with QC=4
 %                                 USE_QC=0           do not use PSAL_QC (do not remove data with QC=4)  
+%     'ERASE_MAP'      (logical)   ERASE_MAP=0 (default) keep the previous  map file ; ERASE_MAP=1 erase the previous map file
+%     'MAKE_PLOT'        (logical)   MAKE_PLOT=1 (default) make all plots; MAKE_PLOT=0 does not make plots
 % -----------------------------------
 %   OUTPUT :
 % -----------------------------------
@@ -73,7 +75,11 @@ POSTFIX='';
 FORCE='';
 USE_PRES_LT=[];
 USE_PRES_GT=[];
+USE_THETA_LT=[];
+USE_THETA_GT=[];
 USE_QC=1;
+ERASE_MAP=0;
+MAKE_PLOT=1;
 if isfield(s,'RECREATE_MAT')==1;RECREATE_MAT=s.RECREATE_MAT;end;
 if isfield(s,'OPTIM')==1;OPTIM=s.OPTIM;end;
 if isfield(s,'POSTFIX')==1;POSTFIX=s.POSTFIX;end;
@@ -81,6 +87,8 @@ if isfield(s,'FORCE')==1;FORCE=s.FORCE;end;
 if isfield(s,'USE_PRES_GT')==1;USE_PRES_GT=s.USE_PRES_GT;end;
 if isfield(s,'USE_PRES_LT')==1;USE_PRES_LT=s.USE_PRES_LT;end;
 if isfield(s,'USE_QC')==1;USE_QC=s.USE_QC;end;
+if isfield(s,'ERASE_MAP')==1;ERASE_MAP=s.ERASE_MAP;end;
+if isfield(s,'MAKE_PLOT')==1;MAKE_PLOT=s.MAKE_PLOT;end;
 
 
 RECREATE_MAT
@@ -98,6 +106,17 @@ if isempty(POSTFIX)==0
 	end
 	if isempty(USE_PRES_LT)
 	USE_PRES_LT=[];
+    end
+    
+    [a,r]=strtok(fliplr(POSTFIX),'T'); 
+	USE_THETA_LT=str2num(fliplr(a));
+	[a,r]=strtok((r),'T'); 
+	USE_THETA_GT=str2num(fliplr(a));
+	if isempty(USE_THETA_GT)
+	USE_THETA_GT=[];
+	end
+	if isempty(USE_THETA_LT)
+	USE_THETA_LT=[];
 	end
 end
 
@@ -171,7 +190,8 @@ for ifloat=1:length(tabfloat)
         lo_system_configuration = load_configuration( ['./ow_config/ow_config_' num2str(numconfig) '.txt'] ,flt_name, DIR_DATA, VERSION_OW, DIR_OWC);
         lo_system_configuration.use_pres_gt=USE_PRES_GT;
 		lo_system_configuration.use_pres_lt=USE_PRES_LT;
-		
+		lo_system_configuration.use_theta_gt=USE_THETA_GT;
+		lo_system_configuration.use_theta_lt=USE_THETA_LT;
 		
         % creation du repertoire des plots
         dirplot_config = [ DIR_DATA '/float_plots/CONFIG' num2str(numconfig) '/'];
@@ -237,7 +257,9 @@ for ifloat=1:length(tabfloat)
         
         % update_salinity_mapping( flt_dir, flt_name, lo_system_configuration );
         % plus rapide
-        %eval(['!/bin/rm -f ' DIR_DATA 'float_mapped/CONFIG' num2str(numconfig) '/map_' num2str(flt_name) '.mat'])
+        if ERASE_MAP==1
+        eval(['!/bin/rm -f ' DIR_DATA 'float_mapped/CONFIG' num2str(numconfig) '/map_' num2str(flt_name) '.mat'])
+        end
         update_salinity_mapping_speed( flt_dir, flt_name, lo_system_configuration );
         
         calculate_piecewisefit( flt_dir, flt_name, lo_system_configuration );
@@ -245,12 +267,14 @@ for ifloat=1:length(tabfloat)
 		if isempty(POSTFIX)==0
 		   eval(['!/bin/cp -f ' dircalib 'cal_' flt_name '.mat ' dircalib 'cal_' flt_name POSTFIX '.mat'])
 		   eval(['!/bin/cp -f ' dircalib 'calseries_' flt_name '.mat ' dircalib 'calseries_' flt_name POSTFIX '.mat'])
-		 end
-       plot_diagnostics_ow( flt_dir, flt_name, lo_system_configuration );
-        %keyboard
-        plot_diagnostics_ow_figure9_4( flt_dir, flt_name, lo_system_configuration,dacname,C);
-        
-         plotfile=dir([DIR_DATA '/float_plots/CONFIG' num2str(numconfig) '/' flt_name '/*.eps']);
+        end
+        if MAKE_PLOT==1
+            plot_diagnostics_ow( flt_dir, flt_name, lo_system_configuration );
+            %keyboard
+            plot_diagnostics_ow_figure9_4( flt_dir, flt_name, lo_system_configuration,dacname,C);
+            
+            plotfile=dir([DIR_DATA '/float_plots/CONFIG' num2str(numconfig) '/' flt_name '/*.eps']);
+        end
 %          for k=1:length(plotfile)
 %              thefile=[DIR_DATA '/float_plots/CONFIG' num2str(numconfig) '/' flt_name '/' plotfile(k).name];
 %              thestring=['!ps2pdf ' thefile ' ' strrep(thefile,'.eps',[POSTFIX '.pdf'])];

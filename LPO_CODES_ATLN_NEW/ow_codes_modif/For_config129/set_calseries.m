@@ -29,13 +29,13 @@ try
     display(['***tip: to modify these parameters, first delete the file: ' ls_calseries_filename ' and edit set_calseries.m'])
 catch
     breaks = [];
-    max_breaks = 4;   % 0 for linear trend and -1 for offset only!
+    max_breaks = 3;   % 0 for linear trend and -1 for offset only!
     calseries = [ones(1,n)];
     % calseries = [ones(1,33) 2*ones(1,n-33)];    % example: split the time series at profile 33
     % calseries = [ones(1,33) 0  ones(1,n-33-1)]; % example: ignore profile 34
     calib_profile_no = PROFILE_NO;
-    use_theta_lt = [];
-    use_theta_gt = [];
+    use_theta_lt = po_system_configuration.use_theta_lt;
+    use_theta_gt = po_system_configuration.use_theta_gt;
     use_pres_gt = po_system_configuration.use_pres_gt;
     use_pres_lt = po_system_configuration.use_pres_lt;
     use_percent_gt = 0.5;

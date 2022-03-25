@@ -1,13 +1,13 @@
 % -========================================================
-%   USAGE : plot_model_fit(tabfloat,tabdac,configow,POSTFIX_D,POSTFIX_S)
+%   USAGE : plot_model_fit(tabfloat,tabdac,configowD,configowS,POSTFIX_D,POSTFIX_S)
 %   PURPOSE : superpose results of owc (calibration figure) with different
 %   set_calseries parameters (usefull for deep floats)
 % -----------------------------------
 %   INPUT :
 %    tabfloat  (char or cell of chars -size n_floatsx1)    e.g. '6900258' or {'6900258', '3901954'}
 %    tabdac    (char or cell of chars -size n_floatsx1)    e.g. 'coriolis' or {'coriolis', 'bodc'}
-%    configow  (floats or cell of floats -size n_floatsx1) e.g.  149       or {149,149}      % config number ow
-%
+%    configowD  (floats or cell of floats -size n_floatsx1) e.g.  39  :config number ow use for deep layer
+%    configowS  (floats or cell of floats -size n_floatsx1) e.g.  149 :config number ow use for shallow layer     
 %    'POSTFIX_D'      (char)      deepest zone e.g  '_1500_2000' document choices made in set_calseries.m for use_pres_gt use_pres_lt
 %    'POSTFIX_S'      (char)     shallowest zone e.g '_500_1000' document choices made in set_calseries.m for use_pres_gt use_pres_lt
 % -----------------------------------
@@ -19,7 +19,7 @@
 % -------------------------------------
 % 
 % ========================================================
-function plot_model_fit(tabfloat,tabdac,configow,POSTFIX_D,POSTFIX_S)
+function plot_model_fit(tabfloat,tabdac,configowD,configowS,POSTFIX_D,POSTFIX_S)
 
 %init_path
 
@@ -41,19 +41,24 @@ for THEPLOT=[1,2];
 	flt_name = deblank(num2str(flt_name));
 	po_system_configuration.FLOAT_SOURCE_DIRECTORY= [C.DIR_DATA 'float_source/'];
 	po_system_configuration.FLOAT_SOURCE_POSTFIX='.mat';
-	po_system_configuration.FLOAT_MAPPED_DIRECTORY= [C.DIR_DATA 'float_mapped/CONFIG' num2str(configow) '/'];
+	%po_system_configuration.FLOAT_MAPPED_DIRECTORY= [C.DIR_DATA 'float_mapped/CONFIG' num2str(configow) '/'];
 	po_system_configuration.FLOAT_MAPPED_PREFIX='map_';
 	po_system_configuration.FLOAT_MAPPED_POSTFIX='.mat';
-	po_system_configuration.FLOAT_CALIB_DIRECTORY= [C.DIR_DATA 'float_calib/CONFIG' num2str(configow) '/' ];
+	%po_system_configuration.FLOAT_CALIB_DIRECTORY= [C.DIR_DATA 'float_calib/CONFIG' num2str(configow) '/' ];
 	po_system_configuration.FLOAT_CALIB_PREFIX='cal_';
 	po_system_configuration.FLOAT_CALSERIES_PREFIX='calseries_';
 
 	if THEPLOT==1
 	po_system_configuration.FLOAT_CALIB_POSTFIX=[POSTFIX_D '.mat'];
 	po_system_configuration.FLOAT_CALSERIES_POSTFIX=[POSTFIX_D '.mat'];
+    po_system_configuration.FLOAT_MAPPED_DIRECTORY= [C.DIR_DATA 'float_mapped/CONFIG' num2str(configowD) '/'];
+	po_system_configuration.FLOAT_CALIB_DIRECTORY= [C.DIR_DATA 'float_calib/CONFIG' num2str(configowD) '/' ];
+
 	elseif THEPLOT==2
 	po_system_configuration.FLOAT_CALIB_POSTFIX=[POSTFIX_S '.mat'];
 	po_system_configuration.FLOAT_CALSERIES_POSTFIX=[POSTFIX_S '.mat'];
+    po_system_configuration.FLOAT_MAPPED_DIRECTORY= [C.DIR_DATA 'float_mapped/CONFIG' num2str(configowS) '/'];
+	po_system_configuration.FLOAT_CALIB_DIRECTORY= [C.DIR_DATA 'float_calib/CONFIG' num2str(configowS) '/' ];
 	end
 
 
@@ -388,7 +393,7 @@ for THEPLOT=[1,2];
 				% Plot station by station fit
 				ok = find(isfinite(avg_Staoffset));
 				 %keyboard
-				addpath('/home1/homedir5/perso/ccabanes/matlab/lib_downlaod/')
+				%addpath('/home/lops/users/ccabanes/matlab/lib_downlaod/')
 				coly=[1 0 0];
 				colerr=[1 0.8 0.8];
 				%colerr=[0.8 0.8 1];
@@ -409,10 +414,12 @@ for THEPLOT=[1,2];
 				if THEPLOT==1
 				profile1=PROFILE_NO(ok);
 				offset1=avg_Staoffset(ok);
+                avg_Soffset1=avg_Soffset(ok);
 				%p1=plot(PROFILE_NO(ok), -avg_Staoffset(ok), 'r-','LineWidth',1.5);
 				elseif THEPLOT==2
 				profile2=PROFILE_NO(ok);
 				offset2=avg_Staoffset(ok);
+                avg_Soffset2=avg_Soffset(ok);
 				%p2=plot(PROFILE_NO(ok), -avg_Staoffset(ok), 'b-','LineWidth',2);
 				end
 				
@@ -494,10 +501,16 @@ end
 
 p1=plot(profile1,offset1, 'r-','LineWidth',2);
 p2=plot(profile2,offset2, 'b-','LineWidth',2);
+plot(profile1,avg_Soffset1, 'm-','LineWidth',1);
+plot(profile2,avg_Soffset2, 'c-','LineWidth',1);
 
 h=[p1,p2];
-legend(h,{strrep(POSTFIX_D(2:end),'_','-'),strrep(POSTFIX_S(2:end),'_','-')})
+str1=strrep(POSTFIX_D(2:end),'_','-');
+str1=strrep(str1,'T','-');
+str2=strrep(POSTFIX_S(2:end),'_','-');
+str2=strrep(str2,'T','°-');
+legend(h,{[str1 ', owc -' num2str(configowD)],[str2 ', owc -' num2str(configowS)] })
 %legend(h,{'3000-4000','400-800'})
 
-file_out=[C.DIR_DATA 'float_plots/CONFIG' num2str(configow) '/' tabfloat '/' tabfloat '_15.pdf'];
+file_out=[C.DIR_DATA 'float_plots/CONFIG' num2str(configowD) '/' tabfloat '/' tabfloat '_15.pdf'];
 print ('-dpdf' ,file_out)
