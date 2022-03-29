@@ -928,7 +928,11 @@ for ik=1:length(float_list)
     
     fprintf(fw1,'%s\n', ['\subsubsection{Configuration}']);
     
-    fprintf(fw1,'%s\n', ['\input{../REPORTS/table_config' num2str(Num_Config{ik}) '.tex}']);
+    file =['table_config' num2str(Num_Config{ik}) '.tex'];
+    if exist(['./REPORTS/' file])
+        copyfile(['./REPORTS/' file],[dir_tex,file]);
+    end
+    fprintf(fw1,'%s\n', ['\input{table_config' num2str(Num_Config{ik}) '.tex}']);
     
     fprintf(fw1,'%s\n', ['\subsubsection{Plots}']);
     fprintf(fw1,'%s\n', ' %%%%%%%%%%%%%%%%%% FIGURE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
