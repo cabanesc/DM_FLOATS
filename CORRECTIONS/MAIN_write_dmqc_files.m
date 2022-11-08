@@ -1308,6 +1308,43 @@ for ifile=1:length(therep)  % WORK ON EACH FILE
                 end
                 
                 
+                % fill scientific calibration  for  intermediate core
+                % parameters TEMP_STD TEMP_MED PSAL_STD PSAL_MED PRES_MED
+                % TEMP_CNDC NB_SAMPLE_CTD MTIME
+                % --------------------------
+                list_intermediate={'TEMP_STD' 'TEMP_MED' 'PSAL_STD' 'PSAL_MED' 'PRES_MED' 'TEMP_CNDC' 'NB_SAMPLE_CTD' 'MTIME'};
+                theparameters = strtrim(squeeze(FLD.parameter.data(n_prof,n_calib,:,:)));
+
+                for ilist_ic=1:length(list_intermediate)
+                
+                    ind_ic = find(ismember(cellstr(theparameters),list_intermediate{ilist_ic}));
+                    
+                    if isempty(ind_ic)==0
+                        eq='not applicable';
+                        l_co = length(eq);
+                        
+                        FLD.scientific_calib_equation.data(n_prof,n_calib,ind_ic,:) = FLD.scientific_calib_equation.FillValue_;
+                        FLD.scientific_calib_equation.data(n_prof,n_calib,ind_ic,1:l_co) = eq;
+                        
+                        coeff='not applicable';
+                        l_co = length(coeff);
+                        FLD.scientific_calib_coefficient.data(n_prof,n_calib,ind_ic,:) = FLD.scientific_calib_coefficient.FillValue_;
+                        FLD.scientific_calib_coefficient.data(n_prof,n_calib,ind_ic,1:l_co) = coeff;
+                        
+                        comment ='not applicable';;
+                        l_co = length(comment);
+                        FLD.scientific_calib_comment.data(n_prof,n_calib,ind_ic,:) = FLD.scientific_calib_comment.FillValue_;
+                        FLD.scientific_calib_comment.data(n_prof,n_calib,ind_ic,1:l_co) = comment;
+                        
+                        
+                        if format_version<2.3
+                            FLD.calibration_date.data(n_prof,n_calib,ind_ic,:)=thedate;
+                        else
+                            FLD.scientific_calib_date.data(n_prof,n_calib,ind_ic,:)=thedate;
+                        end
+                    end
+                end
+                
                 % fill scientific calibration for  CNDC
                 % --------------------------
                 theparameters = strtrim(squeeze(FLD.parameter.data(n_prof,n_calib,:,:)));
