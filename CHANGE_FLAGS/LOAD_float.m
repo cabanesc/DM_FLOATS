@@ -8,6 +8,8 @@
 %
 %   OPTIONNAL INPUT :
 %    'ERASE' (logical)  ERASE=1 if float netcdf files (stored in  a local directory)  are replaced by those available on GDAC, ERASE = 0 (default) if not.
+%    'ASK'   (logical) ASK=1 (default) if a question dialog bow is open to confirm that you want to reload the file
+%                          0  NO DIALOG BOX
 % -----------------------------------
 %   OUTPUT :
 % -----------------------------------
@@ -31,9 +33,10 @@ f=varargin(1:2:end);
 c=varargin(2:2:end);
 s = cell2struct(c,f,2);
 ERASE=0;
-
+ASK=1;
 
 if isfield(s,'ERASE')==1;ERASE=s.ERASE;end;
+if isfield(s,'ASK')==1;ASK=s.ASK;end;
 
 
 C=load_configuration('config.txt');
@@ -46,27 +49,31 @@ CONFIG.DIR_FTP=C.DIR_FTP;
 % FLOTEUR ANALYSE
 CONFIG.floatname=floatname;
 CONFIG.dacname=dacname;
-n=length(varargin);
+%  n=length(varargin);
+%  
+%  if n/2~=floor(n/2)
+%      error('check the imput arguments')
+%  end
+%  
+%  f=varargin(1:2:end);
+%  c=varargin(2:2:end);
+%  s = cell2struct(c,f,2);
+%  ERASE=0;
+%  VPN=1;
+%  FLAG=1;
+%  if isfield(s,'ERASE')==1;ERASE=s.ERASE;end;
+%  if isfield(s,'VPN')==1;VPN=s.VPN;end;
+%  if isfield(s,'FLAG')==1;FLAG=s.FLAG;end;
+%  
+%  CONFIG.VPN=VPN;
+%  CONFIG.FLAG=FLAG;
 
-if n/2~=floor(n/2)
-    error('check the imput arguments')
-end
-
-f=varargin(1:2:end);
-c=varargin(2:2:end);
-s = cell2struct(c,f,2);
-ERASE=0;
-VPN=1;
-FLAG=1;
-if isfield(s,'ERASE')==1;ERASE=s.ERASE;end;
-if isfield(s,'VPN')==1;VPN=s.VPN;end;
-if isfield(s,'FLAG')==1;FLAG=s.FLAG;end;
-
-CONFIG.VPN=VPN;
-CONFIG.FLAG=FLAG;
-
-if ERASE==1
+if ERASE==1 & exist([CONFIG.DIR_FTP '/' CONFIG.dacname '/' CONFIG.floatname])
+    if ASK==1
     isw = questdlg('Do you want to reload the float netcdf files ?','Loading float files...','YES', 'NO','NO');
+    else
+    isw='YES';
+    end
     switch isw
         case {'YES'} 
     destinf=[CONFIG.DIR_FTP '/' CONFIG.dacname '/' CONFIG.floatname '/'];
@@ -89,6 +96,7 @@ if ~exist([CONFIG.DIR_FTP '/' CONFIG.dacname '/' CONFIG.floatname '/profiles/'])
     destinf=[CONFIG.DIR_FTP '/' CONFIG.dacname '/' CONFIG.floatname '/profiles/'];
     status3=copyfile(sourcef,destinf);
     disp(['copy status Core R & D Files (1 is ok): '  num2str(status2) ', ' num2str(status3)])
+	
     sourcef=[DIR_FTP_CORIOLIS '/' CONFIG.dacname '/' CONFIG.floatname '/profiles/BR*.nc'];
     destinf=[CONFIG.DIR_FTP '/' CONFIG.dacname '/' CONFIG.floatname '/profiles/'];
     status2=copyfile(sourcef,destinf);
