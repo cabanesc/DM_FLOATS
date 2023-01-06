@@ -122,9 +122,11 @@ ifin=find(F.cycle_number.data==CONFIG.CYCLE_MAX);
 
 time_slot=[ideb(1):ifin(1)];
 
-
-CONFIG.VEC_REG=[(floor(min(F.longitude.data(time_slot))*10)/10-10),ceil(max(F.longitude.data(time_slot))*10)/10,floor(min(F.latitude.data(time_slot))*10)/10,(ceil(max(F.latitude.data(time_slot))*10)/10+3)]
-
+if isfield(s,'VEC_REG')==1;
+CONFIG.VEC_REG=s.VEC_REG;
+else
+CONFIG.VEC_REG=[(floor(min(F.longitude.data(time_slot))*10)/10),ceil(max(F.longitude.data(time_slot))*10)/10,floor(min(F.latitude.data(time_slot))*10)/10,(ceil(max(F.latitude.data(time_slot))*10)/10)]
+end
 [topo,DimT]=read_netcdf_allthefile(CONFIG.FILE_TOPO);
 
 if strcmp(CONFIG.DATATYPE,'adj') == 1
@@ -173,8 +175,8 @@ liste_floats_files(iio)=[];
 CONFIG_GDAC=CONFIG;
 CONFIG_GDAC.DIR_FTP=CONFIG_GDAC.DIR_FTP_CORIOLIS;
 second_floatname='';
-%for kfloat=1:length(liste_floats_files)
-for kfloat=1:50
+for kfloat=1:length(liste_floats_files)
+%for kfloat=1:50
     disp(['nearby float:' num2str(kfloat) '/' num2str(length(liste_floats_files))]);
     subplot(2,1,1)
     plot_float_on_map(tabfloat{kfloat},tabdac{kfloat},topo,CONFIG_GDAC,'psal_mean','MarkerSize',20,'MarkerLine','off','Isbest',1);
