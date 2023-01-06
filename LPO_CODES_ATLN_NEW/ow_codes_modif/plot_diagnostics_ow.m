@@ -272,7 +272,7 @@ if(isempty(find(isnan(PRES)==0))==0) % if no data exists, terminate here, no plo
         print('-depsc', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_2.eps'));
         print('-dpdf', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_2.pdf'));
         
-        axis([floor(min(tlevels))-0.5,ceil(max(tlevels))+0.5,floor(min_map*10)/10,ceil(max_map*10)/10]);
+        %axis([floor(min(tlevels))-0.5,ceil(max(tlevels))+0.5,floor(min_map*10)/10,ceil(max_map*10)/10]);
         print('-depsc', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_2zoom.eps'));
         print('-dpdf', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_2zoom.pdf'));
         if n>1
@@ -738,7 +738,7 @@ if(isempty(find(isnan(PRES)==0))==0) % if no data exists, terminate here, no plo
             end
             
             % Brian King's plot: salinity anomaly time series on theta levels (figure 7) ------------
-            
+            pause(5)
             figure
             set(gcf,'defaultaxeslinewidth',2)
             set(gcf,'defaultlinelinewidth',2)
