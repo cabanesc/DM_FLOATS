@@ -178,10 +178,10 @@ if nocycl<=length(F.cycle_number.data)
     difference_pres_theta = [pres_argo-pres_i_campagne'];
     ip = find(difference_pres_theta<150);
     difference_psal_theta = psal_argo-psal_i_campagne';
-    figure(5)
-    hold on
-    plot(difference_pres_theta,pres_argo,'g+')
-    
+%     figure(5)
+%     hold on
+%     plot(difference_pres_theta,pres_argo,'g+')
+%     
     % on cherche une valeur optimale pour le cpcor et l'offset => resultat
     % dans cnew.
     % Minimum depth considered for the optimum fit
@@ -283,7 +283,8 @@ if nocycl<=length(F.cycle_number.data)
         %legend({['Modified profile: nominal CPCOR  (-9.57e-8) , optimal M  (' num2str(cnew2(1)) ')' ],['Modified profile: optimal CPCOR (', num2str(cnew(1)), ') , optimal M (', num2str(cnew(2)), ')'],['Modified profile: WG suggested CPCOR (', num2str(CPcor_fixed), ') , optimal M (', num2str(cnew3(1)), ')']},'location','SouthOutside','Fontsize',12)
         ylabel('pressure','Fontsize',12)
         box on
-        set(gcf,'papertype','A4','paperunits','centimeters','paperorientation','portrait','paperposition',[.25,.75,20,25]);
+        set(gcf,'papertype','usletter','paperunits','inches','paperorientation','portrait','paperposition',[.25,.75,8,9.5]);
+        %set(gcf,'papertype','A4','paperunits','inches','paperorientation','portrait','paperposition',[.25,.75,20,25]);
         eval(['print -dpng ' dir_enregistre '/CPCOR_analysis_' floatname   '_1.png']);
         
         figure(2)
@@ -306,7 +307,7 @@ if nocycl<=length(F.cycle_number.data)
         xlabel('Salinity deviation on float theta levels','Fontsize',12)
         legend({'Original  profile: nominal CPCOR  (-9.57e-8) , no offset corrected',['Original  profile with pressure offset corrected (' num2str(press_offset) 'db), salinity is re-calculated']},'location','SouthOutside','Fontsize',14,'FontWeight','bold')
         ylabel('pressure','Fontsize',12)
-        set(gcf,'papertype','A4','paperunits','centimeters','paperorientation','portrait','paperposition',[.25,.75,20,25]);
+        set(gcf,'papertype','usletter','paperunits','centimeters','paperorientation','portrait','paperposition',[.25,.75,20,25]);
         eval(['print -dpng ' dir_enregistre '/press_correction_cycle1_' floatname '_2.png']);
         dir_enregistre
         figure(3)
@@ -339,7 +340,7 @@ if nocycl<=length(F.cycle_number.data)
         
         
         
-        set(gcf,'papertype','A4','paperunits','centimeters','paperorientation','portrait','paperposition',[.25,.75,20,25]);
+        set(gcf,'papertype','usletter','paperunits','centimeters','paperorientation','portrait','paperposition',[.25,.75,20,25]);
         eval(['print -dpng ' dir_enregistre '/CPCOR_analysis_median_' floatname '_3.png']);
         % eval(['print -dpdf ' 'test.pdf']);
         fprintf(fw,'%s\n',[floatname ', ' nocyclstr ', ' minDEPTH  ', ' num2str(cnew(1)) ', ' num2str(theoffsset_nom) ', ' num2str(theoffsset_op) ', ' num2str(theoffsset_med) ', ' num2str(theoffsset_pres) ', ' num2str(cnew(2)) ])
@@ -420,12 +421,12 @@ dcco_opt = cco_argo_opt-cco_i_campagne';
 %  end
 %  dcco_opt=dcco_opt_gliss;
 
-ii=find(isfinite(dcco_opt)==1 & pres_argo_corr > str2num(minDEPTH)  &pres_argo_corr <5360& abs(difference_pres_theta)<1500);
+ii=find(isfinite(dcco_opt)==1 & pres_argo_corr > str2num(minDEPTH)  &pres_argo_corr <5360& abs(difference_pres_theta)<500);
 if isempty(ii)
-    ii=find(isfinite(dcco_opt)==1 & pres_argo_corr > 1000 & abs(difference_pres_theta)<1500);
+    ii=find(isfinite(dcco_opt)==1 & pres_argo_corr > 1000 & abs(difference_pres_theta)<500);
 end
 if isempty(ii)
-    ii=find(isfinite(dcco_opt)==1 & pres_argo_corr > 500 & abs(difference_pres_theta)<1500);
+    ii=find(isfinite(dcco_opt)==1 & pres_argo_corr > 500 & abs(difference_pres_theta)<500);
 end
 %ii=find(isfinite(dcco_opt)==1 &choosen_depth'==1 & abs(difference_pres_theta)<1500);
 %ii=find(isfinite(dcco_opt)==1);

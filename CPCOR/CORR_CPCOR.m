@@ -113,7 +113,7 @@ for ifloat=1:length(floatname)
     
     for ifiles=1:length(file_list)
         
-        file_name = [,CONFIG.DIR_FTP thedacname '/' thefloatname '/profiles/' file_list{ifiles} ];
+        file_name = [CONFIG.DIR_FTP thedacname '/' thefloatname '/profiles/' file_list{ifiles} ];
         [F,Dim,G]=read_netcdf_allthefile(file_name);
         F = replace_fill_bynan(F);
         Forig=F;
@@ -303,7 +303,7 @@ for ifloat=1:length(floatname)
                 end
             end
         end
-        
+        Dim.n_calib.dimlength=2;
         %================== HISTORY fields
         %define new_hist=N_HISTORY+1
         if PARAM.NEW_CPCOR~=-13.5e-8  % add a new history step
