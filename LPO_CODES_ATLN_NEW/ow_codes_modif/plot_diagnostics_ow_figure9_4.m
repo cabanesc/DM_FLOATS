@@ -157,10 +157,7 @@ if(isempty(find(isnan(PRES)==0))==0) % if no data exists, terminate here, no plo
         xlabel('Longitude');
         ylabel('Latitude');
         
-        filename = [DIR_FTP strtrim(dacname) '/' strtrim(title_floatname) '/' strtrim(title_floatname) '_prof.nc'];
-        % disp([num2str(unum(k)) ' ' F.wmo_inst_type.data(1,:)])
         
-        %F = read_netcdf_allthefile(filename);
         
         %title( strcat(title_floatname, ' ARGO +CTD REF : ', po_system_configuration.CONFIGURATION_FILE(1:end-4), ',  (', strtrim(F.pi_name.data(1,:)), '---', strtrim(F.data_centre.data(1,:)),')' ),'interpreter','none' );
         
@@ -499,7 +496,39 @@ if(isempty(find(isnan(PRES)==0))==0) % if no data exists, terminate here, no plo
             title( ['B) Vertically-averaged salinity  additive correction and model fit'])
             grid on
             
-            %plot(F.cycle_number.data,mean_diff,'m-','LineWidth',2)
+            
+            if C.plotDm==1
+                filename = [DIR_FTP strtrim(dacname) '/' strtrim(title_floatname) '/' strtrim(title_floatname) '_prof.nc'];
+                % disp([num2str(unum(k)) ' ' F.wmo_inst_type.data(1,:)])
+                
+                F = read_netcdf_allthefile(filename);
+                F = replace_fill_bynan(F);
+                F = format_flags_char2num(F);
+                param='psal';
+                paramad='psal_adjusted';
+                paramqc='psal_qc';
+                paramadqc='psal_adjusted_qc';
+
+                N_PROF_this_file = size(F.cycle_number.data,1);
+
+                mean_diff = NaN*zeros(N_PROF_this_file,1);
+                
+                %isnanprof=isnan(F.(param).data)|isnan(F.(paramad).data)|F.(param).data>9999999|F.(paramad).data>9999999;
+                isnanprof=isnan(F.(param).data)|isnan(F.(paramad).data);
+                F.(paramad).data(isnanprof)=NaN;
+                F.(param).data(isnanprof)=NaN;
+                
+                %F.(param).data(F.(param).data>9999999)=NaN;
+                %F.(paramad).data(F.(paramad).data>9999999)=NaN;
+                
+                mean_diff = meanoutnan(F.(paramad).data,2)-meanoutnan(F.(param).data,2);
+                mean_diff = meanoutnan(F.(paramad).data,2)-meanoutnan(F.(param).data,2);
+                plot_cycle=[min(F.cycle_number.data):max(F.cycle_number.data)];
+                plot_mean=NaN*ones(size(plot_cycle));
+                [iiu,iiy]=ismember(F.cycle_number.data,plot_cycle);
+                plot_mean(iiy)=mean_diff;
+                plot(plot_cycle,plot_mean,'m-','LineWidth',2)
+            end
             
         end %if(isempty(find(isnan(cal_SAL)==0))==0) ---------------
         

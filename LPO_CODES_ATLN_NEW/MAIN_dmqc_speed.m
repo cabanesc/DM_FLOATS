@@ -21,7 +21,9 @@
 %    'USE_QC'         (logical)   USE_QC=1 (default) uses PSAL_QC and remove PSAL data with QC=4
 %                                 USE_QC=0           do not use PSAL_QC (do not remove data with QC=4)  
 %     'ERASE_MAP'      (logical)   ERASE_MAP=0 (default) keep the previous  map file ; ERASE_MAP=1 erase the previous map file
-%     'MAKE_PLOT'        (logical)   MAKE_PLOT=1 (default) make all plots; MAKE_PLOT=0 does not make plots
+%     'MAKE_PLOT'      (logical)   MAKE_PLOT=1 (default) make all plots; MAKE_PLOT=0 does not make plots
+%     'PLOT_PREVDM'     (logical)   PLOT_PREVDM=1  plot the previous DM adjustment in the correction plot (in magenta) overlaid on the current fit
+%                                   PLOT_PREVDM=0 (default), do not plot the previous DM adjustement
 % -----------------------------------
 %   OUTPUT :
 % -----------------------------------
@@ -80,6 +82,7 @@ USE_THETA_GT=[];
 USE_QC=1;
 ERASE_MAP=0;
 MAKE_PLOT=1;
+PLOT_PREVDM=0;
 if isfield(s,'RECREATE_MAT')==1;RECREATE_MAT=s.RECREATE_MAT;end;
 if isfield(s,'OPTIM')==1;OPTIM=s.OPTIM;end;
 if isfield(s,'POSTFIX')==1;POSTFIX=s.POSTFIX;end;
@@ -89,7 +92,8 @@ if isfield(s,'USE_PRES_LT')==1;USE_PRES_LT=s.USE_PRES_LT;end;
 if isfield(s,'USE_QC')==1;USE_QC=s.USE_QC;end;
 if isfield(s,'ERASE_MAP')==1;ERASE_MAP=s.ERASE_MAP;end;
 if isfield(s,'MAKE_PLOT')==1;MAKE_PLOT=s.MAKE_PLOT;end;
-
+if isfield(s,'PLOT_PREVDM')==1;PLOT_PREVDM=s.PLOT_PREVDM;end;
+C.plotDm = PLOT_PREVDM; 
 
 RECREATE_MAT
 % VERSION of the code/reference data:
