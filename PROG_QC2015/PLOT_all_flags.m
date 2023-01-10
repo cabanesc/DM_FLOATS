@@ -49,6 +49,9 @@ CONFIG.dacname=dacname;
 
 plotpath=[CONFIG.DIR_PLOT 'preliminaire/' CONFIG.floatname '/'];
 
+if ~exist(plotpath,'dir')
+    mkdir(plotpath);
+end
 
 [file_list]=select_float_files_on_ftp(CONFIG.floatname,CONFIG.dacname,CONFIG.DIR_FTP,'C');
 vertical_sampling_scheme='Primary sampling';
@@ -71,15 +74,14 @@ Param.data_mode.name='DATA_MODE';
 [F,Dim,thelist_ext]=create_multi_from_filelist(CONFIG.floatname,CONFIG.dacname,CONFIG.DIR_FTP,file_list,vertical_sampling_scheme,Param);
 
 F=format_flags_char2num(F);
+fflag=plot_one_flag(F,'psal')
+eval(['print(fflag, ''-dpng'',''' plotpath CONFIG.floatname  '_current_flags_PSAL.png'')'])
 
-plot_one_flag(F,'psal')
-eval(['print -dpng ' plotpath CONFIG.floatname  '_current_flags_PSAL.png'])
+fflag=plot_one_flag(F,'temp')
+eval(['print(fflag, ''-dpng'',''' plotpath CONFIG.floatname  '_current_flags_TEMP.png'')'])
 
-plot_one_flag(F,'temp')
-eval(['print -dpng ' plotpath CONFIG.floatname  '_current_flags_TEMP.png'])
-
-plot_one_flag(F,'pres')
-eval(['print -dpng ' plotpath CONFIG.floatname  '_current_flags_PRES.png'])
+fflag=plot_one_flag(F,'pres')
+eval(['print(fflag, ''-dpng'',''' plotpath CONFIG.floatname  '_current_flags_PRES.png'')'])
 
   
 F = replace_fill_bynan(F);
@@ -222,7 +224,7 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function plot_one_flag(F,param)
+function figure1=plot_one_flag(F,param)
 
 paramqc=[param '_qc'];
 paramad=[param '_adjusted'];
