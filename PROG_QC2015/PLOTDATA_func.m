@@ -15,6 +15,8 @@
 %                               (default=1)
 %    'MAKEPAUSE'  (logical)     MAKEPAUSE=1 : PAUSE at each profile when
 %    plotting the theta/s diagram (default=0)
+%    'PLOT_INVDENS' (logical)   PLOT_INVDENS=1, create and display all the figures of density inversion (default)
+%                                           =0, do not create  the figures of density inversion
 % -----------------------------------
 %   OUTPUT :
 % -----------------------------------
@@ -49,6 +51,7 @@ PARAM.USEFLAG='n';
 PARAM.PRINT=1;
 PARAM.DATAREP='DIR_FTP';
 PARAM.MAKEPAUSE=0;
+PARAM.PLOT_INVDENS=1;
 
 % Input CONFIG
 if isfield(s,'DATATYPE')==1;PARAM.DATATYPE=s.DATATYPE;end;
@@ -56,7 +59,7 @@ if isfield(s,'USEFLAG')==1;PARAM.USEFLAG=s.USEFLAG;end;
 if isfield(s,'PRINT')==1;PARAM.PRINT=s.PRINT;end;
 if isfield(s,'DATAREP')==1;PARAM.DATAREP=s.DATAREP;end;
 if isfield(s,'MAKEPAUSE')==1;PARAM.MAKEPAUSE=s.MAKEPAUSE;end;
-
+if isfield(s,'PLOT_INVDENS')==1;PARAM.PLOT_INVDENS=s.PLOT_INVDENS;end;
 float=str2num(floatname);
 
 %------------------------------------------------------
@@ -302,8 +305,9 @@ disp('ok')
 % trace des inversions de densite (test 14 de la doc ARGO)
 % --------------------------------------------------------
 
+if PARAM.PLOT_INVDENS==1	
 plot_inverdens(CONFIG,floatnum,cycnum,pres,temp,psal,titflag)
-
+end
 
 % Diagramme T/S, theta/S, theta/doxy
 %-----------------------------------
