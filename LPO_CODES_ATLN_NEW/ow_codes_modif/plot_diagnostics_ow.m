@@ -778,6 +778,7 @@ if(isempty(find(isnan(PRES)==0))==0) % if no data exists, terminate here, no plo
                     % choose 10 float theta levels to use in the piecewise linear fit --------
                     
                     unique_SAL = SAL(:, calindex);
+                    unique_cal_SAL = cal_SAL(:, calindex);
                     unique_PTMP = PTMP(:, calindex);
                     unique_PRES = PRES(:, calindex);
                     unique_la_ptmp = la_ptmp(:, calindex);
@@ -902,6 +903,41 @@ if(isempty(find(isnan(PRES)==0))==0) % if no data exists, terminate here, no plo
                     set(gcf,'papertype','usletter','paperunits','inches','paperorientation','portrait','paperposition',[.5,.25,8,10.25]);
                     print('-depsc', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_8_zoom', num2str(iy), '.eps'));
                     print('-dpdf', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_8_zoom', num2str(iy), '.pdf'));
+                    
+                    figure
+                    set(gcf,'defaultaxeslinewidth',1)
+                    set(gcf,'defaultlinelinewidth',1)
+                    set(gcf,'defaultaxesfontsize',12)
+                    
+                    % plot t-s profile
+                    hold on
+                    box on
+                    grid on
+                    %keyboard
+                    plot(unique_cal_SAL(:,1),unique_PTMP(:,1),'c-');
+                    plot(unique_mapped_sal(:,1),unique_la_ptmp(:,1),'-m');
+                    
+                    plot(unique_cal_SAL,unique_PTMP,'c-');
+                    plot(unique_mapped_sal,unique_la_ptmp,'-m');
+                    
+                    x = get(gca,'xlim');
+                    y = get(gca,'ylim');
+                    xlabel('PSS-78')
+                    title(strcat('OW chosen levels, ', pn_float_name));
+                    
+                    for i=1:10
+                        hold on
+                        plot(x,[tlevels(i) tlevels(i)] ,'g-');
+                    end
+                    
+                    % ileg move here by T. Reynaud 21.09.2020
+                    ileg=legend({'Calibrated float profiles','mapped profiles'},'FontSize',10,'Location','best')
+                    
+                    drawnow
+                    set(gcf,'papertype','usletter','paperunits','inches','paperorientation','portrait','paperposition',[.5,.25,8,10.25]);
+                    print('-depsc', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_8_zoomcal', num2str(iy), '.eps'));
+                    print('-dpdf', strcat(po_system_configuration.FLOAT_PLOTS_DIRECTORY, pn_float_dir, pn_float_name, '_8_zoomcal', num2str(iy), '.pdf'));
+                    
                     
                 end
             end

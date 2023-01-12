@@ -193,9 +193,10 @@ for ifloat=1:length(tabfloat)
         % DIW_OWC added by T. Reynaud 21.09.2020
         lo_system_configuration = load_configuration( ['./ow_config/ow_config_' num2str(numconfig) '.txt'] ,flt_name, DIR_DATA, VERSION_OW, DIR_OWC);
         lo_system_configuration.use_pres_gt=USE_PRES_GT;
-		lo_system_configuration.use_pres_lt=USE_PRES_LT;
-		lo_system_configuration.use_theta_gt=USE_THETA_GT;
-		lo_system_configuration.use_theta_lt=USE_THETA_LT;
+	 lo_system_configuration.use_pres_lt=USE_PRES_LT;
+	 lo_system_configuration.use_theta_gt=USE_THETA_GT;
+	 lo_system_configuration.use_theta_lt=USE_THETA_LT;
+	 
 		
         % creation du repertoire des plots
         dirplot_config = [ DIR_DATA '/float_plots/CONFIG' num2str(numconfig) '/'];
