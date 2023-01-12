@@ -165,10 +165,14 @@ difference_psal_theta = -[CTDi_on_ptmp0.psal.data(nocycl,:)-F.psal.data(nocycl,:
 difference_pres_theta = -[CTDi_on_ptmp0.pres.data(nocycl,:)-F.pres.data(nocycl,:)];
 ip = find(abs(difference_pres_theta)<150);
 
+kk = find(F.pres.data(nocycl,ip)>PARAM.CORR_UP_PRES);
+correction_user = median(difference_psal_theta(ip(kk)));
+%disp(['Mean Psal difference on float theta levels (pres>' num2str(PARAM.CORR_UP_PRES) ': ' num2str(correction_0)])
 
 kk = find(F.pres.data(nocycl,ip)>0);
 correction_0 = median(difference_psal_theta(ip(kk)));
 disp(['Mean Psal difference on float theta levels (pres>0): ' num2str(correction_0)])
+
 kk = find(F.pres.data(nocycl,ip)>500);
 correction_500 = median(difference_psal_theta(ip(kk)));
 disp(['Mean Psal difference on float theta levels (pres>500): ' num2str(correction_500)])
@@ -287,7 +291,7 @@ else
 ylabel(F.(PARAM.ptmpref).long_name)
 xlabel(F.psal.long_name)
 end
-title({['Theta / S diagram '];['(Diff. PSAL on theta levels: ' num2str(correction_0) ')']},'FontWeight','bold','Fontsize',11);
+title({['Theta / S diagram '];['(Diff. PSAL on theta levels: ' num2str(correction_user) ')']},'FontWeight','bold','Fontsize',11);
 
 grid on;
 box on;
@@ -327,7 +331,7 @@ else
 xlabel('PSAL_argo -PSAL_CTD','interpreter','none')
 ylabel(F.pres.long_name)
 end
-title({['Diff. PSAL on theta levels: ' num2str(correction_0)]},'FontWeight','bold','Fontsize',11);
+title({['Diff. PSAL on theta levels: ' num2str(correction_user)]},'FontWeight','bold','Fontsize',11);
 
 set(gcf,'papertype','usletter','paperunits','inches','paperorientation','landscape','paperposition',[.25,.75,9.5,8]);
 eval(['print  -dpsc2 ' [CONFIG.dir_enregistre '/' floatname '_diffPSAL_' PARAM.ptmpref thepostfix]  '.eps']);
@@ -515,7 +519,7 @@ end
 grid on
 box on
 axis([TheXLim TheYLim])
-title({['Zoom on depths deeper than ' num2str(PARAM.ZOOM) 'm'];['Diff. PSAL on theta levels: ' num2str(correction_0)]},'FontWeight','bold','Fontsize',10);
+title({['Zoom on depths deeper than ' num2str(PARAM.ZOOM) 'm'];['Diff. PSAL on theta levels: ' num2str(correction_user)]},'FontWeight','bold','Fontsize',10);
 
 set(gcf,'papertype','usletter','paperunits','inches','paperorientation','landscape','paperposition',[.25,.75,9.5,8]);
 eval(['print  -dpsc2 ' [CONFIG.dir_enregistre '/' floatname '_T_S_zoom_' PARAM.ptmpref thepostfix ]  '.eps']);
