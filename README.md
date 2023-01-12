@@ -16,7 +16,7 @@ Features:
 * Programs that verify the adjusted values
 * Programs that produce a report template
 
-Matlab requiered version: 2020b 
+Matlab requiered version: >= 2020b 
 
 
 ## How to install ?
