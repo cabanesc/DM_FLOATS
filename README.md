@@ -1,4 +1,4 @@
-#DM_FLOATS
+# DM_FLOATS
 
 DM_FLOATS is a tool that can be used to analyse and correct Argo salinity data in delayed mode.
 
@@ -16,7 +16,7 @@ Features:
 * Programs that verify the adjusted values
 * Programs that produce a report template
 
-Matlab requiered version: 2020b 
+Matlab requiered version: >= 2020b 
 
 
 ## How to install ?
