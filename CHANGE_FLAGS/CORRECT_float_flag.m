@@ -7,10 +7,10 @@
 %    dacname    (char) e.g.  'coriolis'
 %
 %   OPTIONNAL INPUT :
-%    'ERASE' (logical)  ERASE=1 if float netcdf files (stored in  a local directory)  are replaced by those available on GDAC, ERASE = 0 (default) if not.
 %    'VPN' (logical)   0  full mode. VPN=1 more suitable if used with VPN connection (default)
 %    'FLAG' (logical)  1 plot the flags (default) 0 do not plot the flags
 %    'NB_PROF' (float) number of profiles sampled before and after the analysed profile you want to plot (default is 1)
+%    'KEEPZOOM' (logical) KEEPZOOM=0 (default) don't keep a zoom on the pressure axis set by the user when changing the variable 
 % -----------------------------------
 %   OUTPUT :
 % -----------------------------------
@@ -44,13 +44,13 @@ end
 f=varargin(1:2:end);
 c=varargin(2:2:end);
 s = cell2struct(c,f,2);
-ERASE=0;
+
 VPN=1;
 FLAG=1;
 NB_PROF=1;
 KEEPZOOM=0;
 
-if isfield(s,'ERASE')==1;ERASE=s.ERASE;end;
+
 if isfield(s,'VPN')==1;VPN=s.VPN;end;
 if isfield(s,'FLAG')==1;FLAG=s.FLAG;end;
 if isfield(s,'NB_PROF')==1;NB_PROF=s.NB_PROF;end;
