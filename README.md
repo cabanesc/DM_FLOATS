@@ -51,7 +51,9 @@ Matlab requiered version: >= 2020b
 
 14. You will need pdflatex to create reports. As an alternative, it is possible to compile .tex online : overleaf  https://fr.overleaf.com/
 
-15. Modify config_template.txt and save it to config.txt
+15. Copy config_template.txt to config.txt. Modify config.txt 
+
+16. Copy init_path_template.m to init_path.m. Modify init_path.m if necessary
 
 16. Modify rdir in MAIN_template.m
 

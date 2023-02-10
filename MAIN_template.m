@@ -1,5 +1,5 @@
 %    MAIN program to process a CORE float in DM
-%    see MAIN_template_deep for deep argo floats.
+%    see MAIN_deep_template for deep argo floats.
 %
 %    Plots several diagnostic figures (theta/S, PSAL, TEMP, SIG0 sections, float trajectory).
 %    GUI to view Argo profiles and interactively change the value of the quality flags (corrected flags are reported in netcdf files)
@@ -28,7 +28,7 @@ eval(fullfile('cd ',rdir));
 %3900515/	6900807/	6901603/	6902808/	6902818/	6903246/
 %3900516/	6901004/	6901758/	6902810/	6902881/	6903249/
 
-floatname = '6902914';
+floatname = '6901263';
 dacname = 'coriolis';
 numconfig_ow = 1495;                  
 % available config_{numconfig_ow}.txt files are in ./LPO_CODES_ATLN_NEW/ow_config/
@@ -92,7 +92,7 @@ if irun.CORRECT_float
     init_path('add',rep,rdir);
     eval(fullfile('cd ./',rep));
    %CORRECT_float_flag(floatname,dacname,'VPN',0,'KEEPZOOM',0,'FLAG',1,'NB_PROF',1) % all options, default values
-    CORRECT_float_flag(floatname,dacname,'VPN',0,'KEEPZOOM',0,'FLAG',1)% RAS
+    CORRECT_float_flag(floatname,dacname,'VPN',0,'KEEPZOOM',0,'FLAG',1)% 
     eval('cd ..');
     init_path('clear',rep,rdir);
 end

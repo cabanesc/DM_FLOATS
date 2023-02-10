@@ -1,6 +1,8 @@
 function init_path(action,rep,rdir)
 
 %path(pathdef)
+USER_DIR_m_map = fullfile(rdir,'/lib/m_map1.4m'); % change if it is located somewhere else. Ex:
+% USER_DIR_m_map='/Users/thierry_reynaud/IFREMER/MATLAB/m_map1.4m'
 
 switch lower(rep)
     case {lower('CHANGE_FLAGS')}
@@ -13,7 +15,7 @@ switch lower(rep)
                 addpath(fullfile(rdir,'CHANGE_FLAGS'));
                 addpath(fullfile(rdir,'CHANGE_FLAGS/util'));
                 addpath(fullfile(rdir));
-                addpath(fullfile(rdir,'/lib/m_map1.4m'));
+                addpath(USER_DIR_m_map);
             case lower('clear')
                 path(pathdef)
         end
@@ -26,7 +28,7 @@ switch lower(rep)
                 addpath(fullfile(rdir,'/lib/ext_lib'));
                 addpath(fullfile(rdir,'/PROG_QC2015/util'));
                 addpath(fullfile(rdir,'/lib/cmocean'));
-                addpath(fullfile(rdir,'/lib/m_map1.4m'));
+                addpath(USER_DIR_m_map);
                 addpath(fullfile(rdir));
 
             case lower('clear')
@@ -42,7 +44,7 @@ switch lower(rep)
                 addpath(fullfile(rdir,'/VERIF_FLAG/util'));
                 addpath(fullfile(rdir,'/lib/cmocean'));
                 addpath(fullfile(rdir,'/lib/hydcal'));
-                addpath(fullfile(rdir,'/lib/m_map1.4m'));
+                addpath(USER_DIR_m_map);
             case lower('clear')
                 path(pathdef)
         end
@@ -56,7 +58,7 @@ switch lower(rep)
                 addpath(fullfile(rdir,'/VERIF_PROF1/util'));
                 addpath(fullfile(rdir,'/VERIF_PROF1/config_campagne'));
                 addpath(fullfile(rdir,'/lib/cmocean'));
-                addpath(fullfile(rdir,'/lib/m_map1.4m'));
+                addpath(USER_DIR_m_map);
             case lower('clear')
                 path(pathdef)
         end
@@ -71,7 +73,7 @@ switch lower(rep)
                 addpath(fullfile(rdir,'/VERIF_PROF1/config_campagne'));
                 addpath(fullfile(rdir,'/lib/cmocean'));
                 addpath(genpath(fullfile(rdir,'/lib/gsw_matlab_v3_04_TR')));
-                addpath(fullfile(rdir,'/lib/m_map1.4m'));
+                addpath(USER_DIR_m_map);
             case lower('clear')
                 path(pathdef)
         end
@@ -83,7 +85,7 @@ switch lower(rep)
                 addpath(fullfile(rdir,'/lib/ext_lib'));
                 addpath(fullfile(rdir));
                 addpath(fullfile(rdir,'/COMPARE_FLOAT_REF_TR/util'));
-                addpath(fullfile(rdir,'/lib/m_map1.4m'));
+                addpath(USER_DIR_m_map);
             case lower('clear')
                 path(pathdef)
         end  
@@ -98,7 +100,7 @@ switch lower(rep)
                 addpath(fullfile(rdir,'LPO_CODES_ATLN_NEW'));
                 
                 addpath(fullfile(rdir));
-                addpath(fullfile(rdir,'/lib/m_map1.4m'));
+                addpath(USER_DIR_m_map);
             case lower('clear')
                 path(pathdef)
         end
@@ -110,7 +112,7 @@ switch lower(rep)
                 addpath(fullfile(rdir,'/lib/ext_lib'));
                 addpath(fullfile(rdir));
                 addpath(fullfile(rdir,'/lib/cmocean'));
-                addpath(fullfile(rdir,'/lib/m_map1.4m'));
+                addpath(USER_DIR_m_map);
                 addpath(fullfile(rdir,'/PROG_QC2015'));
             case lower('clear')
                 path(pathdef)

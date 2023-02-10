@@ -1,3 +1,4 @@
 # TO BE UPDATED when new versions are available
-# owc directory, owc version, ctd reference database version, argo reference database version
-matlab_ow-3.0.0_a,3.00,CTD2021V01,ARGO2020V03
+# owc version (4 digits max e.g 3.00 instead of 3.0.0), ctd reference database version, argo reference database version
+#
+3.00,CTD2021V02,ARGO2022V03

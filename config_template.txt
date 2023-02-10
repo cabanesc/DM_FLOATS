@@ -2,6 +2,9 @@
 
 % GENERAL
 % -----------------
+% ______________________________________________________________
+% !!! Replace {REP_DATA} and {REP_CODES} by your own paths !!!
+%_______________________________________________________________
 
 % miror of the GDAC FTP server (original floats profiles to process in DM, won't be modified)
 DIR_FTP_CORIOLIS={REP_DATA}/FTP_ORIG/

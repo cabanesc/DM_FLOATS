@@ -1412,8 +1412,10 @@ fclose(fw1);
 theref_file= ['../table_versionOW_versionbase.txt'];
 fr=fopen(theref_file);
 versionbase=textscan(fr,'%s\n','Delimiter',',','CommentStyle','#');
-[num_ligne,dirow,verow,verctd,verargo]=get_txtfile_col(theref_file,',');
-iver=findstr_tab(dirow,CONF.VERSION_OWC);
+%[num_ligne,dirow,verow,verctd,verargo]=get_txtfile_col(theref_file,',');
+[num_ligne,verow,verctd,verargo]=get_txtfile_col(theref_file,',');
+%iver=findstr_tab(dirow,CONF.VERSION_OWC);
+iver=1;
 fclose(fr);
 if isempty(iver)
     error(['Your OWC version is not listed in this file: ' theref_file] )

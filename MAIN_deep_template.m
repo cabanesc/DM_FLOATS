@@ -1,5 +1,5 @@
 %    MAIN program to process a DEEP argo float in DM
-%    see MAIN_template.m for core argo floats.
+%    see MAIN_template.m for 2000m argo floats.
 %
 %    Plots several diagnostic figures (theta/S, PSAL, TEMP, SIG0 sections, float trajectory).
 %    GUI to view Argo profiles and interactively change the value of the quality flags (corrected flags are reported in netcdf files)
@@ -27,7 +27,7 @@ eval(fullfile('cd ',rdir));
 %3900515/	6900807/	6901603/	6902808/	6902818/	6903246/
 %3900516/	6901004/	6901758/	6902810/	6902881/	6903249/
 
-floatname = '6902972';
+floatname = '6903028';
 dacname = 'coriolis';
 numconfig_ow = 39;                  % available ow configuration files are in LPO_CODES_ATLN_NEW/ow_config/ :
 % 149 : Classical North Atlantic config, ARGO reference database is used
@@ -247,7 +247,7 @@ if exist ('./TEMPLATES')==0
     mkdir ./TEMPLATES
 end
 if ~(contains(curr_dir,'TEMPLATES'))&~(contains(curr_path,'TEMPLATES'))
-copyfile ('MAIN_template_deep.m', ['./TEMPLATES/MAIN_' floatname '_deep.m'])
+copyfile ('MAIN_deep_template.m', ['./TEMPLATES/MAIN_' floatname '_deep.m'])
 else
 eval(['cd ' curr_dir])
 end
