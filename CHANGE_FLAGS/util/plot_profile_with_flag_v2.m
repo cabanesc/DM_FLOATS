@@ -84,8 +84,11 @@ for ikk=1:nn
                     if isfield(S.(ParamY),'data') 
 						
 						level = S.(ParamY).data(nprof,:);
-                        plot(subX,level ,'Color',theLineColor,'LineWidth',p.LineWidth) ;
                         
+                        plot(subX,level ,'Color',theLineColor,'LineWidth',p.LineWidth) ;
+                        if strcmp(p.Marker,'grey')==1
+                        plot(subX,level ,'-.+','Color',theLineColor,'LineWidth',p.LineWidth) ;    
+                        end
                         hold on
                         grid on
 						
@@ -111,7 +114,7 @@ for ikk=1:nn
                                 sub2=subX;
                                 sub2(the_qc~=1)=NaN;
 								%p.Marker
-                                if strcmp(p.Marker,'none')==0
+                                if strcmp(p.Marker,'+')==1
                                     
                                     colorp=['g' p.Marker];
                                    

@@ -115,16 +115,16 @@ if isfield(FL,'longitude')
         end
         
         colorbar('delete')
-        xlabel('longitude')
-        ylabel('latitude')
+        xlabel('Longitude')
+        
         %c=colorbar('horiz')
         %xlabel(c,'Cycle Number')
         
         xth=get(gca,'XTick');
+            
         yth=get(gca,'YTick');
-        m_grid;        
-        
-        
+        m_grid('xtick',4,'ytick',4);        
+        ylabel({'Latitude',' '})
         thetitle = [' '];
         info1  = {'platform_number','pi_name','data_centre','juld'};
         info2  = {'Platform: ', ', PI: ', ', ',', date of the first cycle: '};
