@@ -28,9 +28,9 @@ eval(fullfile('cd ',rdir));
 %3900515/	6900807/	6901603/	6902808/	6902818/	6903246/
 %3900516/	6901004/	6901758/	6902810/	6902881/	6903249/
 
-floatname = '6901263';
+floatname = '3901920';
 dacname = 'coriolis';
-numconfig_ow = 1495;                  
+numconfig_ow = 149;                  
 % available config_{numconfig_ow}.txt files are in ./LPO_CODES_ATLN_NEW/ow_config/
 % 149 : Classical North Atlantic config, ARGO reference database is used
 % 129 : Classical North Atlantic config, ARGO  and CTD reference databases are used
@@ -44,7 +44,7 @@ name_campaign  = 'OVIDE';          % title of the DM report.
 
 
 
-n_prof=140; % profile number that we want to compare to the closest profiles in the reference database (see VERIF_FLAG)
+n_prof=1; % profile number that we want to compare to the closest profiles in the reference database (see VERIF_FLAG)
 
 
 irun.LOAD_float      = 0   % Load data  : copy the file from DIR_FTP_CORIOLIS to DIR_FTP
@@ -58,7 +58,7 @@ irun.ANALYSE_CAL     = 0;  % Optional: gives information about the OW correction
 irun.CORRECTIONS     = 0;  % writing D files with OWC correction and corrected flags
 irun.PLOTDATA_adj    = 0;  % Diagnostic plots (theta/S, sections, ...) for adjusted data
 irun.VERIF_PROF1_adj = 0;  % Comparison of an adjusted Argo profile to the launch CTD data
-irun.DOC             = 1;  % Creating the repport
+irun.DOC             = 0;  % Creating the repport
 
 %===========================%
 % Load data  : copy the file from DIR_FTP_CORIOLIS to DIR_FTP
