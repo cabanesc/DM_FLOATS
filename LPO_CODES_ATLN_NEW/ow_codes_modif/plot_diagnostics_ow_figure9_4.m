@@ -522,12 +522,12 @@ if(isempty(find(isnan(PRES)==0))==0) % if no data exists, terminate here, no plo
                 %F.(paramad).data(F.(paramad).data>9999999)=NaN;
                 
                 mean_diff = meanoutnan(F.(paramad).data,2)-meanoutnan(F.(param).data,2);
-                mean_diff = meanoutnan(F.(paramad).data,2)-meanoutnan(F.(param).data,2);
-                plot_cycle=[min(F.cycle_number.data):max(F.cycle_number.data)];
-                plot_mean=NaN*ones(size(plot_cycle));
-                [iiu,iiy]=ismember(F.cycle_number.data,plot_cycle);
-                plot_mean(iiy)=mean_diff;
-                plot(plot_cycle,plot_mean,'m-','LineWidth',2)
+                mean_diff(F.data_mode.data~='D')=NaN;
+%                 plot_cycle=[min(F.cycle_number.data):max(F.cycle_number.data)];
+%                 plot_mean=NaN*ones(size(plot_cycle));
+%                 [iiu,iiy]=ismember(plot_cycle,F.cycle_number.data);
+%                 plot_mean(iiy)=mean_diff;
+                plot(F.cycle_number.data,mean_diff,'m-','LineWidth',2)
             end
             
         end %if(isempty(find(isnan(cal_SAL)==0))==0) ---------------
