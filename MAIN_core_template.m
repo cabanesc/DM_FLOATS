@@ -28,7 +28,7 @@ eval(fullfile('cd ',rdir));
 %3900515/	6900807/	6901603/	6902808/	6902818/	6903246/
 %3900516/	6901004/	6901758/	6902810/	6902881/	6903249/
 
-floatname = '3901920';
+floatname = '6902753';
 dacname = 'coriolis';
 numconfig_ow = 149;                  
 % available config_{numconfig_ow}.txt files are in ./LPO_CODES_ATLN_NEW/ow_config/
@@ -47,13 +47,13 @@ name_campaign  = 'OVIDE';          % title of the DM report.
 n_prof=1; % profile number that we want to compare to the closest profiles in the reference database (see VERIF_FLAG)
 
 
-irun.LOAD_float      = 0   % Load data  : copy the file from DIR_FTP_CORIOLIS to DIR_FTP
+irun.LOAD_float      = 1;  % Load data  : copy the file from DIR_FTP_CORIOLIS to DIR_FTP
 irun.PLOTDATA_raw    = 0;  % Preliminary diagnostic plots (theta/S, sections, bathy, flags...)
 irun.CORRECT_float   = 0;  % Visualization & correction of flags in netcdf files
 irun.VERIF_FLAG      = 0;  % Comparison of a raw Argo profile (n_prof) to the closest profiles in the reference database
 irun.VERIF_PROF1_raw = 0;  % Comparison of a raw Argo profile to the launch CTD data
 irun.FIND_CLOSE_float= 0;  % Optional: comparison to neighboring Argo profiles (DOI Argo)
-irun.OW              = 0;  % OWC correction 
+irun.OW              = 1;  % OWC correction 
 irun.ANALYSE_CAL     = 0;  % Optional: gives information about the OW correction (offset value, slope)
 irun.CORRECTIONS     = 0;  % writing D files with OWC correction and corrected flags
 irun.PLOTDATA_adj    = 0;  % Diagnostic plots (theta/S, sections, ...) for adjusted data
@@ -221,7 +221,7 @@ if exist ('./TEMPLATES')==0
 end
 
 if ~(contains(curr_dir,'TEMPLATES'))&~(contains(curr_path,'TEMPLATES'))
-copyfile ('MAIN_template.m', ['./TEMPLATES/MAIN_' floatname '.m'])
+copyfile ('MAIN_core.m', ['./TEMPLATES/MAIN_' floatname '.m'])
 else
 eval(['cd ' curr_dir])
 end

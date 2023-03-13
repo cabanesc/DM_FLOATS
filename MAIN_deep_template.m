@@ -247,7 +247,7 @@ if exist ('./TEMPLATES')==0
     mkdir ./TEMPLATES
 end
 if ~(contains(curr_dir,'TEMPLATES'))&~(contains(curr_path,'TEMPLATES'))
-copyfile ('MAIN_deep_template.m', ['./TEMPLATES/MAIN_' floatname '_deep.m'])
+copyfile ('MAIN_deepgit .m', ['./TEMPLATES/MAIN_' floatname '_deep.m'])
 else
 eval(['cd ' curr_dir])
 end

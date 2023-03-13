@@ -55,6 +55,12 @@ Matlab requiered version: >= 2020b
 
 16. Copy init_path_template.m to init_path.m. Modify init_path.m if necessary
 
-16. Modify rdir in MAIN_template.m
+17. Copy Main_core_template.m to Main_core.m. 
+
+18. Modify rdir in MAIN_core.m. Use Main_core.m to run Delayed Mode analysis on your 0-2000m floats.
+
+19. Copy Main_deep_template.m to Main_deep.m. 
+
+20. Modify rdir in MAIN_deep.m. Use Main_deep.m to run Delayed Mode analysis on your deep floats.
 
 
