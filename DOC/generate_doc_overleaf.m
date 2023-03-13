@@ -52,6 +52,7 @@ DIR_DATA=CONF.DIR_DATA;
 DIR_PLOTOW=[CONF.DIR_DATA 'float_plots/CONFIG'];
 DIR_DMQC=CONF.DIR_DM_FILES;
 DIR_CODES=CONF.DIR_CODES;
+AUTHORS=CONF.REPORT_AUTHORS;
 
 % INPUT PARAMETERS
 n=length(varargin);
@@ -156,7 +157,7 @@ fw1=fopen(['./OVERLEAF/ebauche_rapport.tex'],'w');
 % ecriture de l'entete du document + titre
 %-----------------------------------------
 file_cor
-write_titletex(fw1,TITLE, SUBTITLE, '',file_cor,float_list );
+write_titletex(fw1,TITLE, SUBTITLE, AUTHORS,file_cor,float_list );
 
 fprintf(fw1,'%s\n', [' ']);
 fprintf(fw1,'%s\n', [' ']);

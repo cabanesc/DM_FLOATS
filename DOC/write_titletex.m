@@ -1,4 +1,4 @@
-function write_titletex(fw1,TITRE,DOI_ARGO,REPORT_NO,file_cor,float_list)
+function write_titletex(fw1,TITRE,DOI_ARGO,AUTHORS,file_cor,float_list)
 
 fprintf(fw1,'%s\n', ['\documentclass[11pt,titlepage]{article}']);
 fprintf(fw1,'%s\n', ['\usepackage[latin1]{inputenc}']);
@@ -82,9 +82,9 @@ fprintf(fw1,'%s\n', ['\multicolumn{3}{c}{\gtitre  ' DOI_ARGO '} \\']);
 fprintf(fw1,'%s\n', ['\vspace*{0.5cm} & & \\']);
 fprintf(fw1,'%s\n', ['\hline']);
 fprintf(fw1,'%s\n', ['\vspace*{0.5cm} & & \\']);
-fprintf(fw1,'%s\n', ['\multicolumn{3}{c}{C.Cabanes, V.Thierry}\\ ']);
+fprintf(fw1,'%s\n', ['\multicolumn{3}{c}{ ' AUTHORS ' }\\ ']);
 fprintf(fw1,'%s\n', ['\vspace*{0.5cm} & & \\']);
-fprintf(fw1,'%s\n', ['\multicolumn{3}{c}{ SO ARGO - LOPS report ' REPORT_NO ' - Update \today}\\  ']);
+fprintf(fw1,'%s\n', ['\multicolumn{3}{c}{ SO ARGO - LOPS report - Update \today}\\  ']);
 fprintf(fw1,'%s\n', ['\end{tabularx}']);
 fprintf(fw1,'%s\n', [' ']);
 fprintf(fw1,'%s\n', ['\vspace*{2cm} ']);

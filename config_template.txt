@@ -60,3 +60,8 @@ DIR_CAMPAIGN={REP_DATA}/CAMPAIGN/
 OPERATOR_ORCID_ID = https://orcid.org/xxxx-xxxx-xxxx-xxxx
 OPERATOR_NAME = xxxx
 OPERATOR_INSTITUTION = xxxx
+
+% Name of authors of the report (eg: C.Cabanes, V.Thierry)
+%-------------------------------
+REPORT_AUTHORS = xxxxxxxxx
+
