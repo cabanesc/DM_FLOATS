@@ -171,8 +171,8 @@ for ibox=1:nbox % boucle sur toutes les boites
         end
         
        if isempty(ip)==0
-        themin=min(themin,min(CTD.(lower(Param)).data(ip)));
-        themax=max(themax,max(CTD.(lower(Param)).data(ip)));
+        themin=min(themin,min(CTD.(lower(Param)).data(ip)))-1;
+        themax=max(themax,max(CTD.(lower(Param)).data(ip)))+1;
         caxis([themin,themax])
        colorbar
        b=get(gca,'YLim');
