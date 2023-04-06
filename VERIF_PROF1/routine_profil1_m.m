@@ -235,7 +235,7 @@ hold on
 set(gca,'fontsize',18);
 m_plot(F.longitude.data(nocycl,:),F.latitude.data(nocycl,:),'g.','MarkerSize',20);
 m_plot(CTD.longitude.data,CTD.latitude.data,'m.','MarkerSize',20);
-title({['Float ' floatname ' cycle ' num2str(nocycl)   ' (' F.date_str.data(nocycl,:) ')'];['vs  CTD from ' CAMPAIGN.camp_name '(' CTD.date_str.data ')']},'FontWeight','bold');
+title({['Float ' floatname ' cycle ' pfnu   ' (' F.date_str.data(nocycl,:) ')'];['vs  CTD from ' CAMPAIGN.camp_name '(' CTD.date_str.data ')']},'FontWeight','bold');
 xlabel('Longitude');
 ylabel('Latitude');
 
