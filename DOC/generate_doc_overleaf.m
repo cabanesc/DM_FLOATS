@@ -784,7 +784,7 @@ for ik=1:length(float_list)
         fprintf(fw1,'%s\n', str);
         % fprintf(fw1,'%s\n', '$$');
         % fprintf(fw1,'%s\n', '\end{subfigure}');
-        str=['Float ' float_list{ik} '. Comparaison of the first descending (or ascending) argo profile  with the CTD made at float deployement. Difference is PSAL(argo) -PSAL(ref cast). '];
+        str=['Float ' float_list{ik} '. Comparison of the first descending (or ascending) argo profile  with the CTD made at float deployement. Difference is PSAL(argo) -PSAL(ref cast). '];
         fprintf(fw1,'%s\n', ['\caption{' str '}']);
         fprintf(fw1,'%s\n', ['\label{fig4' labell '}']);
         fprintf(fw1,'%s\n', '\end{center}');
@@ -1306,7 +1306,7 @@ for ik=1:length(float_list)
         fprintf(fw1,'%s\n', str);
         % fprintf(fw1,'%s\n', '$$');
         % fprintf(fw1,'%s\n', '\end{subfigure}');
-        str=['Float ' float_list{ik} '. Comparaison of the first descending (or ascending) argo profile  with the CTD made at float deployement. Difference is PSAL\_ADJUSTED(argo) -PSAL(ref cast). '];
+        str=['Float ' float_list{ik} '. Comparison of the first descending (or ascending) argo profile  with the CTD made at float deployement. Difference is PSAL\_ADJUSTED(argo) -PSAL(ref cast). '];
         fprintf(fw1,'%s\n', ['\caption{' str '}']);
         fprintf(fw1,'%s\n', ['\label{fig4' labell '}']);
         fprintf(fw1,'%s\n', '\end{center}');
