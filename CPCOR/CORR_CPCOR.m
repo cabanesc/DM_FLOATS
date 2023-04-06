@@ -364,7 +364,11 @@ for ifloat=1:length(floatname)
             l_so_r=length(soft_release);
             F.history_software_release.data(new_hist,n_prof,:)=F.history_software_release.FillValue_;
             F.history_software_release.data(new_hist,n_prof,1:l_so_r)=soft_release;
+            if isfield(CAMPAIGN,'STATION')
             reference=CAMPAIGN.STATION;
+            else
+            reference='n/a';
+            end
             l_ref=length(reference);
             F.history_reference.data(new_hist,n_prof,:)=F.history_reference.FillValue_;
             F.history_reference.data(new_hist,n_prof,1:l_ref)=reference;
