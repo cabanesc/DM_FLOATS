@@ -67,16 +67,18 @@ for ifloat=1:length(floatname)
     ivalve=find(findstr_tab(cellstr(T.technical_parameter_name.data),'NUMBER_ValveActionsDuringDescentToPark_COUNT')==1);
     cycl=T.cycle_number.data(isurf);
     cyc1=(cycl==1);
-    
-    % 	figure
-    % 	subplot(3,1,1)
-    % 	plot(T.cycle_number.data(isurf),str2num(T.technical_parameter_value.data(isurf,:)),'+-')
-    % 	hold on
-    % 	box on
-    % 	grid on
-    % 	xlabel('cycle_number','interpreter','none')
-    % 	ylabel('dbar')
-    % 	title('PRES_SurfaceOffsetCorrectedNotResetNegative_1cBarResolution_dbar','interpreter','none')
+    press_surf= str2num(T.technical_parameter_value.data(isurf,:));
+    cycl(end+1)= cycl(end)+1;
+    press_surf(end+1)=press_surf(end);
+    %      	figure
+    %      	subplot(3,1,1)
+    %      	plot(cycl,press_surf,'+-')
+    %      	hold on
+    %      	box on
+    %      	grid on
+    %      	xlabel('cycle_number','interpreter','none')
+    %      	ylabel('dbar')
+    %      	title('PRES_SurfaceOffsetCorrectedNotResetNegative_1cBarResolution_dbar','interpreter','none')
     % 	subplot(3,1,2)
     % 	plot(T.cycle_number.data(ivolt),str2num(T.technical_parameter_value.data(ivolt,:)),'+-')
     % 	hold on
@@ -117,16 +119,27 @@ for ifloat=1:length(floatname)
         [F,Dim,G]=read_netcdf_allthefile(file_name);
         F = replace_fill_bynan(F);
         Forig=F;
-        
-        if F.cycle_number.data==1
-            %press_offset= str2num(T.technical_parameter_value.data(isurf(cyc1),:));
-            % Update 04/2021: ne tient pas compte de l'offset normalement c'est corrigé (voir le manuel utilisateur des deep aRG0
-            % Le pres offset est mesuré avant la descente, est gardé en memoire et utilisé pour corriger les pressions au cours du cycle. transmis 10 jours plus tard.
-            % Si correction de pression cycle 1A, on remarque que la plupart des pressions near surface sont négatives!!! pas cohérent.
-            press_offset=0;
+        cor_pres=0;
+        %  Update 2023 corrige la pression en decalant la correction de pression surface de 1 cycle
+        tcycl=find(cycl==F.cycle_number.data(1));
+        tcyclp1=find(cycl==F.cycle_number.data(1)+1);
+        if ~isempty(tcycl)&~isempty(tcyclp1)
+            press_offset=-press_surf(tcycl)+press_surf(tcyclp1);
+            cor_pres=1;
         else
             press_offset=0;
+            cor_pres=0;
         end
+        press_offset;
+        %         if F.cycle_number.data==1
+        %             %press_offset= str2num(T.technical_parameter_value.data(isurf(cyc1),:));
+        %             % Update 04/2021: ne tient pas compte de l'offset normalement c'est corrigé (voir le manuel utilisateur des deep aRG0
+        %             % Le pres offset est mesuré avant la descente, est gardé en memoire et utilisé pour corriger les pressions au cours du cycle. transmis 10 jours plus tard.
+        %             % Si correction de pression cycle 1A, on remarque que la plupart des pressions near surface sont négatives!!! pas cohérent.
+        %             press_offset=0;
+        %         else
+        %             press_offset=0;
+        %         end
         
         isprimary = find(findstr_tab(F.vertical_sampling_scheme.data,'Primary sampling'));
         notisprimary = find(findstr_tab(F.vertical_sampling_scheme.data,'Near-surface sampling'));
@@ -157,7 +170,7 @@ for ifloat=1:length(floatname)
         F.psal_adjusted.data = psal_argo_new;
         
         
-        % FILL N_CALIB=1 with  CPCOR calibration infos, as weel as TEMP and
+        % FILL N_CALIB=1 with  CPCOR calibration infos, as well as TEMP and
         % PRES
         n_calib=1;
         theparameters = strtrim(squeeze(F.parameter.data(isprimary,n_calib,:,:)));
@@ -201,61 +214,62 @@ for ifloat=1:length(floatname)
         
         % if F.cycle_number.data==1
         
-        % thestr=(['PRES_ADJUSTED(cycle 1)=PRES (cycle 1)- Surface Pressure(cycle 1)']);
-        % l_thestr=length(thestr);
-        % F.scientific_calib_equation.data(isprimary,n_calib,ind_pres,:) = F.scientific_calib_equation.FillValue_;
-        % F.scientific_calib_equation.data(isprimary,n_calib,ind_pres,1:l_thestr) = thestr;
-        % if ~isempty (notisprimary)
-        % F.scientific_calib_equation.data(notisprimary,n_calib,ind_pres,:) = F.scientific_calib_equation.FillValue_;
-        % F.scientific_calib_equation.data(notisprimary,n_calib,ind_pres,1:l_thestr) = thestr;
-        % end
-        % thestr=(['Surface Pressure =' num2str(-press_offset)]);
-        % l_thestr=length(thestr);
-        % F.scientific_calib_coefficient.data(isprimary,n_calib,ind_pres,:) = F.scientific_calib_coefficient.FillValue_;
-        % F.scientific_calib_coefficient.data(isprimary,n_calib,ind_pres,1:l_thestr) = thestr;
-        % if ~isempty (notisprimary)
-        % F.scientific_calib_coefficient.data(notisprimary,n_calib,ind_pres,:) = F.scientific_calib_coefficient.FillValue_;
-        % F.scientific_calib_coefficient.data(notisprimary,n_calib,ind_pres,1:l_thestr) = thestr;
-        % end
-        % thestr=(['This float is autocorrecting but not at cycle 1. We corrected the pressure with Surface Pressure(cycle 1)']);
-        % l_thestr=length(thestr);
-        % F.scientific_calib_comment.data(isprimary,n_calib,ind_pres,:) = F.scientific_calib_comment.FillValue_;
-        % F.scientific_calib_comment.data(isprimary,n_calib,ind_pres,1:l_thestr) = thestr;
-        % F.scientific_calib_date.data(isprimary,n_calib,ind_pres,:)=thedate;
-        % if ~isempty (notisprimary)
-        % F.scientific_calib_comment.data(notisprimary,n_calib,ind_pres,:) = F.scientific_calib_comment.FillValue_;
-        % F.scientific_calib_comment.data(notisprimary,n_calib,ind_pres,1:l_thestr) = thestr;
-        % F.scientific_calib_date.data(notisprimary,n_calib,ind_pres,:)=thedate;
-        % end
-        % else
-        
-        thestr=(['PRES_ADJUSTED = PRES']);
-        l_thestr=length(thestr);
-        F.scientific_calib_equation.data(isprimary,n_calib,ind_pres,:) = F.scientific_calib_equation.FillValue_;
-        F.scientific_calib_equation.data(isprimary,n_calib,ind_pres,1:l_thestr) = thestr;
-        %         if ~isempty (notisprimary)
-        %             F.scientific_calib_equation.data(notisprimary,n_calib,ind_pres,:) = F.scientific_calib_equation.FillValue_;
-        %             F.scientific_calib_equation.data(notisprimary,n_calib,ind_pres,1:l_thestr) = thestr;
-        %         end
-        thestr=(['none']);
-        l_thestr=length(thestr);
-        F.scientific_calib_coefficient.data(isprimary,n_calib,ind_pres,:) = F.scientific_calib_coefficient.FillValue_;
-        F.scientific_calib_coefficient.data(isprimary,n_calib,ind_pres,1:l_thestr) = thestr;
-%         if ~isempty (notisprimary)
-%             F.scientific_calib_coefficient.data(notisprimary,n_calib,ind_pres,:) = F.scientific_calib_coefficient.FillValue_;
-%             F.scientific_calib_coefficient.data(notisprimary,n_calib,ind_pres,1:l_thestr) = thestr;
-%         end
-        thestr=(['This float is autocorrecting pressure. Data is good within the specified error.']);
-        l_thestr=length(thestr);
-        F.scientific_calib_comment.data(isprimary,n_calib,ind_pres,:) = F.scientific_calib_comment.FillValue_;
-        F.scientific_calib_comment.data(isprimary,n_calib,ind_pres,1:l_thestr) = thestr;
-        F.scientific_calib_date.data(isprimary,n_calib,ind_pres,:)=thedate;
-        %         if ~isempty (notisprimary)
-        %             F.scientific_calib_comment.data(notisprimary,n_calib,ind_pres,:) = F.scientific_calib_comment.FillValue_;
-        %             F.scientific_calib_comment.data(notisprimary,n_calib,ind_pres,1:l_thestr) = thestr;
-        %             F.scientific_calib_date.data(notisprimary,n_calib,ind_pres,:)=thedate;
-        %         end
-        % end
+        if cor_pres==1
+            thestr=(['PRES_ADJUSTED(cycle n)=PRES (cycle n)+ Pres_surf(cycle n) - Pres_surf(cycle n+1) ']);
+            l_thestr=length(thestr);
+            F.scientific_calib_equation.data(isprimary,n_calib,ind_pres,:) = F.scientific_calib_equation.FillValue_;
+            F.scientific_calib_equation.data(isprimary,n_calib,ind_pres,1:l_thestr) = thestr;
+            %              if ~isempty (notisprimary)
+            %                  F.scientific_calib_equation.data(notisprimary,n_calib,ind_pres,:) = F.scientific_calib_equation.FillValue_;
+            %                  F.scientific_calib_equation.data(notisprimary,n_calib,ind_pres,1:l_thestr) = thestr;
+            %              end
+            thestr=(['Pres_surf(cycle n) - Pres_surf(cycle n+1) =' num2str(press_offset)]);
+            l_thestr=length(thestr);
+            F.scientific_calib_coefficient.data(isprimary,n_calib,ind_pres,:) = F.scientific_calib_coefficient.FillValue_;
+            F.scientific_calib_coefficient.data(isprimary,n_calib,ind_pres,1:l_thestr) = thestr;
+            %              if ~isempty (notisprimary)
+            %              F.scientific_calib_coefficient.data(notisprimary,n_calib,ind_pres,:) = F.scientific_calib_coefficient.FillValue_;
+            %              F.scientific_calib_coefficient.data(notisprimary,n_calib,ind_pres,1:l_thestr) = thestr;
+            %              end
+            thestr=(['This float is autocorrecting but The CTD profile and the associated SP are staggered by one cycle in DM because the SP measurement is taken just prior to descent']);
+            l_thestr=length(thestr);
+            F.scientific_calib_comment.data(isprimary,n_calib,ind_pres,:) = F.scientific_calib_comment.FillValue_;
+            F.scientific_calib_comment.data(isprimary,n_calib,ind_pres,1:l_thestr) = thestr;
+            F.scientific_calib_date.data(isprimary,n_calib,ind_pres,:)=thedate;
+            %             if ~isempty (notisprimary)
+            %             F.scientific_calib_comment.data(notisprimary,n_calib,ind_pres,:) = F.scientific_calib_comment.FillValue_;
+            %             F.scientific_calib_comment.data(notisprimary,n_calib,ind_pres,1:l_thestr) = thestr;
+            %             F.scientific_calib_date.data(notisprimary,n_calib,ind_pres,:)=thedate;
+            %             end
+        else
+            
+            thestr=(['PRES_ADJUSTED = PRES']);
+            l_thestr=length(thestr);
+            F.scientific_calib_equation.data(isprimary,n_calib,ind_pres,:) = F.scientific_calib_equation.FillValue_;
+            F.scientific_calib_equation.data(isprimary,n_calib,ind_pres,1:l_thestr) = thestr;
+            %         if ~isempty (notisprimary)
+            %             F.scientific_calib_equation.data(notisprimary,n_calib,ind_pres,:) = F.scientific_calib_equation.FillValue_;
+            %             F.scientific_calib_equation.data(notisprimary,n_calib,ind_pres,1:l_thestr) = thestr;
+            %         end
+            thestr=(['none']);
+            l_thestr=length(thestr);
+            F.scientific_calib_coefficient.data(isprimary,n_calib,ind_pres,:) = F.scientific_calib_coefficient.FillValue_;
+            F.scientific_calib_coefficient.data(isprimary,n_calib,ind_pres,1:l_thestr) = thestr;
+            %         if ~isempty (notisprimary)
+            %             F.scientific_calib_coefficient.data(notisprimary,n_calib,ind_pres,:) = F.scientific_calib_coefficient.FillValue_;
+            %             F.scientific_calib_coefficient.data(notisprimary,n_calib,ind_pres,1:l_thestr) = thestr;
+            %         end
+            thestr=(['This float is autocorrecting pressure. Data is good within the specified error.']);
+            l_thestr=length(thestr);
+            F.scientific_calib_comment.data(isprimary,n_calib,ind_pres,:) = F.scientific_calib_comment.FillValue_;
+            F.scientific_calib_comment.data(isprimary,n_calib,ind_pres,1:l_thestr) = thestr;
+            F.scientific_calib_date.data(isprimary,n_calib,ind_pres,:)=thedate;
+            %         if ~isempty (notisprimary)
+            %             F.scientific_calib_comment.data(notisprimary,n_calib,ind_pres,:) = F.scientific_calib_comment.FillValue_;
+            %             F.scientific_calib_comment.data(notisprimary,n_calib,ind_pres,1:l_thestr) = thestr;
+            %             F.scientific_calib_date.data(notisprimary,n_calib,ind_pres,:)=thedate;
+            %         end
+        end
         
         
         ind_temp = ismember(cellstr(theparameters),'TEMP');
@@ -286,24 +300,55 @@ for ifloat=1:length(floatname)
         %             F.scientific_calib_date.data(notisprimary,n_calib,ind_temp,:)=thedate;
         %         end
         
+        % fill scientific calibration  for  intermediate core
+        % parameters TEMP_STD TEMP_MED PSAL_STD PSAL_MED PRES_MED
+        % TEMP_CNDC NB_SAMPLE_CTD MTIME
+        % --------------------------
+        list_intermediate={'TEMP_STD' 'TEMP_MED' 'PSAL_STD' 'PSAL_MED' 'PRES_MED' 'TEMP_CNDC' 'NB_SAMPLE_CTD' 'MTIME'};
+        theparameters = strtrim(squeeze(F.parameter.data(isprimary,n_calib,:,:)));
+        
+        for ilist_ic=1:length(list_intermediate)
+            
+            ind_ic = find(ismember(cellstr(theparameters),list_intermediate{ilist_ic}));
+            
+            if isempty(ind_ic)==0
+                eq='not applicable';
+                l_co = length(eq);
+                
+                F.scientific_calib_equation.data(isprimary,n_calib,ind_ic,:) = F.scientific_calib_equation.FillValue_;
+                F.scientific_calib_equation.data(isprimary,n_calib,ind_ic,1:l_co) = eq;
+                
+                coeff='not applicable';
+                l_co = length(coeff);
+                F.scientific_calib_coefficient.data(isprimary,n_calib,ind_ic,:) = F.scientific_calib_coefficient.FillValue_;
+                F.scientific_calib_coefficient.data(isprimary,n_calib,ind_ic,1:l_co) = coeff;
+                
+                comment ='not applicable';
+                l_co = length(comment);
+                F.scientific_calib_comment.data(isprimary,n_calib,ind_ic,:) = F.scientific_calib_comment.FillValue_;
+                F.scientific_calib_comment.data(isprimary,n_calib,ind_ic,1:l_co) = comment;
+                
+                
+                
+                F.scientific_calib_date.data(isprimary,n_calib,ind_ic,:)=thedate;
+            end
+        end
+        
         % INITIALIZE N_CALIB=2 for further OWC adjustement
         n_calib=2;
         thesize=size(F.scientific_calib_equation.data);
-        format_version=str2num(F.format_version.data');
         
         for iprof=1:thesize(1)
             for iparam=1:thesize(3)
                 F.scientific_calib_equation.data(iprof,n_calib,iparam,:)=F.scientific_calib_equation.FillValue_;
                 F.scientific_calib_coefficient.data(iprof,n_calib,iparam,:)=F.scientific_calib_coefficient.FillValue_;
                 F.scientific_calib_comment.data(iprof,n_calib,iparam,:)=F.scientific_calib_comment.FillValue_;
-                if format_version<2.3
-                    F.calibration_date.data(iprof,n_calib,iparam,:)=F.calibration_date.FillValue_;
-                else
-                    F.scientific_calib_date.data(iprof,n_calib,iparam,:)=F.scientific_calib_date.FillValue_;
-                end
+                F.scientific_calib_date.data(iprof,n_calib,iparam,:)=F.scientific_calib_date.FillValue_;
+                
             end
         end
         Dim.n_calib.dimlength=2;
+        
         %================== HISTORY fields
         %define new_hist=N_HISTORY+1
         if PARAM.NEW_CPCOR~=-13.5e-8  % add a new history step
@@ -365,9 +410,10 @@ for ifloat=1:length(floatname)
             F.history_software_release.data(new_hist,n_prof,:)=F.history_software_release.FillValue_;
             F.history_software_release.data(new_hist,n_prof,1:l_so_r)=soft_release;
             if isfield(CAMPAIGN,'STATION')
-            reference=CAMPAIGN.STATION;
+                %reference=CAMPAIGN.STATION;
+                reference='n/a';
             else
-            reference='n/a';
+                reference='n/a';
             end
             l_ref=length(reference);
             F.history_reference.data(new_hist,n_prof,:)=F.history_reference.FillValue_;

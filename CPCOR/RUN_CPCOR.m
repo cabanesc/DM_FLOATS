@@ -25,6 +25,7 @@ function RUN_CPCOR(floatname,dacname,numcycle,config_campaign_file,varargin)
 CONFIG=load_configuration('config.txt');
 
 CAMPAIGN=load_configuration(config_campaign_file);
+CAMPAIGN.PROF1_DIRECTORY = [CONFIG.DIR_PLOT 'verif_profil1/'];
 n=length(varargin);
 
 if n/2~=floor(n/2)
@@ -42,7 +43,7 @@ if isfield(s,'MIN_DEPTH')==1;PARAM.MIN_DEPTH=s.MIN_DEPTH;end;
 if isfield(s,'DIRECTION')==1;PARAM.DIRECTION=s.DIRECTION;end;
 CAMPAIGN.DACNAME=dacname;
 CAMPAIGN.FLOAT_SOURCE_NETCDF=CONFIG.DIR_FTP;
-
+CAMPAIGN.DATA_DIRECTORY=CONFIG.DIR_CAMPAIGN;
 flt_name = floatname;
 
 fw=fopen([CONFIG.DIR_PLOT 'verif_profil1/'  flt_name '/cpcor_table.csv'],'w')
