@@ -1,7 +1,7 @@
 % ========================================================
 %   USAGE :  ANALYSE_CAL(flt_name,dacname,varargin)
 %
-%   PURPOSE : Analyse du fichier CAL (determination de l'offset et de la pente sur differents segments)
+%   PURPOSE : Analyse du fichier CAL (determination de l'offset et de la pente sur differents segments-sections)
 %
 % -----------------------------------
 %   INPUT :
@@ -9,16 +9,6 @@
 %     dacname   (char)  --   float dac name
 %%   OPTIONNAL INPUT :
 %    NUMCONFIG (char) : configuration number for OWC (e.g. '149') Needed only if the configuration file is the generic one. (config.txt)
-% -----------------------------------
-%   OUTPUT :
-%   netcdf core D files (single cycle files) that can be distributed on gdac.
-% -----------------------------------
-%   HISTORY
-%  ??/???? : C.Coatanoan: - creation (fichier_nc_dmqc_ovide.m)
-%  from 12/2014 : C.Cabanes : -interactive input, use of +libargo, format 3.1
-%
-%  tested with matlab  8.3.0.532 (R2014a)
-%
 %  EXTERNAL LIB
 %  package +libargo : addpath('dm_float/lib/')
 %  seawater  : addpath('dm_float/lib/seawater_330_its90/')
@@ -71,16 +61,15 @@ else
 
 end
 
-
+% load files
 
 DIR_CAL=[DIR_OW '/'  ];
 
 C_FILE = load([DIR_CAL '/cal_' num2str(flotteur) '.mat']);
 S_FILE = load([DIR_CAL '../../float_source/' num2str(flotteur) '.mat']);
 
-% copie des fichiers cal sur le DIR_CAL
 
-
+% find the salinity correction time series (avg_Soffset)
 n=size(S_FILE.SAL,2);
 Soffset=C_FILE.cal_SAL-S_FILE.SAL;
 avg_Soffset=NaN.*ones(1,n);
@@ -96,13 +85,17 @@ for i=1:n
                     avg_Soffset_err(i) = NaN;
                 end
 end
-conduc= avg_Soffset(~isnan(avg_Soffset));
-conduc_err= avg_Soffset_err(~isnan(avg_Soffset_err));
+sal=avg_Soffset(~isnan(avg_Soffset_err));
+sal_err= avg_Soffset_err(~isnan(avg_Soffset_err));
 
+% find the section (work on conductivity)
+conduc= C_FILE.pcond_factor(~isnan(avg_Soffset));
 prof_no= C_FILE.PROFILE_NO(~isnan(C_FILE.pcond_factor));
-derive_cond= (round((conduc(2:end)-conduc(1:end-1))*1000)/1000)./(prof_no(2:end)-prof_no(1:end-1));
+derive_cond= round(((conduc(2:end)-conduc(1:end-1))./(prof_no(2:end)-prof_no(1:end-1))),4,'significant'); % compute derivative and round to 4 significant digits
 
 
+
+% identify sections
 i=1;
 segment=[1];
 u=2;
@@ -116,20 +109,24 @@ while length(segment)<length(derive_cond)-1
     u=u+1;
 end
 segment=[1 segment];
-[segu,segui]=unique(segment);
+[segu,segui]=libargo.unique_withocc(segment);
 
+disp('------------------------------------------------------------------')
+disp('OW correction')
+disp('-----------------------------')
+% print slope (for PSAL correction) for each section
 for k=1:length(segu)
-    iu=find(segment==segu(k));
-    imin=min(iu);
-    imax=max(iu);
-    
-    bef=max(iu(1)-1,1);
-    
-    slope=(round((conduc(iu(end))-conduc(iu(1)))*1000)/1000)./(S_FILE.DATES(iu(end))-S_FILE.DATES(iu(1)));
-    disp('------------------------------------------------------------------')
-    disp('OW correction')
-    disp('-----------------------------')
-    texte=['cycles ' num2str(prof_no(imin)) ' to ' num2str(prof_no(imax)) ': Correction Y(' num2str(prof_no(imin)) ') ' num2str((conduc(bef))) ' +/- ' num2str((conduc_err(bef))) ' and Slope ' num2str(slope) '/yr' ];
-    disp(texte)
-    disp('------------------------------------------------------------------')
+    iu=find(segment==k);
+    if isempty(iu)==0
+        imin=min(iu);
+        imax=max(iu);
+        
+        bef=max(iu(1)-1,1);
+        
+        slope=(round((sal(iu(end))-sal(iu(1)))*1000)/1000)./(S_FILE.DATES(iu(end))-S_FILE.DATES(iu(1)));
+        
+        texte=['cycles ' num2str(prof_no(imin)) ' to ' num2str(prof_no(imax)) ': Correction Y(' num2str(prof_no(imin)) ') ' num2str((sal(bef))) ' +/- ' num2str((sal_err(bef))) ' and Slope ' num2str(slope) '/yr' ];
+        disp(texte)
+        disp('------------------------------------------------------------------')
+    end
 end
