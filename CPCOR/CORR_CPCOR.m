@@ -9,6 +9,7 @@
 %    'NEW_CPCOR'     (float)    '-13.5e-8' (default): median CPCor values used to correct float salinity data
 %    'NEW_M'         (float)    '1' (default) : multiplicative factor for
 %    conservative conductivity
+%    'CORRECT_MINPRES' (float)   2 (default) : minimum pressure difference between two consecutive cycles for which the pressure is corrected by shifting the surface pressure by 1 cycle
 % -----------------------------------
 %   OUTPUT :
 % -----------------------------------
@@ -45,8 +46,11 @@ CTcor =  3.2500E-6;
 
 PARAM.NEW_CPCOR=-13.5e-8;
 PARAM.NEW_M=1;
+PARAM.CORRECT_MINPRES=2;
+
 if isfield(s,'NEW_CPCOR')==1;PARAM.NEW_CPCOR=s.NEW_CPCOR;end;
 if isfield(s,'NEW_M')==1;PARAM.NEW_M=s.NEW_M;end;
+if isfield(s,'CORRECT_MINPRES')==1;PARAM.CORRECT_MINPRES=s.CORRECT_MINPRES;end;
 disp(' ')
 disp(['NEW CPCOR is ' num2str(PARAM.NEW_CPCOR)])
 disp(['NEW M value is ' num2str(PARAM.NEW_M)])
@@ -120,12 +124,18 @@ for ifloat=1:length(floatname)
         F = replace_fill_bynan(F);
         Forig=F;
         cor_pres=0;
-        %  Update 2023 corrige la pression en decalant la correction de pression surface de 1 cycle
+        %  Update 2023 corrige la pression en decalant la correction de
+        %  pression surface de 1 cycle (sauf pour le 1D)
         tcycl=find(cycl==F.cycle_number.data(1));
+        charcy=[num2str(F.cycle_number.data(1)) F.direction.data(1)]; 
         tcyclp1=find(cycl==F.cycle_number.data(1)+1);
-        if ~isempty(tcycl)&~isempty(tcyclp1)
+        if ~isempty(tcycl)&~isempty(tcyclp1)& ~findstr_tab(charcy,'1D')
             press_offset=-press_surf(tcycl)+press_surf(tcyclp1);
             cor_pres=1;
+            if abs(press_offset)< PARAM.CORRECT_MINPRES
+                press_offset=0;
+                cor_pres=1;
+            end
         else
             press_offset=0;
             cor_pres=0;

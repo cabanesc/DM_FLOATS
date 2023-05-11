@@ -1,4 +1,4 @@
-function [cnews] = routine_profil1_cpcor(fw,profnum,floatname,po_system_configuration,PARAM)
+ function [cnews] = routine_profil1_cpcor(fw,profnum,floatname,po_system_configuration,PARAM)
 
 %==========================================================================
 % OBJECTIF: comparer un profil Argo a un profil CTD de reference (shipboard
@@ -86,21 +86,27 @@ press_surf= str2num(T.technical_parameter_value.data(isurf,:));
 % corrige la pression en decalant la correction de surface de 1 cycle
 
 cyc1=(cycl==1);
-tcycl=find(cycl==F.cycle_number.data)
-tcyclp1=find(cycl==F.cycle_number.data+1)
-if ~isempty(tcycl)&~isempty(tcyclp1)
-    F.pres_adjusted.data=F.pres.data-press_surf(tcycl)+press_surf(tcyclp1);
+tcycl=find(cycl==F.cycle_number.data);
+tcyclp1=find(cycl==F.cycle_number.data+1);
+charcy=[num2str(F.cycle_number.data(1)) F.direction.data(1)]; 
+
+if ~isempty(tcycl)&~isempty(tcyclp1)& ~findstr_tab(charcy,'1D')
+    press_offset=-press_surf(tcycl)+press_surf(tcyclp1);
+    PARAM.CORRECT_MINPRES
+    if abs(press_offset)< PARAM.CORRECT_MINPRES
+       press_offset=0;
+    end
+    F.pres_adjusted.data=F.pres.data+press_offset;
     % if nocycl==1|nocycl==2
     %     %press_offset= str2num(T.technical_parameter_value.data(isurf(cyc1),:));
     %     press_offset=0;
     % else
     %     press_offset=0;
-    % end
-    press_offset=-press_surf(tcycl)+press_surf(tcyclp1);
+    % end    
 else
     press_offset=0;
 end
-
+press_offset
 if nocycl<=length(F.cycle_number.data)
     %close all
     F=replace_fill_bynan(F);
@@ -213,6 +219,7 @@ if nocycl<=length(F.cycle_number.data)
     % mediane pour CPCOR=-1.294e-7
     
     CPcor_fixed = -1.16e-7;
+    %CPcor_fixed = -1.35e-7;
     inp3=[1];
     cnew3 = fminsearch(@myfun,inp3,options)
     
@@ -253,10 +260,9 @@ if nocycl<=length(F.cycle_number.data)
     
     
     theoffsset_pres = meanoutnan(psal_argo-psal_argo_corr);
-    
-    theoffsset_nom = meanoutnan(psal_argo_corr-psal_argo_nominal);
-    theoffsset_op  = meanoutnan(psal_argo_corr-psal_argo_optim);
-    theoffsset_med = meanoutnan(psal_argo_corr-psal_argo_median);
+    theoffsset_nom  = meanoutnan(difference_psal_theta(pres_argo_corr'>str2num(minDEPTH)));
+    theoffsset_op  = meanoutnan(difference_psal_theta_optim(pres_argo_corr'>str2num(minDEPTH)));
+    theoffsset_med = meanoutnan(difference_psal_theta_median(pres_argo_corr'>str2num(minDEPTH)));
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     dir_enregistre=[po_system_configuration.PROF1_DIRECTORY '/' floatname ];
@@ -282,7 +288,7 @@ if nocycl<=length(F.cycle_number.data)
         if isempty(maxval)||isnan(maxval)
             maxval=max(abs(difference_psal_theta_median(pres_argo(ip)>str2num('500'))));
         end
-        set(gca,'XLim',[-maxval-0.001,maxval+0.001])
+        set(gca,'XLim',[-maxval-0.015,maxval+0.015])
         %set(gca,'XLim',[-0.04,0.04])
         set(gca,'Ydir','reverse')
         title({['Salinity deviation from the shipboard reference.'];['Float ' floatname ', Cycle ' nocyclstr ]},'Fontsize',14)
