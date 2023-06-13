@@ -10,7 +10,7 @@
 global CPcor
 global CTcor
 global temp_argo pres_argo psal_argo lon_argo lat_argo psal_campagne ct_campagne pres_campagne
-global minDEPTH
+global minDEPTH maxDEPTH
 global press_offset
 global CPcor_fixed
 
@@ -204,6 +204,7 @@ if nocycl<=length(F.cycle_number.data)
     % dans cnew.
     % Minimum depth considered for the optimum fit
     minDEPTH = num2str(PARAM.MIN_DEPTH)
+    maxDEPTH = num2str(PARAM.MAX_DEPTH)
     % on cherche une valeur optimale pour l'offset en utilisant la valeur
     % cpcor nominale
     CPcor_fixed = CPcor;
@@ -260,9 +261,9 @@ if nocycl<=length(F.cycle_number.data)
     
     
     theoffsset_pres = meanoutnan(psal_argo-psal_argo_corr);
-    theoffsset_nom  = meanoutnan(difference_psal_theta(pres_argo_corr'>str2num(minDEPTH)));
-    theoffsset_op  = meanoutnan(difference_psal_theta_optim(pres_argo_corr'>str2num(minDEPTH)));
-    theoffsset_med = meanoutnan(difference_psal_theta_median(pres_argo_corr'>str2num(minDEPTH)));
+    theoffsset_nom  = meanoutnan(difference_psal_theta(pres_argo_corr'>str2num(minDEPTH)&pres_argo_corr'<=str2num(maxDEPTH)));
+    theoffsset_op  = meanoutnan(difference_psal_theta_optim(pres_argo_corr'>str2num(minDEPTH)&pres_argo_corr'<=str2num(maxDEPTH)));
+    theoffsset_med = meanoutnan(difference_psal_theta_median(pres_argo_corr'>str2num(minDEPTH)&pres_argo_corr'<=str2num(maxDEPTH)));
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     dir_enregistre=[po_system_configuration.PROF1_DIRECTORY '/' floatname ];
@@ -291,7 +292,7 @@ if nocycl<=length(F.cycle_number.data)
         set(gca,'XLim',[-maxval-0.015,maxval+0.015])
         %set(gca,'XLim',[-0.04,0.04])
         set(gca,'Ydir','reverse')
-        title({['Salinity deviation from the shipboard reference.'];['Float ' floatname ', Cycle ' nocyclstr,', MINPRES ',minDEPTH ' db']},'Fontsize',14)
+        title({['Salinity deviation from the shipboard reference.'];['Float ' floatname ', Cycle ' nocyclstr,', Layer: ',minDEPTH, '-', maxDEPTH ' db']},'Fontsize',14)
         xlabel('Salinity deviation on float theta levels','Fontsize',12)
         %legend({'Original  profile (press corrected): nominal CPCOR  (-9.57e-8) , no offset corrected',['Modified profile: nominal CPCOR  (-9.57e-8) , optimal offset  (' num2str(theoffsset_nom) ')' ],['Modified profile: optimal CPCOR (', num2str(cnew(1)), ') , optimal offset (', num2str(theoffsset_op), ')']},'location','SouthOutside','Fontsize',14,'FontWeight','bold')
         %legend({'Original  profile (press corrected): nominal CPCOR  (-9.57e-8) , no offset corrected',['Modified profile: nominal CPCOR  (-9.57e-8) , optimal offset  (' num2str(theoffsset_nom) ')' ],['Modified profile: median CPCOR (', num2str(CPcor_fixed), ') , optimal offset (', num2str(theoffsset_med), ')']},'location','SouthOutside','Fontsize',14,'FontWeight','bold')
@@ -373,7 +374,7 @@ function res = myfun(inp)
 global CPcor
 global CTcor
 global temp_argo pres_argo psal_argo lon_argo lat_argo psal_campagne ct_campagne pres_campagne
-global minDEPTH
+global minDEPTH maxDEPTH
 global press_offset
 global CPcor_fixed
 
@@ -440,7 +441,7 @@ dcco_opt = cco_argo_opt-cco_i_campagne';
 %  end
 %  dcco_opt=dcco_opt_gliss;
 
-ii=find(isfinite(dcco_opt)==1 & pres_argo_corr > str2num(minDEPTH)  &pres_argo_corr <5360& abs(difference_pres_theta)<500);
+ii=find(isfinite(dcco_opt)==1 & pres_argo_corr > str2num(minDEPTH)  &pres_argo_corr <=str2num(maxDEPTH)& abs(difference_pres_theta)<500);
 if isempty(ii)
     ii=find(isfinite(dcco_opt)==1 & pres_argo_corr > 1000 & abs(difference_pres_theta)<500);
 end

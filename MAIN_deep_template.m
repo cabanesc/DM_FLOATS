@@ -44,6 +44,7 @@ name_campaign  = 'MSM94 2020';         % title of the DM report.
 
 n_prof=30;  % profile number that we want to compare to the closest profiles in the reference database (see VERIF_FLAG)
 MIN_DEPTH=1600;   % Minimum depth considered for the optimum fit when estimating Cpcor
+MAX_DEPTH=3000;   % Maximum depth considered for the optimum fit when estimating Cpcor
 
 irun.LOAD_float      = 0   % Load data  : copy the file from DIR_FTP_CORIOLIS to DIR_FTP
 irun.PLOTDATA_raw    = 0;  % Preliminary diagnostic plots (theta/S, sections, bathy, flags...)
@@ -106,7 +107,7 @@ if irun.ANA_CPCOR
     init_path('add',rep,rdir);
     eval(fullfile('cd ./',rep));
     %RUN_CPCOR(floatname,dacname,1,config_campaign,'DIRECTION','A','MIN_DEPTH',1000)  % all options, default values
-    RUN_CPCOR(floatname,dacname,1,config_campaign,'DIRECTION','A','MIN_DEPTH',MIN_DEPTH)   
+    RUN_CPCOR(floatname,dacname,1,config_campaign,'DIRECTION','A','MIN_DEPTH',MIN_DEPTH,'MAX_DEPTH',MAX_DEPTH)   
     eval('cd ..');
     init_path('clear',rep,rdir);
 end
