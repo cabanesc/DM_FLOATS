@@ -43,11 +43,12 @@ name_campaign  = 'MSM94 2020';         % title of the DM report.
 
 
 n_prof=30;  % profile number that we want to compare to the closest profiles in the reference database (see VERIF_FLAG)
+MIN_DEPTH=1600;   % Minimum depth considered for the optimum fit when estimating Cpcor
 
 irun.LOAD_float      = 0   % Load data  : copy the file from DIR_FTP_CORIOLIS to DIR_FTP
 irun.PLOTDATA_raw    = 0;  % Preliminary diagnostic plots (theta/S, sections, bathy, flags...)
 irun.CORRECT_float   = 0;  % Visualization & correction of flags in netcdf files
-irun.ANA_CPCOR       = 0;  % CPCor analyse
+irun.ANA_CPCOR       = 1;  % CPCor analyse
 irun.CORR_CPCOR      = 0;  % CPCor correction in netcdf files
 irun.VERIF_FLAG      = 0;  % Comparison of a raw Argo profile (n_prof) to the closest profiles in the reference database
 irun.VERIF_PROF1_raw = 0;  % Comparison of a raw Argo profile to the launch CTD data
@@ -57,7 +58,7 @@ irun.ANALYSE_CAL     = 0;  % Optional: gives information about the OW correction
 irun.CORRECTIONS     = 0;  % writing D files with OWC correction and corrected flags
 irun.PLOTDATA_adj    = 0;  % Diagnostic plots (theta/S, sections, ...) for adjusted data
 irun.VERIF_PROF1_adj = 0;  % Comparison of an adjusted Argo profile to the launch CTD data
-irun.DOC             = 1;  % Creating the repport
+irun.DOC             = 0;  % Creating the repport
 
 %===========================%
 % Load data  : copy the file from DIR_FTP_CORIOLIS to DIR_FTP
@@ -105,7 +106,7 @@ if irun.ANA_CPCOR
     init_path('add',rep,rdir);
     eval(fullfile('cd ./',rep));
     %RUN_CPCOR(floatname,dacname,1,config_campaign,'DIRECTION','A','MIN_DEPTH',1000)  % all options, default values
-    RUN_CPCOR(floatname,dacname,1,config_campaign,'DIRECTION','A','MIN_DEPTH',2500)   
+    RUN_CPCOR(floatname,dacname,1,config_campaign,'DIRECTION','A','MIN_DEPTH',MIN_DEPTH)   
     eval('cd ..');
     init_path('clear',rep,rdir);
 end
@@ -247,7 +248,7 @@ if exist ('./TEMPLATES')==0
     mkdir ./TEMPLATES
 end
 if ~(contains(curr_dir,'TEMPLATES'))&~(contains(curr_path,'TEMPLATES'))
-copyfile ('MAIN_deepgit .m', ['./TEMPLATES/MAIN_' floatname '_deep.m'])
+copyfile ('MAIN_deep.m', ['./TEMPLATES/MAIN_' floatname '_deep.m'])
 else
 eval(['cd ' curr_dir])
 end
