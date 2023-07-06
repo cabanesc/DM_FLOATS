@@ -81,6 +81,7 @@ end
 COMP_GDAC=0;
 PLOTDEPTHDEP=0;
 FORCE_DEEP=0;
+NEW_CPCOR=-11.6e-8;
 
 if isfield(s,'PROFREF')==1;Profref=s.PROFREF;end;
 if isfield(s,'PROFREFADJ')==1;Profrefadj=s.PROFREFADJ;end;
@@ -91,6 +92,7 @@ if isfield(s,'SUBTITLE')==1;SUBTITLE=s.SUBTITLE;end;
 if isfield(s,'COMP_GDAC')==1;COMP_GDAC=s.COMP_GDAC;end;
 if isfield(s,'PLOTDEPTHDEP')==1;PLOTDEPTHDEP=s.PLOTDEPTHDEP;end;
 if isfield(s,'FORCE_DEEP')==1;FORCE_DEEP=s.FORCE_DEEP;end;
+if isfield(s,'NEW_CPCOR')==1;NEW_CPCOR=s.NEW_CPCOR;end;
 
 if iscell(Profref)==0;Profref={Profref};end
 if iscell(Profrefadj)==0;Profrefadj={Profrefadj};end
@@ -500,7 +502,7 @@ else % si le CPCOR a ete corrige
             for ik=1:length(float_list)
                 iil=find(findstr_tab(wmo_corr,float_list{ik}));
                 if isempty(iil)==0
-                    fprintf(fw1,'%s\n', [float_list{ik} '        &  -13.5e-8 & ' col1{iil}  '                 & ' [col2_1{iil} ' ' col2_2{iil}  ' (config. ' Num_Config{ik}   ')' ]     '            & ' col3{iil}        '          \\']);
+                    fprintf(fw1,'%s\n', [float_list{ik} '        & $' num2str(NEW_CPCOR) '$ & ' col1{iil}  '                 & ' [col2_1{iil} ' ' col2_2{iil}  ' (config. ' Num_Config{ik}   ')' ]     '            & ' col3{iil}        '          \\']);
                     %fprintf(fw1,'%s\n', ['               &                     & '    col2_2{iil}  ' (config. ' Num_Config{ik}   ')'                          '  &                           \\']);
                     fprintf(fw1,'%s\n', '\hline');
                     fprintf(fw1,'%s\n', '%------------------------------------------------------------------------------------------------------------');
@@ -753,7 +755,7 @@ for ik=1:length(float_list)
         fprintf(fw1,'%s\n', '\end{center}');
         fprintf(fw1,'%s\n', '\end{figure}');
         fprintf(fw1,'%s\n', '%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%plot_dbrut%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%');
-        str=['In what follows, the salinity has been adjusted using the Working Group (WG) suggested value for Cpcor. No offset has been applied yet.']
+        str=['In what follows, the salinity has been adjusted using  CPcor\_new = $' num2str(NEW_CPCOR) '$ $ dbar^{-1}$. No offset has been applied yet.']
         fprintf(fw1,'%s\n', str );
         fprintf(fw1,'%s\n', '\clearpage');
     end

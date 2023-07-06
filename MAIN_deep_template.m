@@ -45,6 +45,8 @@ name_campaign  = 'MSM94 2020';         % title of the DM report.
 n_prof=30;  % profile number that we want to compare to the closest profiles in the reference database (see VERIF_FLAG)
 MIN_DEPTH=1600;   % Minimum depth considered for the optimum fit when estimating Cpcor
 MAX_DEPTH=3000;   % Maximum depth considered for the optimum fit when estimating Cpcor
+NEW_CPCOR = -11.6e-8;  % New Cpcor value used to correct the salinity
+
 
 irun.LOAD_float      = 0   % Load data  : copy the file from DIR_FTP_CORIOLIS to DIR_FTP
 irun.PLOTDATA_raw    = 0;  % Preliminary diagnostic plots (theta/S, sections, bathy, flags...)
@@ -118,7 +120,7 @@ if irun.CORR_CPCOR
     rep='CPCOR';
     init_path('add',rep,rdir);
     eval(fullfile('cd ./',rep));
-    CORR_CPCOR(floatname,dacname,config_campaign,'NEW_CPCOR',-13.58e-8)  % change NEW_CPCOR value if needed
+    CORR_CPCOR(floatname,dacname,config_campaign,'NEW_CPCOR',NEW_CPCOR)  % change NEW_CPCOR value if needed
     eval('cd ..');
     init_path('clear',rep,rdir);
 end
@@ -233,7 +235,7 @@ if irun.DOC
     rep='DOC';
     init_path('add',rep,rdir);
     eval(fullfile('cd ./',rep));
-    generate_doc_overleaf(floatname,dacname,numconfig_ow,'SUBTITLE',['Float ' floatname ' (' name_campaign ')'],'PROFREF',n_prof,'FORCE_DEEP',1,'PLOTDEPTHDEP',1,'PROFFLAG','54')
+    generate_doc_overleaf(floatname,dacname,numconfig_ow,'SUBTITLE',['Float ' floatname ' (' name_campaign ')'],'PROFREF',n_prof,'FORCE_DEEP',1,'PLOTDEPTHDEP',1,'NEW_CPCOR',NEW_CPCOR)
     %generate_doc_preliminary(floatname,dacname,numconfig_ow,'SUBTITLE',['Float ' floatname ' (' name_campaign ')'],'PROFREF',n_prof,'FORCE_DEEP',1)
     %generate_doc_overleaf(floatname,dacname,numconfig_ow,'SUBTITLE',['Float ' floatname ' (' name_campaign ')'],'PROFREF',n_prof,'PROFFLAG','7')%
     %generate_doc_overleaf(floatname,dacname,numconfig_ow,'SUBTITLE',['Float ' floatname ' (' name_campaign ')'],'PROFREF',n_prof,'COMP_GDAC',1)
