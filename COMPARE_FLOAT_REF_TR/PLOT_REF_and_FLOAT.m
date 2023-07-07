@@ -43,8 +43,8 @@ CONFIG=load_configuration('config.txt');
 
 CONFIG.pathwmobox=[CONFIG.DIR_OWC CONFIG.VERSION_OWC '/data/'];
 
-if exist([CONFIG.pathwmobox 'climatology/historical_ctd/bad_data_point.mat']) 
-load([CONFIG.pathwmobox 'climatology/historical_ctd/bad_data_point.mat']);
+if exist([CONFIG.pathwmobox 'climatology/historical_ctd/bad_ctdref.mat']) &&  CONFIG.CHECK_REF==1
+load([CONFIG.pathwmobox 'climatology/historical_ctd/bad_ctdref.mat']);
 CONFIG.ctd_to_exclude=bad_ctd.source;
 else
 CONFIG.ctd_to_exclude={''};

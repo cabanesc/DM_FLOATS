@@ -24,6 +24,8 @@
 %     'MAKE_PLOT'      (logical)   MAKE_PLOT=1 (default) make all plots; MAKE_PLOT=0 does not make plots
 %     'PLOT_PREVDM'     (logical)   PLOT_PREVDM=1  plot the previous DM adjustment in the correction plot (in magenta) overlaid on the current fit
 %                                   PLOT_PREVDM=0 (default), do not plot the previous DM adjustement
+%      'CLEAN_REF_CTD'      (logical)   CLEAN_REFCTD=1 (default) use bad_ctd list
+%      to clean the reference CTD database
 % -----------------------------------
 %   OUTPUT :
 % -----------------------------------
@@ -83,6 +85,8 @@ USE_QC=1;
 ERASE_MAP=0;
 MAKE_PLOT=1;
 PLOT_PREVDM=0;
+CLEAN_REF_CTD=0;
+
 if isfield(s,'RECREATE_MAT')==1;RECREATE_MAT=s.RECREATE_MAT;end;
 if isfield(s,'OPTIM')==1;OPTIM=s.OPTIM;end;
 if isfield(s,'POSTFIX')==1;POSTFIX=s.POSTFIX;end;
@@ -93,6 +97,8 @@ if isfield(s,'USE_QC')==1;USE_QC=s.USE_QC;end;
 if isfield(s,'ERASE_MAP')==1;ERASE_MAP=s.ERASE_MAP;end;
 if isfield(s,'MAKE_PLOT')==1;MAKE_PLOT=s.MAKE_PLOT;end;
 if isfield(s,'PLOT_PREVDM')==1;PLOT_PREVDM=s.PLOT_PREVDM;end;
+if isfield(s,'CLEAN_REF_CTD')==1;CLEAN_REF_CTD=s.CLEAN_REF_CTD;end;
+
 C.plotDm = PLOT_PREVDM; 
 
 RECREATE_MAT
@@ -193,11 +199,12 @@ for ifloat=1:length(tabfloat)
         % DIW_OWC added by T. Reynaud 21.09.2020
         lo_system_configuration = load_configuration( ['./ow_config/ow_config_' num2str(numconfig) '.txt'] ,flt_name, DIR_DATA, VERSION_OW, DIR_OWC);
         lo_system_configuration.use_pres_gt=USE_PRES_GT;
-	 lo_system_configuration.use_pres_lt=USE_PRES_LT;
-	 lo_system_configuration.use_theta_gt=USE_THETA_GT;
-	 lo_system_configuration.use_theta_lt=USE_THETA_LT;
+	    lo_system_configuration.use_pres_lt=USE_PRES_LT;
+	    lo_system_configuration.use_theta_gt=USE_THETA_GT;
+	    lo_system_configuration.use_theta_lt=USE_THETA_LT;
 	 
-		
+		lo_system_configuration.clean_ref_ctd=CLEAN_REF_CTD;
+        
         % creation du repertoire des plots
         dirplot_config = [ DIR_DATA '/float_plots/CONFIG' num2str(numconfig) '/'];
         dirplot = [dirplot_config  flt_name '/'];
@@ -275,6 +282,7 @@ for ifloat=1:length(tabfloat)
         end
         if MAKE_PLOT==1
             plot_diagnostics_ow( flt_dir, flt_name, lo_system_configuration );
+            %plot_diagnostics_ow_split( flt_dir, flt_name, lo_system_configuration ); 
             %keyboard
             plot_diagnostics_ow_figure9_4( flt_dir, flt_name, lo_system_configuration,dacname,C);
             

@@ -200,8 +200,8 @@ for ibox=1:nbox
         ( (PV_float-PV_hist)./sqrt( PV_float.^2+PV_hist.^2 )./phi_large ).^2 ;
     
     distance = andoyer(wmo.long,wmo.lat,F.longitude.data,F.latitude.data);
-    %[d2,isort] = sort(distance);
-    [d2,isort] = sort(correlation_large);
+    [d2,isort] = sort(distance);
+    %[d2,isort] = sort(correlation_large);
     nprf = min(NPROFMAX,length(isort));
     [np,null] = size(wmo.pres);
     

@@ -10,8 +10,12 @@ end
 wmo=load(wmo_file);
   %keyboard  
 to_use=[];
-to_use = find(ismember(strtok(strtrim(wmo.source),'_'),strtrim(ctd_to_exclude))==0);
-not_use = find(ismember(strtok(strtrim(wmo.source),'_'),strtrim(ctd_to_exclude))==1);
+%to_use = find(ismember(strtok(strtrim(wmo.source),'_'),strtrim(ctd_to_exclude))==0);
+%not_use = find(ismember(strtok(strtrim(wmo.source),'_'),strtrim(ctd_to_exclude))==1);
+to_use = find(ismember(strtrim(wmo.source),strtrim(ctd_to_exclude))==0);
+not_use = find(ismember(strtrim(wmo.source),strtrim(ctd_to_exclude))==1);
+%not_use2 = find(ismember(strtrim(wmo.source),strtrim(ctd_to_exclude))==1);
+
 wmo.lat=wmo.lat(to_use);
 wmo.long=wmo.long(to_use);
 wmo.dates=wmo.dates(to_use);

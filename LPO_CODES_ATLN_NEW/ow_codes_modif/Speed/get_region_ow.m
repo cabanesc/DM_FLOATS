@@ -28,9 +28,9 @@ pa_grid_dates = [ ] ;
 % to save time: use of files that only contains lon and lat data
 po_config_data.HISTORICAL_CTD_PREFIX='/historical_ctd/lonlat/ctd_';
 po_config_data.HISTORICAL_ARGO_PREFIX='/argo_profiles/lonlat/argo_';
-if exist('/home5/pharos/argo/DMARGO/OW/VERSION_LAST/data/climatology/historical_ctd/bad_data_point.mat')
-load('/home5/pharos/argo/DMARGO/OW/VERSION_LAST/data/climatology/historical_ctd/bad_data_point.mat');
-else
+if exist([po_config_data.HISTORICAL_DIRECTORY '/historical_ctd/bad_ctdref.mat']) && po_config_data.clean_ref_ctd==1
+load([po_config_data.HISTORICAL_DIRECTORY '/historical_ctd/bad_ctdref.mat']);
+else 
 bad_ctd=[];
 end
 for ln_index = 1:m
@@ -39,13 +39,13 @@ for ln_index = 1:m
             if ntyp == 2 % the 2nd column denotes CTD data
                 lo_box_data = load( strcat( po_config_data.HISTORICAL_DIRECTORY, po_config_data.HISTORICAL_CTD_PREFIX, sprintf( '%4d', pa_wmo_numbers(ln_index,1))));
                 if isempty(bad_ctd)==0
-                bad_source = bad_ctd.source(bad_ctd.wmo==pa_wmo_numbers(ln_index,1));
+                    bad_source = bad_ctd.source(bad_ctd.wmo==pa_wmo_numbers(ln_index,1));
+                    not_use=find(ismember(lo_box_data.source,bad_source));
                 else
-                bad_source={''};
+                    bad_source=[];
+                    not_use=[];
                 end
-                not_use=[];
-                %not_use=find(ismember(lo_box_data.source,bad_source));
-                %keyboard
+                
                 date_hist = changedates(lo_box_data.dates);
                 lo_box_data.lat(not_use)=[];
                 lo_box_data.long(not_use)=[];
