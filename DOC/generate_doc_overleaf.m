@@ -47,6 +47,7 @@ end
 
 CONF = load_configuration('config.txt');
 DIR_FTP=CONF.DIR_FTP;
+DIR_FTP_ORIG=CONF.DIR_FTP_CORIOLIS;
 DIR_PLOT=CONF.DIR_PLOT;
 DIR_DATA=CONF.DIR_DATA;
 DIR_PLOTOW=[CONF.DIR_DATA 'float_plots/CONFIG'];
@@ -195,12 +196,18 @@ fprintf(fw1,'%s\n', ['\hline']);
 NcVar.juld.name='JULD';
 NcVar.config_mission_number.name='CONFIG_MISSION_NUMBER';
 NcVar.cycle_number.name='CYCLE_NUMBER';
+NcVar.date_update.name='DATE_UPDATE';
 disp('Recherche les info dans les fichiers meta et prof')
 
 for ik=1:length(float_list)
     % Table 1 recherche les info dans les fichiers meta et prof
     M = read_netcdf_allthefile([DIR_FTP tabdac{ik} '/' float_list{ik} '/' float_list{ik} '_meta.nc']);
     P = read_netcdf_allthefile([DIR_FTP tabdac{ik} '/' float_list{ik} '/' float_list{ik} '_prof.nc'],NcVar);
+    dir_upload=dir([DIR_FTP_ORIG tabdac{ik} '/' float_list{ik} '/'] ); 
+    upload_date=dir_upload(find(findstr_tab({dir_upload.name},'profiles'))).datenum; % date du dernier load. On verifie si le flotteur est actif ou pas a cette date
+    if isempty(strfind(DIR_FTP_ORIG, '/home/coriolis_exp/spool/co05/co0508/'))==0; % local copy of GDAC fts server
+        upload_date=datenum(date);
+    end
     pi_name=deblank(M.pi_name.data');
     
     pi_name_red=reduce_pi_name(pi_name);
@@ -218,7 +225,7 @@ for ik=1:length(float_list)
         end
         
     end
-    if (P.juld.data(end)+20)<(datenum(date)-datenum('19500101','YYYYmmdd'))
+    if (P.juld.data(end)+20)<( upload_date-datenum('19500101','YYYYmmdd'))
         str_act='NA';
     else
         str_act='A';
@@ -226,7 +233,7 @@ for ik=1:length(float_list)
     
     if isempty(ikl)==0
         P.duration=duration(P.config_mission_number.data);
-        if (P.juld.data(end)+3*duration(end))<(datenum(date)-datenum('19500101','YYYYmmdd'))
+        if (P.juld.data(end)+3*duration(end))<( upload_date-datenum('19500101','YYYYmmdd'))
             str_act='NA';
         else
             str_act='A';
