@@ -966,6 +966,9 @@ for ifile=1:length(therep)  % WORK ON EACH FILE
                         if l_co > maxl_co
                             error(['The comment ' comment ' is too long']);
                         end
+                        % ajuste les QC temps reel si pas de correction  17/10/2023
+                        is_qc3 = strfind(FLD.psal_qc.data(n_prof,:), '3');
+                        FLD.psal_qc.data(n_prof,is_qc3)='1';
                         
                         
                         FLD.scientific_calib_comment.data(n_prof,n_calib,ind_psal,:) = FLD.scientific_calib_comment.FillValue_;
@@ -1001,6 +1004,9 @@ for ifile=1:length(therep)  % WORK ON EACH FILE
                             %FLD.psal_qc.data(n_prof,:)=repmat('3',size(FLD.psal_qc.data(n_prof,:)));
                             FLD.psal_qc.data(n_prof,is_qc2)='3';
                             FLD.psal_qc.data(n_prof,is_qc1)='3';
+                        else
+                            is_qc3 = strfind(FLD.psal_qc.data(n_prof,:), '3');  % modif 17/10/2023
+                            FLD.psal_qc.data(n_prof,is_qc3)='1';
                         end
                         
                         coefficient = ['launch_offset = ' num2str(s.LAUNCH_OFFSET)];
@@ -1074,7 +1080,11 @@ for ifile=1:length(therep)  % WORK ON EACH FILE
                             %FLD.psal_qc.data(n_prof,:)=repmat('3',size(FLD.psal_qc.data(n_prof,:)));
                             FLD.psal_qc.data(n_prof,is_qc2)='3';
                             FLD.psal_qc.data(n_prof,is_qc1)='3';
+                        else
+                            is_qc3 = strfind(FLD.psal_qc.data(n_prof,:), '3');  % modif 17/10/2023
+                            FLD.psal_qc.data(n_prof,is_qc3)='1';
                         end
+                        
                         ic=find(~isnan(therror));
                         therror=therror(ic);
                         
