@@ -41,7 +41,7 @@ fprintf(fw1,'%s\n', ['Reference data base      	&  ' refdatabase '   \\ ']);
 else
     [a,b]=strtok(refdatabase,'\&');
  fprintf(fw1,'%s\n', ['Reference data base      	&  ' a '   \\ ']);  
- fprintf(fw1,'%s\n', ['                         	&  ' b '   \\ ']); 
+ fprintf(fw1,'%s\n', ['                         	   ' b '   \\ ']); 
 end
  
 fprintf(fw1,'%s\n', ['\hline']);
