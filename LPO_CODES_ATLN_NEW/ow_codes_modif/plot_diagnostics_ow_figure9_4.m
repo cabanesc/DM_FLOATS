@@ -654,7 +654,7 @@ if(isempty(find(isnan(PRES)==0))==0) % if no data exists, terminate here, no plo
         grid on
         pcolor([meanoutnan(ii_large);meanoutnan(ii_large)]')
         %sanePColor([meanoutnan(ii_large);meanoutnan(ii_large)]')
-        caxis([0 max(max(ii_large))])
+        caxis([0 max(max(max(ii_large)),1)])
         c=cool;
         
         %axis([1 2 0.5  5.5])
@@ -689,7 +689,7 @@ if(isempty(find(isnan(PRES)==0))==0) % if no data exists, terminate here, no plo
         grid on
         pcolor([meanoutnan(ii_small);meanoutnan(ii_small)]')
         %sanePColor([meanoutnan(ii_small);meanoutnan(ii_small)]')
-        caxis([0 max(max(ii_small))])
+        caxis([0 max(max(max(ii_small)),1)])
         %axis([1 2 0.5  5.5])
         %axis([0.5 2.5 0.5  5.5])
         set(gca,'Ytick',[1.5 2.5 3.5 4.5 5.5])
@@ -818,7 +818,7 @@ if(isempty(find(isnan(PRES)==0))==0) % if no data exists, terminate here, no plo
         grid on
         pcolor([meanoutnan(ii_large);meanoutnan(ii_large)]')
         %sanePColor([meanoutnan(ii_large);meanoutnan(ii_large)]')
-        caxis([0 max(max(ii_large))])
+        caxis([0 max(max(max(ii_large)),1)])
         c=cool;
         
         %axis([1 2 0.5  5.5])
@@ -853,7 +853,7 @@ if(isempty(find(isnan(PRES)==0))==0) % if no data exists, terminate here, no plo
         grid on
         pcolor([meanoutnan(ii_small);meanoutnan(ii_small)]')
         %sanePColor([meanoutnan(ii_small);meanoutnan(ii_small)]')
-        caxis([0 max(max(ii_small))])
+        caxis([0 max(max(max(ii_small)),1)])
         %axis([1 2 0.5  5.5])
         %axis([0.5 2.5 0.5  5.5])
         set(gca,'Ytick',[1.5 2.5 3.5 4.5 5.5])
