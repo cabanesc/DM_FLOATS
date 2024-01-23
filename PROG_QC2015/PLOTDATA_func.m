@@ -206,6 +206,7 @@ end
 vertical_sampling_scheme='Primary sampling';
 Param='';
 [FLm,DimL,file_list]=create_multi_from_filelist(floatname,dacname,FLOAT_SOURCE_NETCDF,file_list,vertical_sampling_scheme,Param);
+FLm=repalce_fill_bynan(FLm); % add 23/01/2024
 read_ARGO_tous_mono3_1
 
 [nlev,ncyc]=size(temp);
@@ -664,7 +665,7 @@ reso='LR';proj='miller';
 [hf,ha]=fct_pltmap(zone_visu,reso,proj);
 
 %h=m_plot(lon,lat,'k-')
-[elev,lonbath,latbath]=m_tbase([floor(min(lon))-20 ceil(max(lon))+20 floor(min(lat))-10 ceil(max(lat))+10]);
+[elev,lonbath,latbath]=m_tbase([floor(min(lon))-25 ceil(max(lon))+25 floor(min(lat))-10 ceil(max(lat))+10]);
 m_contour(lonbath,latbath,elev,[-4000:1000:0],'color',[0.5 0.5 0.5])
 for ii=2:length(lon)-1
     m_plot(lon(ii),lat(ii),'color',map(ii,:),'marker','o','markerfacecolor',map(ii,:),'markersize',8)
@@ -677,7 +678,7 @@ hl(2)=m_plot(lon(ii),lat(ii),'color',map(ii,:),'marker','s','markerfacecolor',ma
 %htl=legend(hl,'First prof.','Last prof.','bestinside');
 htl=legend(hl,{'First prof.','Last prof.'});
 
-set(htl,'fontsize',14)
+set(htl,'fontsize',12)
 xlabel('Longitude')
 ylabel('Latitude')
 title(['Float WMO ' floatnum])
