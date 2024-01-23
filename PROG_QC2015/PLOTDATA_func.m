@@ -206,7 +206,7 @@ end
 vertical_sampling_scheme='Primary sampling';
 Param='';
 [FLm,DimL,file_list]=create_multi_from_filelist(floatname,dacname,FLOAT_SOURCE_NETCDF,file_list,vertical_sampling_scheme,Param);
-FLm=repalce_fill_bynan(FLm); % add 23/01/2024
+FLm=replace_fill_bynan(FLm); % add 23/01/2024
 read_ARGO_tous_mono3_1
 
 [nlev,ncyc]=size(temp);
