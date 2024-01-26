@@ -173,8 +173,11 @@ for ikk=1:nn
                 if isfield(S.(info1{k}), 'data')
                     if isequal(info1{k},'juld')
                         % transforme la date juld > jour dd/mm/yyyy
+                        if ~isnan(S.juld.data(nprof,:))
                         thedate = datestr( (S.juld.data(nprof,:) + datenum('19500101','yyyymmdd')),'dd/mm/yyyy');
-                        
+                        else
+                         thedate = 'NaN';
+                        end
                         thetitle = [thetitle info2{k}  thedate  ];
                     elseif isequal(info1{k},'cycle_number')
                         if nn>1

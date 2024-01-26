@@ -136,8 +136,11 @@ if isfield(FL,'longitude')
                 if isfield(FL.(info1{k}), 'data')
                     if isequal(info1{k},'juld')
                         % transforme la date juld > jour dd/mm/yyyy
+                        if ~isnan(FL.juld.data(1,:))
                         thedate = datestr( (FL.juld.data(1,:) + datenum('19500101','yyyymmdd')),'dd/mm/yyyy');
-                        
+                        else
+                         thedate ='NaN';
+                        end
                         thetitle = [thetitle info2{k}  thedate  ];
                     else
                         thetitle = [thetitle info2{k}  strtrim(num2str(FL.(info1{k}).data(1,:)))  ];
