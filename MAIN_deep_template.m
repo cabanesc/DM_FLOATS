@@ -27,19 +27,20 @@ eval(fullfile('cd ',rdir));
 %3900515/	6900807/	6901603/	6902808/	6902818/	6903246/
 %3900516/	6901004/	6901758/	6902810/	6902881/	6903249/
 
-floatname = '6903028';
+floatname = '6902977';
 dacname = 'coriolis';
-numconfig_ow = 39;                  % available ow configuration files are in LPO_CODES_ATLN_NEW/ow_config/ :
+numconfig_ow = 392;                  % available ow configuration files are in LPO_CODES_ATLN_NEW/ow_config/ :
 % 149 : Classical North Atlantic config, ARGO reference database is used
 % 129 : Classical North Atlantic config, ARGO  and CTD reference databases are used
 %  39 : Classical North Atlantic config, CTD reference databases is used
-config_campaign='config_msm9420.txt'; % campaign config files are in VERIF_PROF1/config_campagne/
+config_campaign='config_saga21.txt'; % campaign config files are in VERIF_PROF1/config_campagne/
 % available config_campaign files:
 %config_bocats.txt    config_geovide.txt  config_ovide18.txt  config_rrex15.txt
 %config_catarina.txt  config_ovide10.txt   config_pedro.txt    config_rrex17.txt
-% config_m16420.txt  config_msm9420.txt  config_oblady18.txt config_bocats21.txt
+% config_m16420.txt  config_msm9420.txt  config_oblady18.txt
+% config_bocats21.txt  config_pirata20.txt  config_so28021.txt config_saga21.txt
 %name_campaign  = 'PRELIMINARY REPORT ';          % titre pour le rapport
-name_campaign  = 'MSM94 2020';         % title of the DM report.
+name_campaign  = 'SAGA 2021';         % title of the DM report.
 
 
 n_prof=30;  % profile number that we want to compare to the closest profiles in the reference database (see VERIF_FLAG)
@@ -51,7 +52,7 @@ NEW_CPCOR = -11.6e-8;  % New Cpcor value used to correct the salinity
 irun.LOAD_float      = 0   % Load data  : copy the file from DIR_FTP_CORIOLIS to DIR_FTP
 irun.PLOTDATA_raw    = 0;  % Preliminary diagnostic plots (theta/S, sections, bathy, flags...)
 irun.CORRECT_float   = 0;  % Visualization & correction of flags in netcdf files
-irun.ANA_CPCOR       = 1;  % CPCor analyse
+irun.ANA_CPCOR       = 0;  % CPCor analyse
 irun.CORR_CPCOR      = 0;  % CPCor correction in netcdf files
 irun.VERIF_FLAG      = 0;  % Comparison of a raw Argo profile (n_prof) to the closest profiles in the reference database
 irun.VERIF_PROF1_raw = 0;  % Comparison of a raw Argo profile to the launch CTD data
@@ -153,13 +154,21 @@ if irun.FIND_CLOSE_float
     rep='COMPARE_FLOAT_REF_TR';
     init_path('add',rep,rdir);
     eval(fullfile('cd ./',rep));
-     % plot a map (at given theta levels) and time series of all observations available in the region (GDAC= DOI ARGO, REF = reference database)
+     % Several programs are given here, comment lines that are not used
+     
+     % Plot a map (at given theta levels) and time series of all observations available in the region (GDAC= DOI ARGO, REF = reference database)
      %PLOT_GDAC_and_FLOAT(floatname,dacname,'UPDATE',0,'PRINT',1,'DATATYPE','raw','TPOT_MIN',4,'TPOT_MAX',4.1,'DEPTH_MIN',0,'VEC_REG',[-30 -20 45 57])
      %PLOT_REF_and_FLOAT(floatname,dacname,'THE_BASES',{'CTD','ARGO'},'UPDATE',0,'PRINT',1,'DATATYPE','raw','TPOT_MIN',4,'TPOT_MAX',4.1,'CYCLE_MIN',1,'CYCLE_MAX',130,'VEC_REG',[-24 -5 22 43],'DEPTH_MIN',0)
      %PLOT_REF_and_FLOAT(floatname,dacname,'THE_BASES',{'CTD','ARGO'},'UPDATE',0,'PRINT',1,'DATATYPE','raw','TPOT_MIN',4,'TPOT_MAX',4.1,'CYCLE_MIN',100,'DEPTH_MIN',0)
-     %comparison profile by profile
+     
+     % Compare the profiles of the float analysed to the closest profiles from all floats available on GDAC 
      %FIND_close_floats(floatname,dacname,'ECARLON',0.2,'ECARLAT',0.1,'ECARDAY',365,'PRES_MIN',1000','UPDATE',1,'PRINT',1,'DATATYPE','raw') % all options, default values
-     FIND_close_floats(floatname,dacname,'UPDATE',0,'PRINT',1,'DATATYPE','raw')
+     %FIND_close_floats(floatname,dacname,'UPDATE',0,'PRINT',1,'DATATYPE','raw')
+      
+     %  Compare the profiles of the analysed float to the closest profiles
+     %  from a given float (="reference" float)
+      PLOT_FLOAT_and_FLOAT(floatname,dacname,'6902892','coriolis',config_campaign,'CYCLE_MIN',1,'CYCLE_MAX',93,'REFCYCLE_MIN',1,'REFCYCLE_MAX',113,'DATATYPE','adj','DATAREP','DIR_FTP','MAX_DIST',50,'MIN_DEPTH',2000)
+
     eval('cd ..');
     init_path('clear',rep,rdir);
 end
