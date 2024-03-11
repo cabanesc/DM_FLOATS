@@ -39,6 +39,7 @@ config_campaign='config_saga21.txt'; % campaign config files are in VERIF_PROF1/
 %config_catarina.txt  config_ovide10.txt   config_pedro.txt    config_rrex17.txt
 % config_m16420.txt  config_msm9420.txt  config_oblady18.txt
 % config_bocats21.txt  config_pirata20.txt  config_so28021.txt config_saga21.txt
+% config_edmio22.txt config_sochic22.txt
 %name_campaign  = 'PRELIMINARY REPORT ';          % titre pour le rapport
 name_campaign  = 'SAGA 2021';         % title of the DM report.
 

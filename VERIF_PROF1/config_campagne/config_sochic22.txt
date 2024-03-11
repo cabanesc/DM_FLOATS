@@ -1,0 +1,60 @@
+% ===============================
+%
+%    Postfix
+%
+
+POSTFIX=.mat
+POSTFIX2=.txt
+
+% ===============================
+%
+%    Extension
+%
+
+FLOAT_FLAG_FIX=_flag
+FLOAT_FLAG_LOCA=_localisation
+
+% ===============================
+%
+%    FLOAT Source Path
+%
+FLOAT_SOURCE_NETCDF=/export/home1/ccabanes/data/FTP_ARGO/
+%FLOAT_SOURCE_NETCDF=/home5/pharos/argo/DMARGO/data/
+%FLOAT_SOURCE_NETCDF=/home/coriolis_exp/spool/co05/co0508/dac/
+
+
+DACNAME=coriolis
+
+% ===============================
+%
+%    Campagne Name File
+%
+CAMPAGNE_DIRECTORY=/export/home1/ccabanes/data/AUSTRAL/SO-CHIC/
+
+CAMPAGNE_FILE=103076.cnv
+CAMPAGNE_MAT=sochic22  
+camp_name=sochic22
+ZOOM=1500
+MAX_PROF=10
+
+% ===============================
+%
+%    Save Path
+%
+
+DATA_DIRECTORY=/home5/pharos/argo/QCARGO/TRAITEMENT/data/
+OUT_DIRECTORY=/home1/homedir5/perso/ccabanes/dvlpRD/Argo/TD/CHECK_DEEP/VERIF_PROF1/DATA/
+% ===============================
+%
+%    Figure Path
+%
+
+PROF1_DIRECTORY=/export/home1/ccabanes/data/QCARGO/TRAITEMENT/plot/verif_profil1/
+
+% ===============================
+%
+%    Map
+%
+
+MAP_HR=/home5/pharos/argo/QCARGO/TRAITEMENT/data/AN_smithsandwell
+MAP_LR=/home5/pharos/argo/QCARGO/TRAITEMENT/data/AN_smithsandwell_lowres
