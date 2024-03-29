@@ -106,22 +106,45 @@ else
        display('Loading data from ftp://ftp.ifremer.fr  wait...')
        ftpobj = ftp('ftp.ifremer.fr','anonymous',s.email,'System','UNIX') % change UNIX to WINDOWS if needed
        cd(ftpobj,'ifremer/argo/dac/')
-        isload=0;
-        daclist={'aoml','bodc','coriolis','csio','csiro','incois','jma','kma','kordi','meds','nmdis'};
-        %daclist={'coriolis'};
-        % check around all dacs
-        for i=1:length(daclist)
+       isload=0;
+       daclist={'aoml','bodc','coriolis','csio','csiro','incois','jma','kma','kordi','meds','nmdis'};
+       %daclist={'coriolis'};
+       % check around all dacs
+       for i=1:length(daclist)
            try
-                cd(ftpobj,[daclist{i} '/' flt_name])
-                cd(ftpobj,'profiles')
-                mkdir(root_in)
-                mget(ftpobj,'R*.nc',root_in)  %load R files
-                mget(ftpobj,'D*.nc',root_in)  %load D files
-                isload=isload+1;
-            end  
-        end
-        if isload==1
-        display('End Loading data from ftp://ftp.ifremer.fr')
+               cd(ftpobj,[daclist{i} '/' flt_name])
+               cd(ftpobj,'profiles')
+               mkdir(root_in)
+               
+               try
+                   mget(ftpobj,'R*.nc',root_in)  %load R files
+               catch MEXc
+                   if(strcmp(MEXc.identifier,'MATLAB:io:ftp:ftp:FileUnavailable'))
+                       fprintf('No R*.nc files\n');
+                   else
+                       rethrow(MEXc)
+                   end
+               end
+               try
+                   mget(ftpobj,'D*.nc',root_in)  %load D files
+               catch MEXc
+                   if(strcmp(MEXc.identifier,'MATLAB:io:ftp:ftp:FileUnavailable'))
+                       fprintf('No D*.nc files\n');
+                   else
+                       rethrow(MEXc)
+                   end
+               end
+               isload=isload+1;
+           catch MEXc
+               if(strcmp(MEXc.identifier,'MATLAB:io:ftp:ftp:NoSuchDirectory')
+                   fprintf([daclist{i} '/' flt_name ' does not exist \n');
+               else
+                   rethrow(MEXc)
+               end
+           end
+       end
+       if isload==1
+           display('End Loading data from ftp://ftp.ifremer.fr')
         else
         error('Error when loading data from ftp://ftp.ifremer.fr')
         end
