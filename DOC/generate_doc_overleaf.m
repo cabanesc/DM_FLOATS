@@ -184,10 +184,15 @@ fprintf(fw1,'%s\n', str);
 % preparation du tableau
 fprintf(fw1,'%s\n', ['\begin{table}[h]']);
 fprintf(fw1,'%s\n', ['$$']);
-fprintf(fw1,'%s\n', ['\begin{tabular}{|l|c|c|c|c|c|}']);
+%fprintf(fw1,'%s\n', ['\begin{tabular}{|l|c|c|c|c|c|}']);
+fprintf(fw1,'%s\n', ['\begin{tabular}{|l|c|c|c|c|}']);
 fprintf(fw1,'%s\n', ['\hline']);
-fprintf(fw1,'%s\n', ['WMO Number & Launch date & Centre & PI & Last cycle analysed &Cycle Duration \\']);
-fprintf(fw1,'%s\n', ['& & & & (Active/NotActive) &  \\']);
+%fprintf(fw1,'%s\n', ['WMO Number & Launch date & Centre & PI & Last cycle analysed &Cycle Duration \\']);
+fprintf(fw1,'%s\n', ['WMO Number & Launch date & Centre & PI & Last cycle analysed  \\']);
+
+%fprintf(fw1,'%s\n', ['& & & & (Active/NotActive) &  \\']);
+fprintf(fw1,'%s\n', ['& & & & (Active/NotActive)   \\']);
+
 fprintf(fw1,'%s\n', ['\hline']);
 fprintf(fw1,'%s\n', ['\hline']);
 %--------------------
@@ -239,33 +244,38 @@ for ik=1:length(float_list)
             str_act='A';
         end
         
-        str_duration=[ 'cy.' num2str(P.cycle_number.data(1)) '-'];
-        ico=1;
-        for lm=1:length(P.duration)-1
-            if P.duration(lm)~=P.duration(lm+1)
+%         str_duration=[ 'cy.' num2str(P.cycle_number.data(1)) '-'];
+%         ico=1;
+        %for lm=1:length(P.duration)-1
+            %if P.duration(lm)~=P.duration(lm+1)
                 
-                str_duration=[str_duration  num2str(P.cycle_number.data(lm)) ': ' num2str(P.duration(lm)) ' days'];
-                if ico<2;
-                    fprintf(fw1,'%s\n', [float_list{ik} ' & ' thedate '&' M.data_centre.data' '&' pi_name_red '&' num2str(P.cycle_number.data(end)) '(' str_act ') &' str_duration  '\\']);
-                else
-                    fprintf(fw1,'%s\n', [' & & & & &' str_duration  '\\']);
-                end
-                str_duration=['cy.' num2str(P.cycle_number.data(lm+1)) '-'];
-                ico=ico+1;
-            end
+                %str_duration=[str_duration  num2str(P.cycle_number.data(lm)) ': ' num2str(P.duration(lm)) ' days'];
+               % if ico<2;
+                    %fprintf(fw1,'%s\n', [float_list{ik} ' & ' thedate '&' M.data_centre.data' '&' pi_name_red '&' num2str(P.cycle_number.data(end)) '(' str_act ') &' str_duration  '\\']);
+                    fprintf(fw1,'%s\n', [float_list{ik} ' & ' thedate '&' M.data_centre.data' '&' pi_name_red '&' num2str(P.cycle_number.data(end)) '(' str_act ') \\']);
+               % else
+                    %fprintf(fw1,'%s\n', [' & & & & &' str_duration  '\\']);
+                %end
+%                 str_duration=['cy.' num2str(P.cycle_number.data(lm+1)) '-'];
+%                 ico=ico+1;
+           % end
             
-        end
-        str_duration=[str_duration  num2str(P.cycle_number.data(lm+1)) ': ' num2str(P.duration(lm+1)) ' days'];
-    else
-        str_duration='-';
-        ico=1;
+        %end
+%         str_duration=[str_duration  num2str(P.cycle_number.data(lm+1)) ': ' num2str(P.duration(lm+1)) ' days'];
+%     else
+%         str_duration='-';
+%         ico=1;
     end
-    if ico<2;
-        fprintf(fw1,'%s\n', [float_list{ik} ' & ' thedate '&' M.data_centre.data' '&' pi_name_red '&' num2str(P.cycle_number.data(end)) '(' str_act ') &' str_duration  '\\']);
-    else
-        fprintf(fw1,'%s\n', [' & & & & &' str_duration  '\\']);
-    end
+%     if ico<2;
+%         fprintf(fw1,'%s\n', [float_list{ik} ' & ' thedate '&' M.data_centre.data' '&' pi_name_red '&' num2str(P.cycle_number.data(end)) '(' str_act ') &' str_duration  '\\']);
+%     else
+%         fprintf(fw1,'%s\n', [' & & & & &' str_duration  '\\']);
+%     end
     fprintf(fw1,'%s\n', ['\hline']);
+    
+   
+    
+    
 end
 
 % fin du tableau et legende
@@ -281,6 +291,82 @@ fprintf(fw1,'%s\n', ['\end{table}'])
 fprintf(fw1,'%s\n', ['%------------------------------------------------------ ']);
 fprintf(fw1,'%s\n', [' ']);
 
+
+
+%%----------------------------------------------------------------------------
+% ecriture d'un tableau mission
+%----------------------------------------------------------------------------
+% preparation du tableau
+fprintf(fw1,'%s\n', ['\begin{table}[h]']);
+fprintf(fw1,'%s\n', ['$$']);
+fprintf(fw1,'%s\n', ['\begin{tabular}{|l|c|c|c|c|c|}']);
+fprintf(fw1,'%s\n', ['\hline']);
+fprintf(fw1,'%s\n', ['WMO Number & Cycles & Cycle Duration & Park Pressure & Profile Pressure & ISA Ice Detection  \\']);
+fprintf(fw1,'%s\n', ['&  & (days) & (db) & (db) & (degC) \\']);
+fprintf(fw1,'%s\n', ['\hline']);
+fprintf(fw1,'%s\n', ['\hline']);
+
+for ik=1:length(float_list)
+    Mf=read_file_meta([DIR_FTP tabdac{ik} '/' float_list{ik} '/' float_list{ik} '_meta.nc']);
+    P = read_netcdf_allthefile([DIR_FTP tabdac{ik} '/' float_list{ik} '/' float_list{ik} '_prof.nc'],NcVar);
+    ico=1;
+    str_cy=[ 'cy.' num2str(P.cycle_number.data(1)) '-'];
+    for lm=1:length(P.config_mission_number.data)-1
+        if P.config_mission_number.data(lm)~=P.config_mission_number.data(lm+1)
+            str_cy=[ str_cy num2str(P.cycle_number.data(lm))  ];
+            mission=P.config_mission_number.data(lm);
+            fmis=find(Mf.config_mission_number==mission);
+            if length(fmis)==1;
+                str_day=num2str(Mf.CycleTime(fmis)); str_day=strrep(str_day,'NaN','-');
+                str_park=num2str(Mf.ParkPressure(fmis));str_park=strrep(str_park,'NaN','-');
+                str_prof=num2str(Mf.ProfilePressure(fmis));str_prof=strrep(str_prof,'NaN','-');
+                str_ice=num2str(Mf.IceDetection(fmis));str_ice=strrep(str_ice,'NaN','-');
+            else
+                str_park='-';
+                str_prof='-';
+                str_ice='-';
+            end
+            if ico<2;
+                fprintf(fw1,'%s\n', [float_list{ik} ' &' str_cy ' & ' str_day ' & ' str_park ' & ' str_prof ' & ' str_ice ' \\']);
+            else
+                fprintf(fw1,'%s\n', [' & ' str_cy ' & ' str_day ' & ' str_park ' & ' str_prof ' & ' str_ice ' \\']);
+            end
+            str_cy=['cy.' num2str(P.cycle_number.data(lm+1)) '-'];
+            ico=ico+1;
+        end
+        
+    end
+    
+    str_cy=[str_cy  num2str(P.cycle_number.data(lm+1)) ];
+    mission=P.config_mission_number.data(lm+1);
+    fmis=find(Mf.config_mission_number==mission);
+    if length(fmis)==1;
+        str_day=num2str(Mf.CycleTime(fmis));str_day=strrep(str_day,'NaN','-');
+        str_park=num2str(Mf.ParkPressure(fmis));str_park=strrep(str_park,'NaN','-');
+        str_prof=num2str(Mf.ProfilePressure(fmis));str_prof=strrep(str_prof,'NaN','-');
+        str_ice=num2str(Mf.IceDetection(fmis));str_ice=strrep(str_ice,'NaN','-');
+    else
+        str_park='-';
+        str_prof='-';
+        str_ice='-';
+    end
+    if ico<2;
+       fprintf(fw1,'%s\n', [float_list{ik} ' &' str_cy ' & ' str_day ' & ' str_park ' & ' str_prof ' & ' str_ice ' \\']);
+    else
+        fprintf(fw1,'%s\n', [' & ' str_cy ' & ' str_day ' & ' str_park ' & ' str_prof ' & ' str_ice ' \\']);
+    end
+    fprintf(fw1,'%s\n', ['\hline']);
+end
+%fprintf(fw1,'%s\n', ['\hline']);
+fprintf(fw1,'%s\n', ['\end{tabular}']);
+fprintf(fw1,'%s\n', ['$$']);
+fprintf(fw1,'%s\n', ['\caption{Configuration Parameters for each mission }']);
+fprintf(fw1,'%s\n', ['\label{tab1b}']);
+fprintf(fw1,'%s\n', ['\end{table}'])
+% fin de la table 1
+%----------------------------------------------------------------------------
+fprintf(fw1,'%s\n', ['%------------------------------------------------------ ']);
+fprintf(fw1,'%s\n', [' ']);
 fprintf(fw1,'%s\n', '\clearpage');
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%% DMQC SUMMARY %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -569,7 +655,9 @@ for ik=1:length(float_list)
     fprintf(fw1,'%s\n', str);
     fprintf(fw1,'%s\n','\end{subfigure}');
     %   fprintf(fw1,'%s\n', '$$');
-    str=['Float ' float_list{ik} '. Trajectory of the float and bathymetry. Parking depth is: ' num2str(park_press) 'm and profile depth is: ' num2str(prof_press) 'm. Bathymetric contours at  float''s parking depth $\pm$ 30m are plotted in green, bathymetric contours at  float''s profile depth $\pm$ 30m are plotted in red, bathymetric contours between profile depth and parking depth are plotted every 200m in magenta and bathymetric contours between parking depth and surface are plotted every 200m in blue.'];
+    str=['Float ' float_list{ik} '. Trajectory of the float and bathymetry. Parking depth is: ' num2str(park_press) 'm and profile depth is: ' num2str(prof_press) 'm. Bathymetric contours at  float''s parking depth $\pm$ 30m are plotted in green, bathymetric contours at  float''s profile depth $\pm$ 30m are plotted in red, bathymetric contours between profile depth and parking depth are plotted every 200m in magenta and bathymetric contours between parking depth and surface are plotted every 200m in blue. )'];
+   % str=['Float ' float_list{ik} '. Trajectory of the float and bathymetry. Parking depth is: ' num2str(park_press) 'm and profile depth is: ' num2str(prof_press) 'm. Bathymetric contours at  float''s parking depth $\pm$ 30m are plotted in green, bathymetric contours at  float''s profile depth $\pm$ 30m are plotted in red, bathymetric contours between profile depth and parking depth are plotted every 200m in magenta and bathymetric contours between parking depth and surface are plotted every 200m in blue. Grey arrows are for POSITION\_QC =1,2 (good, probably good); magenta arrows are for POSITION\_QC=3,4 (probably bad, bad); white arrows are for POSITION\_QC=8 (interpolated)'];
+
     fprintf(fw1,'%s\n', ['\caption{' str '}']);
     fprintf(fw1,'%s\n', ['\label{fig1' labell '}']);
     fprintf(fw1,'%s\n', '\end{flushleft}');
@@ -693,6 +781,35 @@ for ik=1:length(float_list)
         fprintf(fw1,'%s\n', '%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%');
         
     end
+    
+    %% Figure des données des paramètres relatif à la glace
+    
+    dir_fig=[ DIR_PLOT 'preliminaire/' float_list{ik} '/'];% 
+    filenamecmp=[float_list{ik} '_ice_param.pdf'];
+    if exist([dir_fig,filenamecmp])
+        copyfile([dir_fig,filenamecmp],[dir_tex,filenamecmp]);
+    end
+    
+    if exist([dir_tex,filenamecmp])
+        fprintf(fw1,'%s\n', '\clearpage');
+        fprintf(fw1,'%s\n', ['\subsection {Ice related parameters}']);
+        fprintf(fw1,'%s\n', '%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%');
+        fprintf(fw1,'%s\n', '%%%%%%%%%%%%%%%%%% FIGURE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%');
+        fprintf(fw1,'%s\n', '\begin{figure}[h!]');
+        fprintf(fw1,'%s\n', '\begin{center}');
+        fprintf(fw1,'%s\n', '$$');
+        str=['\includegraphics[width=15cm,trim=  40 120 40 90, angle=0,clip=true]{'  filenamecmp '}'];
+        fprintf(fw1,'%s\n', str);
+        fprintf(fw1,'%s\n', '$$');
+        str=['Float ' float_list{ik} ': Ice detection number and Transmission delayed number (upper panel), Temperature ($^{\circ}$C) in the upper 50-dbar (middle panel) and position Flag QC (lower panel), 1: good, 2: probably good, 3: probably bad, 4: bad, 8: interpolated'];
+        fprintf(fw1,'%s\n', ['\caption{' str '}']);
+        fprintf(fw1,'%s\n', ['\label{fig' float_list{ik} '_flag}']);
+        fprintf(fw1,'%s\n', '\end{center}');
+        fprintf(fw1,'%s\n', '\end{figure}');
+        fprintf(fw1,'%s\n', '%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%');
+        
+    end
+    
     
     if length(Profflag{ik})~=0
         %%  OPTION: Figure des modifs de flags

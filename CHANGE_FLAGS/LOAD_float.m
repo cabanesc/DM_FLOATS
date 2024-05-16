@@ -10,6 +10,7 @@
 %    'ERASE' (logical)  ERASE=1 if float netcdf files (stored in  a local directory)  are replaced by those available on GDAC, ERASE = 0 (default) if not.
 %    'ASK'   (logical) ASK=1 (default) if a question dialog bow is open to confirm that you want to reload the file
 %                          0  NO DIALOG BOX
+%    'AUX'    (logical) AUX=1   allows to load auxiliary files on coriolis EDAC directory
 % -----------------------------------
 %   OUTPUT :
 % -----------------------------------
@@ -34,10 +35,11 @@ c=varargin(2:2:end);
 s = cell2struct(c,f,2);
 ERASE=0;
 ASK=1;
+AUX=0;
 
 if isfield(s,'ERASE')==1;ERASE=s.ERASE;end;
 if isfield(s,'ASK')==1;ASK=s.ASK;end;
-
+if isfield(s,'AUX')==1;AUX=s.AUX;end;
 
 C=load_configuration('config.txt');
 
@@ -45,6 +47,18 @@ DIR_FTP_CORIOLIS=C.DIR_FTP_CORIOLIS;
 CONFIG.FILE_TOPO=C.FILE_TOPO;
 CONFIG.DIR_FTP=C.DIR_FTP;
 
+if isfield(C,'DIR_EDAC_CORIOLIS')
+   CONFIG.DIR_EDAC=C.DIR_EDAC_CORIOLIS;
+   if ~exist(CONFIG.DIR_EDAC)&AUX==1
+      AUX=0;
+      disp('Could not find auxiliary files')
+   end
+else
+  if AUX==1
+  AUX=0;
+  disp('Could not find auxiliary files')
+  end
+end
 
 % FLOTEUR ANALYSE
 CONFIG.floatname=floatname;
@@ -87,7 +101,18 @@ if ~exist([CONFIG.DIR_FTP '/' CONFIG.dacname '/' CONFIG.floatname])
     destinf=[CONFIG.DIR_FTP '/' CONFIG.dacname '/' CONFIG.floatname '/'];
     status1=copyfile(sourcef,destinf);
     disp(['copy status (1 is ok): ' num2str(status1) ])
+    if exist([CONFIG.DIR_FTP '/' CONFIG.dacname '/' CONFIG.floatname '/' CONFIG.floatname '_tech_aux.nc'])&AUX==1 % cas ou on a copié a la main les fichiers aux dans DIR_FTP_CORIOLIS
+    disp(['copy status auxiliary (1 is ok): ' num2str(status1) ])
+    end
 end
+
+if ~exist([CONFIG.DIR_FTP '/' CONFIG.dacname '/' CONFIG.floatname '/' CONFIG.floatname '_tech_aux.nc'])&AUX==1 % copie auto des fichiers aux dans DIR_FTP (si EDAC accessible)
+    sourcef=[CONFIG.DIR_EDAC '/' CONFIG.dacname '/' CONFIG.floatname '/auxiliary/*.nc'];
+    destinf=[CONFIG.DIR_FTP '/' CONFIG.dacname '/' CONFIG.floatname '/'];
+    status1=copyfile(sourcef,destinf);
+    disp(['copy status auxiliary (1 is ok): ' num2str(status1) ])
+end
+
 if ~exist([CONFIG.DIR_FTP '/' CONFIG.dacname '/' CONFIG.floatname '/profiles/'])
     sourcef=[DIR_FTP_CORIOLIS '/' CONFIG.dacname '/' CONFIG.floatname '/profiles/R*.nc'];
     destinf=[CONFIG.DIR_FTP '/' CONFIG.dacname '/' CONFIG.floatname '/profiles/'];

@@ -145,14 +145,18 @@ if exist(FILENAME_TECH)
     pump_name = unique(cellstr(T.technical_parameter_name.data(ipump,:)));
     ivalve=find(findstr_tab(cellstr(T.technical_parameter_name.data),'NUMBER_ValveActionsDuringDescentToPark_COUNT')==1);
     valve_name = unique(cellstr(T.technical_parameter_name.data(ivalve,:)));
+    ivalve=find(findstr_tab(cellstr(T.technical_parameter_name.data),'NUMBER_ValveActionsDuringDescentToPark_COUNT')==1);
+    valve_name = unique(cellstr(T.technical_parameter_name.data(ivalve,:)));
     
     cycl=T.cycle_number.data(isurf);
     cyc1=(cycl==1);
     
     figure
+    
     isplot=0;
     if isempty(pres_name)==0&length(pres_name)==1
         subplot(3,1,1)
+        
         plot(T.cycle_number.data(isurf),str2num(T.technical_parameter_value.data(isurf,:)),'+-')
         hold on
         box on
@@ -164,6 +168,7 @@ if exist(FILENAME_TECH)
     end
     if isempty(batt_name)==0&length(batt_name)==1
         subplot(3,1,2)
+        
         plot(T.cycle_number.data(ivolt),str2num(T.technical_parameter_value.data(ivolt,:)),'+-')
         hold on
         box on
@@ -176,6 +181,7 @@ if exist(FILENAME_TECH)
     end
     if isempty(pump_name)==0&isempty(valve_name)==0
         subplot(3,1,3)
+        
         plot(T.cycle_number.data(ipump),str2num(T.technical_parameter_value.data(ipump,:)),'+-')
         hold on
         plot(T.cycle_number.data(ivalve),str2num(T.technical_parameter_value.data(ivalve,:)),'o-r')
@@ -197,16 +203,100 @@ if exist(FILENAME_TECH)
         print(fileout,'-dpdf')
     end
 end
-
 %------------------------------------------------------
 % lecture de tous les monoprofifs du flotteur
-% restitution dans structure FLm et mise dans variables
+% restitution dans structure FLm 
 %------------------------------------------- -----------
 [file_list]=select_float_files_on_ftp(floatname,dacname,FLOAT_SOURCE_NETCDF,'C',0);
 vertical_sampling_scheme='Primary sampling';
 Param='';
 [FLm,DimL,file_list]=create_multi_from_filelist(floatname,dacname,FLOAT_SOURCE_NETCDF,file_list,vertical_sampling_scheme,Param);
 FLm=replace_fill_bynan(FLm); % add 23/01/2024
+
+
+% lecture des fichiers TECH aux pour recuperer certaines variables
+%------------------------------------------------------
+isplot_ice=0;
+FILENAME_TECH_AUX = [CONFIG.DIR_FTP dacname '/' floatname '/auxiliary/' floatname '_tech_aux.nc'];
+if exist(FILENAME_TECH_AUX)
+    T = read_netcdf_allthefile(FILENAME_TECH_AUX);
+    iice=find(findstr_tab(cellstr(T.technical_parameter_name.data),'TECH_FLAG_IceDetection_NUMBER')==1);
+    icedetect_name = unique(cellstr(T.technical_parameter_name.data(iice,:)));
+    iiceact=find(findstr_tab(cellstr(T.technical_parameter_name.data),'TECH_FLAG_IceAlgorithmActivated_LOGICAL')==1);
+    iceactive_name = unique(cellstr(T.technical_parameter_name.data(iiceact,:)));
+    itrans=find(findstr_tab(cellstr(T.technical_parameter_name.data),'TECH_FLAG_TransmissionDelayed_NUMBER')==1);
+    trans_name=unique(cellstr(T.technical_parameter_name.data(itrans,:)));
+    
+    full_cycle=[1:max(T.cycle_number.data(iice))];
+    empty_cycle=~ismember(full_cycle,T.cycle_number.data(iice));
+    empty_cycle_num=find(~ismember(full_cycle,T.cycle_number.data(iice)));
+   
+    m=1;
+    if isempty(iceactive_name)==0
+        if sum(str2num(T.technical_parameter_value.data(iiceact,:)))>0 % si au moins un cycle a l'algo ice active
+            figure
+            t1 = tiledlayout(3,1,'TileSpacing','compact');
+            set(gcf,'Position',[1 46 660 800],'paperPositionMode','auto');
+            nexttile
+            %subplot(3,1,1)
+            hold on
+            b=bar(full_cycle,empty_cycle*4);
+            b.FaceColor=[0.9 0.9 0.9];
+            b.LineStyle='none';
+            %b.EdgeColor=[1 1 1];
+            box on
+            grid on
+            xlabel('cycle_number','interpreter','none')
+            ylabel('Number (logical)')
+            xl=get(gca,'XLim');
+            set(gca,'XLim',[xl(1),max(FLm.cycle_number.data)]);
+            if isempty(trans_name)==0&length(trans_name)==1
+                %subplot(3,1,1)
+                %nexttile
+                trans_num=str2num(T.technical_parameter_value.data(itrans,:));
+                trans_num(ismember(T.cycle_number.data(itrans),empty_cycle_num))=NaN;
+                if isempty(trans_num)==0
+                    p=plot(T.cycle_number.data(itrans),trans_num,'.-');
+                    p.MarkerSize=8;
+                    m=max(m,max(trans_num));
+                    isplot_ice=isplot_ice+1;
+                end
+            end
+            if isempty(icedetect_name)==0&length(icedetect_name)==1
+                ice_num=str2num(T.technical_parameter_value.data(iice,:));
+                if isempty(ice_num)==0
+                    p1=plot(T.cycle_number.data(iice),str2num(T.technical_parameter_value.data(iice,:)),'o-');
+                    %p1.Color=[0.301 0.745 0.933];
+                    p1.Color=[0 0.4470 0.7410];
+                    m=max(m,max(ice_num));
+                    %str=(icedetect_name{1},'interpreter','none')
+                    isplot_ice=isplot_ice+2;
+                end
+            end
+            set(gca,'YLim',[0 m])
+            if isplot_ice>0
+                if isplot_ice==2
+                    hl=legend([p1],'Ice detection number : (0:no detection, 1:ISA , 2:sat mask, 3:ISA+sat mask, 4:ascent hanging )','location','southoutside');
+
+                    title([floatname ': Ice detection'],'interpreter','none');
+                elseif isplot_ice==1
+                    hl=legend([p],'Transmission delayed number : (0:no delay, 1:all data delayed, 2:some data delayed)','location','southoutside');
+
+                    title([floatname ': Transmission delayed number'],'interpreter','none');
+                elseif isplot_ice==3
+                    hl=legend([p,p1],{'Transmission delayed number : (0:no delay, 1:all data delayed, 2:some data delayed)';'Ice detection number : (0:no detection, 1:ISA , 2:sat mask, 3:ISA+sat mask, 4:ascent hanging '},'location','southoutside');
+                    title([floatname ': Ice detection and related parameters'],'interpreter','none');
+                end
+                
+            end
+        end
+    end
+end
+%------------------------------------------------------
+% Profils du flotteur: mise dans variables
+%------------------------------------------- -----------
+
+
 read_ARGO_tous_mono3_1
 
 [nlev,ncyc]=size(temp);
@@ -306,8 +396,8 @@ disp('ok')
 % trace des inversions de densite (test 14 de la doc ARGO)
 % --------------------------------------------------------
 
-if PARAM.PLOT_INVDENS==1	
-plot_inverdens(CONFIG,floatnum,cycnum,pres,temp,psal,titflag)
+if PARAM.PLOT_INVDENS==1
+    plot_inverdens(CONFIG,floatnum,cycnum,pres,temp,psal,titflag)
 end
 
 % Diagramme T/S, theta/S, theta/doxy
@@ -325,7 +415,7 @@ vxmin=min(floor(psal(:)*100))/100;
 vymax=max(ceil(temp(:)*100))/100;
 vymin=min(floor(temp(:)*100))/100;
 if ~isnan(vxmax*vxmin*vymax*vymin)
-set(gca,'xlim',[vxmin vxmax],'ylim',[vymin vymax]);
+    set(gca,'xlim',[vxmin vxmax],'ylim',[vymin vymax]);
 end
 if strcmp(PARAM.DATATYPE,'adj')
     ylabel('Temperature Adj.')
@@ -402,7 +492,7 @@ for iprof=1:ncyc
     plot(psal_tab(iprof,:),tpot_tab(iprof,:),'color',map(iprof,:),'marker','.','linewidth',2);
     if(PARAM.MAKEPAUSE==1)
         disp(num2str(cycnum(iprof)));
-        pause
+        % pause
     end
 end
 psal_tab(pres_tab<1500)=NaN;
@@ -479,7 +569,7 @@ if strcmp(pltoxy,'o')
     vymax=max(ceil(tpot1(:)*100))/100;
     vymin=min(floor(tpot1(:)*100))/100;
     if ~isnan(vxmax*vxmin*vymax*vymin)
-    set(gca,'xlim',[vxmin vxmax],'ylim',[vymin vymax]);
+        set(gca,'xlim',[vxmin vxmax],'ylim',[vymin vymax]);
     end
     %set(gca,'xlim',[cdoxy(1) cdoxy(end)],'ylim',[ctpot(1) ctpot(end)]);
     grid
@@ -551,11 +641,11 @@ for icas=1:ncas
     tabtime=(juld-juld(1))*ones(1,size(pres,2));
     if length(cycnum)>2
         if (sum(sum(isnan(sig0)))<numel(sig0))&(sum(sum(isnan(tabval)))<numel(tabval))
-        [hf] = pcolor_argodata_sig(tabtime(:,1),pres',sig0',tabval',nomval,'interp');
+            [hf] = pcolor_argodata_sig(cycnum,tabtime(:,1),pres',sig0',tabval',nomval,'interp');
         else
-         hf=figure;
-         grid on
-         box on
+            hf=figure;
+            grid on
+            box on
         end
         %    plot(tabtime,tabmld','w-','linewidth',2);
         %    plot(cycnum,tabmld','w-','linewidth',2);
@@ -565,9 +655,13 @@ for icas=1:ncas
         %set(gca,'ydir','reverse');
         %colorbar
         %caxis([vmin vmax]);
-        
         vtick=get(gca,'xtick');
-        vticklabel=datestr(datenum(1950,1,1)+vtick+juld(1),12);
+        [ucy,ia]=unique(FLm.cycle_number.data);
+        ujuld=juld(ia);
+        datetic=interp1(ucy,ujuld,vtick);
+        vticklabel=strcat(datestr(datenum(1950,1,1)+double(datetic),12));
+        
+        %vticklabel=datestr(datenum(1950,1,1)+vtick+juld(1),12);
         set(gca,'xtick',vtick,'xticklabel',vticklabel);
         
         set(gca,'xtick',vtick,'xticklabel',vticklabel);
@@ -585,9 +679,9 @@ for icas=1:ncas
             %eval(['print -depsc2 ' plotpath floatnum '_' nomval '_interp_' titflag titsavedata '.eps'])
         end
         if icas ~= 2 && icas ~= 5
-             
+            
             if (sum(sum(isnan(valini)))<numel(valini))
-            [hf] = pcolor_argodata(cycnum,pres',valini',nomvalini,'flat');
+                [hf] = pcolor_argodata(cycnum,pres',valini',nomvalini,'flat');
             else
                 hf=figure;
                 grid on
@@ -610,14 +704,25 @@ for icas=1:ncas
 end
 
 %end
-
-
+if isplot_ice>1 & length(cycnum)>2
+    figure(2)
+    %subplot(3,1,2)
+    nexttile
+    pres_surf=pres;
+    temp_surf=temp;
+    temp_surf(pres_surf>200)=NaN;
+    pcolor_argodata_ice(cycnum,pres_surf',temp_surf','TEMP','flat');
+    set(gca,'YLim',[0 50])
+    title('Temperature measured in the upper 50-db layer')
+    ylabel('Pressure(db)')
+end
 % carte 1 (positions)
 % -------------------
 %keyboard
 zone_visu=[floor(min(lat))-0.2 ceil(max(lat))+0.2  floor(min(lon))-0.2 ceil(max(lon))+0.2];
 reso='LR';proj='miller';
 [hf,ha]=fct_pltmap_traj(zone_visu,reso,proj,park_press,prof_press);
+
 %keyboard
 for ii=2:length(lon)-1
     m_plot(lon(ii),lat(ii),'color',map(ii,:),'marker','o','markerfacecolor',map(ii,:),'markersize',7)
@@ -626,10 +731,23 @@ lonArrow = lon;
 latArrow= lat;
 tailleFleche = 0.761 * 0.005 * (zone_visu(4) -zone_visu(3))/16;
 [xArrow, yArrow] = m_ll2xy(lonArrow, latArrow);
+FLmc=format_flags_char2num(FLm);
 for ii=1:length(lon)-1
-    arrowHdl = plot_arrow2(xArrow(ii), yArrow(ii), xArrow(ii+1), yArrow(ii+1), ...
-        tailleFleche, tailleFleche, 'linestyle', '-','Color',[0.4 0.4 0.4],'FaceColor',[0.4 0.4 0.4],'EdgeColor',[0.4 0.4 0.4]);
+    if FLmc.position_qc.data(ii)==8
+        plot_arrow2(xArrow(ii), yArrow(ii), xArrow(ii+1), yArrow(ii+1), ...
+            tailleFleche, tailleFleche, 'linestyle', '--','Color',[0.4 0.4 0.4],'FaceColor',[1 1 1],'EdgeColor',[0.4 0.4 0.4]);           
+    elseif FLmc.position_qc.data(ii)==4|FLmc.position_qc.data(ii)==3
+         plot_arrow2(xArrow(ii), yArrow(ii), xArrow(ii+1), yArrow(ii+1), ...
+            tailleFleche, tailleFleche, 'linestyle', '-','Color',[0.4 0.4 0.4],'FaceColor',[1 0 0],'EdgeColor',[0.4 0.4 0.4]);
+    elseif FLmc.position_qc.data(ii)==1|FLmc.position_qc.data(ii)==2
+         plot_arrow2(xArrow(ii), yArrow(ii), xArrow(ii+1), yArrow(ii+1), ...
+            tailleFleche, tailleFleche, 'linestyle', '-','Color',[0.4 0.4 0.4],'FaceColor',[0.4 0.4 0.4],'EdgeColor',[0.4 0.4 0.4]);
+    else
+        arrowHdl4 = plot_arrow2(xArrow(ii), yArrow(ii), xArrow(ii+1), yArrow(ii+1), ...
+        0, 0, 'linestyle', '--','Color',[0.4 0.4 0.4],'FaceColor',[0.4 0.4 0.4],'EdgeColor',[0.4 0.4 0.4]);
+    end
 end
+
 
 for ii=[5:5:length(lon)]
     j=m_text(lon(ii),lat(ii),int2str(cycnum(ii)));
@@ -637,16 +755,20 @@ for ii=[5:5:length(lon)]
 end
 %m_plot(lon,lat,'k-')
 ii=1;
-hl(1)=m_plot(lon(ii),lat(ii),'color',map(ii,:),'marker','d','markerfacecolor',map(ii,:),'markersize',8);
+hl1=m_plot(lon(ii),lat(ii),'color',map(ii,:),'marker','d','markerfacecolor',map(ii,:),'markersize',8);
 
 ii=length(lon);
-hl(2)=m_plot(lon(ii),lat(ii),'color',map(ii,:),'marker','s','markerfacecolor',map(ii,:),'markersize',8);
+hl2=m_plot(lon(ii),lat(ii),'color',map(ii,:),'marker','s','markerfacecolor',map(ii,:),'markersize',8);
 
 %htl=legend(hl,'First prof.','Last prof.','bestinside');
-htl=legend(hl,{'First prof.','Last prof.'});
-
-
-set(htl,'fontsize',12)
+% pour legende uniquement
+arrowHdl1= m_plot(-600,-600,'linestyle', '--','color',[0.4 0.4 0.4],'marker','>','markerfacecolor',[1 1 1],'markersize',5);
+arrowHdl2= m_plot(-600,-600,'linestyle', '-','color',[0.4 0.4 0.4],'marker','>','markerfacecolor',[1 0 1],'markersize',5);
+arrowHdl3= m_plot(-600,-600,'linestyle', '-','color',[0.4 0.4 0.4],'marker','>','markerfacecolor',[0.4 0.4 0.4],'markersize',5);
+htl=legend([hl1 hl2 arrowHdl3 arrowHdl2 arrowHdl1],{'First prof.','Last prof.','QC=1,2','QC=3,4','QC=8'},'Location','northeast','Orientation','vertical');
+%htl=legend([hl1 hl2 ],{'First prof.','Last prof.'});
+htl.FontSize=7;
+%set(htl,'fontsize',12)
 xlabel('Longitude')
 ylabel('Latitude')
 title(['Float WMO ' floatnum])
@@ -656,6 +778,9 @@ if PARAM.PRINT==1
     %eval(['print -depsc2 ' plotpath floatnum '_pos_' titflag titsavedata '.eps']);
     eval(['print -f' num2str(hf.Number) ' -dpng ' plotpath floatnum '_pos_' titflag titsavedata '.png']);
 end
+
+
+
 % carte 2 (positions)
 % -------------------
 
@@ -712,6 +837,39 @@ if PARAM.PRINT==1
     %eval(['print -depsc2 ' plotpath floatnum '_cycle_' titflag titsavedata '.eps']);
     eval(['print -dpng ' plotpath floatnum '_cycle_' titflag titsavedata '.png']);
 end
+
+
+if isplot_ice>1
+    FLm=format_flags_char2num(FLm);
+    figure(2)
+    %subplot(3,1,3)
+    nexttile
+    full_cycle=[1:max(FLm.cycle_number.data)];
+    empty_cycle=~ismember(full_cycle,FLm.cycle_number.data);
+    b=bar(full_cycle,empty_cycle*10);
+    b.FaceColor=[0.9 0.9 0.9];
+    b.LineStyle='none'
+    hold on
+    grid on
+    box on
+    title ('Position Flag QC')
+    xlabel('Cycle Number')
+    ylabel('Flag')
+    %scatter(FLm.longitude.data,FLm.latitude.data,3,FLm.position_qc.data)
+    m=max(FLm.position_qc.data);
+    plot(FLm.cycle_number.data,FLm.position_qc.data,'.-')
+    set(gca,'YLim',[0 m])
+    
+    if isplot==1
+        fileout=[CONFIG.DIR_PLOT 'preliminaire/' floatname '/' floatname '_ice_param.pdf'];
+        if exist([CONFIG.DIR_PLOT 'preliminaire/' floatname '/'])==0
+            mkdir([CONFIG.DIR_PLOT 'preliminaire/' floatname '/'])
+        end
+        set(gcf,'Position',[1 46 660 800],'paperPositionMode','auto');
+        print(fileout,'-dpdf')
+    end
+end
+
 %clear all
 %close all
 disp('plotdata termine');
