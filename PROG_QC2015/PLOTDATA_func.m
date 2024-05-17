@@ -67,6 +67,7 @@ float=str2num(floatname);
 %------------------------------------------- -----------
 
 M = read_netcdf_allthefile([CONFIG.DIR_FTP dacname '/' floatname '/' floatname '_meta.nc']);
+Mf=read_file_meta([CONFIG.DIR_FTP dacname '/' floatname '/' floatname '_meta.nc']); % formatage des meta
 [isfound]=findstr_tab(M.config_parameter_name.data,'ParkPressure_dbar');
 if sum(isfound)==1
     park_press=median(M.config_parameter_value.data(:,isfound));
@@ -217,7 +218,7 @@ FLm=replace_fill_bynan(FLm); % add 23/01/2024
 % lecture des fichiers TECH aux pour recuperer certaines variables
 %------------------------------------------------------
 isplot_ice=0;
-FILENAME_TECH_AUX = [CONFIG.DIR_FTP dacname '/' floatname '/auxiliary/' floatname '_tech_aux.nc'];
+FILENAME_TECH_AUX = [CONFIG.DIR_FTP dacname '/' floatname '/' floatname '_tech_aux.nc'];
 if exist(FILENAME_TECH_AUX)
     T = read_netcdf_allthefile(FILENAME_TECH_AUX);
     iice=find(findstr_tab(cellstr(T.technical_parameter_name.data),'TECH_FLAG_IceDetection_NUMBER')==1);
@@ -651,13 +652,17 @@ for icas=1:ncas
         %    plot(cycnum,tabmld','w-','linewidth',2);
         
         orient landscape
-        set(gca,'fontsize',18)
+        set(gca,'fontsize',18 )
         %set(gca,'ydir','reverse');
         %colorbar
         %caxis([vmin vmax]);
         vtick=get(gca,'xtick');
+        
         [ucy,ia]=unique(FLm.cycle_number.data);
+        ucymin=min(ucy);
+        ucymax=max(ucy);
         ujuld=juld(ia);
+        vtick(vtick>ucymax|vtick<ucymin)=[];
         datetic=interp1(ucy,ujuld,vtick);
         vticklabel=strcat(datestr(datenum(1950,1,1)+double(datetic),12));
         
