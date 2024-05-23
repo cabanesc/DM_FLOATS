@@ -136,8 +136,8 @@ else
                end
                isload=isload+1;
            catch MEXc
-               if(strcmp(MEXc.identifier,'MATLAB:io:ftp:ftp:NoSuchDirectory')
-                   fprintf([daclist{i} '/' flt_name ' does not exist \n');
+               if(strcmp(MEXc.identifier,'MATLAB:io:ftp:ftp:NoSuchDirectory'))
+                   fprintf([daclist{i} '/' flt_name ' does not exist \n']);
                else
                    rethrow(MEXc)
                end
