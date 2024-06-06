@@ -117,6 +117,12 @@ cmax=coefout*ceil(myquantile(((param(pres>200)))',[0.975])*coefin/coefout)/coefi
 if (cmax-cmin)>pas*200
     cmin=coefout*floor(myquantile(((param(pres>200)))',[0.05])*coefin/coefout)/coefin;
     cmax=coefout*ceil(myquantile(((param(pres>200)))',[0.95])*coefin/coefout)/coefin;
+    med=coefout*ceil(myquantile(((param(pres>200)))',[0.5])*coefin/coefout)/coefin;
+    if med-cmin>5*(cmax-med)
+      cmin=max(cmin,med-5*(cmax-med));
+    elseif med-cmin<5*(cmax-med)
+      cmax=min(cmax,med+5*(med-cmin));  
+    end
 end
 %cmin=coefout*min(min(floor(param(pres>200)*coefin/coefout))/coefin);
 %cmin=coefout*floor(myquantile(((param(pres>200)))',[0.05])*coefin/coefout)/coefin;
