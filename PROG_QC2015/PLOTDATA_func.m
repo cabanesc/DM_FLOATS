@@ -233,8 +233,8 @@ if exist(FILENAME_TECH_AUX)
     empty_cycle_num=find(~ismember(full_cycle,T.cycle_number.data(iice)));
    
     m=1;
-    if isempty(iceactive_name)==0
-        if sum(str2num(T.technical_parameter_value.data(iiceact,:)))>0 % si au moins un cycle a l'algo ice active
+    if isempty(iceactive_name)==0||isempty(icedetect_name)==0
+        if sum(str2num(T.technical_parameter_value.data(iiceact,:)))>0 || sum(str2num(T.technical_parameter_value.data(iice,:)))>0% si au moins un cycle a l'algo ice active 
             figure
             t1 = tiledlayout(3,1,'TileSpacing','compact');
             set(gcf,'Position',[1 46 660 800],'paperPositionMode','auto');
