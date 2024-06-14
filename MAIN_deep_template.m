@@ -39,7 +39,7 @@ config_campaign='config_saga21.txt'; % campaign config files are in VERIF_PROF1/
 %config_catarina.txt  config_ovide10.txt   config_pedro.txt    config_rrex17.txt
 % config_m16420.txt  config_msm9420.txt  config_oblady18.txt
 % config_bocats21.txt  config_pirata20.txt  config_so28021.txt config_saga21.txt
-% config_edmio22.txt config_sochic22.txt
+% config_edmio22.txt config_sochic22.txt config_capricorn18.txt
 %name_campaign  = 'PRELIMINARY REPORT ';          % titre pour le rapport
 name_campaign  = 'SAGA 2021';         % title of the DM report.
 
@@ -50,7 +50,7 @@ MAX_DEPTH=3000;   % Maximum depth considered for the optimum fit when estimating
 NEW_CPCOR = -11.6e-8;  % New Cpcor value used to correct the salinity
 
 
-irun.LOAD_float      = 0   % Load data  : copy the file from DIR_FTP_CORIOLIS to DIR_FTP
+irun.LOAD_float      = 0;   % Load data  : copy the file from DIR_FTP_CORIOLIS to DIR_FTP
 irun.PLOTDATA_raw    = 0;  % Preliminary diagnostic plots (theta/S, sections, bathy, flags...)
 irun.CORRECT_float   = 0;  % Visualization & correction of flags in netcdf files
 irun.ANA_CPCOR       = 0;  % CPCor analyse
@@ -110,7 +110,7 @@ if irun.ANA_CPCOR
     rep='CPCOR';
     init_path('add',rep,rdir);
     eval(fullfile('cd ./',rep));
-    %RUN_CPCOR(floatname,dacname,1,config_campaign,'DIRECTION','A','MIN_DEPTH',1000)  % all options, default values
+    %RUN_CPCOR(floatname,dacname,1,config_campaign,'DIRECTION','A','MIN_DEPTH',1000,'MAX_DEPTH',4000,'RECOM_CPCOR',-13.5e-8)  % all options, default values
     RUN_CPCOR(floatname,dacname,1,config_campaign,'DIRECTION','A','MIN_DEPTH',MIN_DEPTH,'MAX_DEPTH',MAX_DEPTH)   
     eval('cd ..');
     init_path('clear',rep,rdir);

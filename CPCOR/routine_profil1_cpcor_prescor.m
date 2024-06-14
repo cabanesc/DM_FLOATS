@@ -219,8 +219,8 @@ if nocycl<=length(F.cycle_number.data)
     % on cherche une valeur optimale pour l'offset en utilisant une valeur
     % mediane pour CPCOR=-1.294e-7
     
-    CPcor_fixed = -1.16e-7;
-    %CPcor_fixed = -1.35e-7;
+    %CPcor_fixed = -1.16e-7;
+    CPcor_fixed = PARAM.RECOM_CPCOR;
     inp3=[1];
     cnew3 = fminsearch(@myfun,inp3,options)
     
@@ -297,8 +297,14 @@ if nocycl<=length(F.cycle_number.data)
         %legend({'Original  profile (press corrected): nominal CPCOR  (-9.57e-8) , no offset corrected',['Modified profile: nominal CPCOR  (-9.57e-8) , optimal offset  (' num2str(theoffsset_nom) ')' ],['Modified profile: optimal CPCOR (', num2str(cnew(1)), ') , optimal offset (', num2str(theoffsset_op), ')']},'location','SouthOutside','Fontsize',14,'FontWeight','bold')
         %legend({'Original  profile (press corrected): nominal CPCOR  (-9.57e-8) , no offset corrected',['Modified profile: nominal CPCOR  (-9.57e-8) , optimal offset  (' num2str(theoffsset_nom) ')' ],['Modified profile: median CPCOR (', num2str(CPcor_fixed), ') , optimal offset (', num2str(theoffsset_med), ')']},'location','SouthOutside','Fontsize',14,'FontWeight','bold')
         %legend({['Modified profile: nominal CPCOR  (-9.57e-8) , optimal offset  (' num2str(theoffsset_nom) ')' ],['Modified profile: optimal CPCOR (', num2str(cnew(1)), ') , optimal offset (', num2str(theoffsset_op), ')'],['Modified profile: WG suggested CPCOR (', num2str(CPcor_fixed), ') , optimal offset (', num2str(theoffsset_med), ')']},'location','SouthOutside','Fontsize',12)
-        
-        legend({['Modified profile: nominal CPCOR  (-9.57e-8) , M=1' ],['Modified profile: optimal CPCOR (', num2str(cnew(1)), ') , M=1'],['Modified profile: New SBS recom. CPCOR (', num2str(CPcor_fixed), ') , M=1']},'location','SouthOutside','Fontsize',12)
+        if CPcor_fixed==-13.5e-8
+            legend({['Original profile: nominal CPCOR  (-9.57e-8) , M=1' ],['Modified profile: optimal CPCOR (', num2str(cnew(1)), ') , M=1'],['Modified profile: WG recom. CPCOR (', num2str(CPcor_fixed), ') , M=1']},'location','SouthOutside','Fontsize',12)
+        elseif CPcor_fixed==-11.6e-8
+            legend({['Original profile: nominal CPCOR  (-9.57e-8) , M=1' ],['Modified profile: optimal CPCOR (', num2str(cnew(1)), ') , M=1'],['Modified profile: SBS recom. CPCOR (', num2str(CPcor_fixed), ') , M=1']},'location','SouthOutside','Fontsize',12)
+        else
+            legend({['Original profile: nominal CPCOR  (-9.57e-8) , M=1' ],['Modified profile: optimal CPCOR (', num2str(cnew(1)), ') , M=1'],['Modified profile: New recom. CPCOR (', num2str(CPcor_fixed), ') , M=1']},'location','SouthOutside','Fontsize',12)
+        end
+        %legend({['Original profile: nominal CPCOR  (-9.57e-8) , M=1' ],['Modified profile: optimal CPCOR (', num2str(cnew(1)), ') , M=1'],['Modified profile: WG recom. CPCOR (', num2str(CPcor_fixed), ') , M=1']},'location','SouthOutside','Fontsize',12)
         %legend({['Modified profile: nominal CPCOR  (-9.57e-8) , optimal M  (' num2str(cnew2(1)) ')' ],['Modified profile: optimal CPCOR (', num2str(cnew(1)), ') , optimal M (', num2str(cnew(2)), ')'],['Modified profile: WG suggested CPCOR (', num2str(CPcor_fixed), ') , optimal M (', num2str(cnew3(1)), ')']},'location','SouthOutside','Fontsize',12)
         ylabel('pressure','Fontsize',12)
         box on
@@ -353,9 +359,15 @@ if nocycl<=length(F.cycle_number.data)
         box on
         title({['Salinity deviation from the shipboard reference.'];['Float ' floatname ', Cycle ' nocyclstr ]},'Fontsize',14)
         xlabel('Salinity ','Fontsize',12)
-        legend({['Modified profile: optimal CPCOR (', num2str(cnew(1)), ') , optimal offset (', num2str(theoffsset_op), ')'],['Modified profile: New SBS recom. CPCOR (', num2str(CPcor_fixed), ') , optimal offset (', num2str(theoffsset_med), ')']},'location','SouthOutside','Fontsize',12)
-        %legend({'Reference profile from the shipboard CTD', ['Modified profile: optimal CPCOR (', num2str(cnew(1)), ')' ],['Modified profile: median CPCOR (', num2str(CPcor_fixed), ')']},'location','SouthOutside','Fontsize',14,'FontWeight','bold')
-        
+        if CPcor_fixed==-11.6e-8
+        legend({['Modified profile: optimal CPCOR (', num2str(cnew(1)), ') , optimal offset (', num2str(theoffsset_op), ')'],['Modified profile: SBS New recom. CPCOR (', num2str(CPcor_fixed), ') , optimal offset (', num2str(theoffsset_med), ')']},'location','SouthOutside','Fontsize',12)
+        elseif  CPcor_fixed==-13.5e-8
+         legend({['Modified profile: optimal CPCOR (', num2str(cnew(1)), ') , optimal offset (', num2str(theoffsset_op), ')'],['Modified profile: WG New recom. CPCOR (', num2str(CPcor_fixed), ') , optimal offset (', num2str(theoffsset_med), ')']},'location','SouthOutside','Fontsize',12)
+ 
+        else
+            
+        legend({'Reference profile from the shipboard CTD', ['Modified profile: optimal CPCOR (', num2str(cnew(1)), ')' ],['Modified profile: New recom CPCOR (', num2str(CPcor_fixed), ')']},'location','SouthOutside','Fontsize',14,'FontWeight','bold')
+        end
         ylabel('pressure','Fontsize',12)
         
         
@@ -484,6 +496,7 @@ restomin=dcco_opt(ii(ide));
 %restomin=dcco_opt(ii);
 std_res=std(restomin);mean_res=mean(restomin);
 io=find(restomin<mean_res+3*std_res&restomin>mean_res-3*std_res);
+%io=find(restomin<mean_res+10*std_res&restomin>mean_res-10*std_res);
 % on n'essaie pas de minimiser les outliers
 
 res=sum(restomin(io).^2); % L2 Norm

@@ -13,7 +13,7 @@
 %    used for interpolating ctd data on float levels:
 %    'MIN_DEPTH' (float)  1000  (default): Limit depth (m) to be considered for optimization
 %    'CORRECT_MINPRES' (float)   2 (default) : minimum pressure difference between two consecutive cycles for which the pressure is corrected by shifting the surface pressure by 1 cycle
-
+%    'RECOM_CPCOR'  (float)   -13.5e-8  : recommended Cpcor value by the Working group or SBS (plotting purpose)
 % -----------------------------------
 %   OUTPUT :
 % -----------------------------------
@@ -42,10 +42,13 @@ PARAM.MIN_DEPTH=1000;
 PARAM.MAX_DEPTH=4000;
 PARAM.DIRECTION='D';
 PARAM.CORRECT_MINPRES=2;
+PARAM.RECOM_CPCOR=-13.5e-8;
+
 if isfield(s,'MAX_DEPTH')==1;PARAM.MAX_DEPTH=s.MAX_DEPTH;end;
 if isfield(s,'MIN_DEPTH')==1;PARAM.MIN_DEPTH=s.MIN_DEPTH;end;
 if isfield(s,'DIRECTION')==1;PARAM.DIRECTION=s.DIRECTION;end;
 if isfield(s,'CORRECT_MINPRES')==1;PARAM.CORRECT_MINPRES=s.CORRECT_MINPRES;end;
+if isfield(s,'RECOM_CPCOR')==1;PARAM.RECOM_CPCOR=s.RECOM_CPCOR;end;
 
 CAMPAIGN.DACNAME=dacname;
 CAMPAIGN.FLOAT_SOURCE_NETCDF=CONFIG.DIR_FTP;
@@ -67,6 +70,7 @@ end
 
 routine_profil1_cpcor_prescor(fw,numcycle,flt_name,CAMPAIGN,PARAM);
 
+%routine_profil1_cpcor_prescor_BAK_prev_prof(fw,numcycle,flt_name,CAMPAIGN,PARAM)
 
 
 %clear all
