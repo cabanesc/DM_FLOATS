@@ -103,8 +103,8 @@ if irun.VERIF_FLAG
     rep='VERIF_FLAG';
     init_path('add',rep,rdir);
     eval(fullfile('cd ./',rep));
-    %verif_flag_1profil(floatname,dacname,n_prof,'DIRECTION','A','REFERENCE','ctd','REXTEND',50, 'DATATYPE','raw','DATAREP','DIR_FTP','DEPTH_ZOOM',1000,'CHECK_REF',0);  % all options, default values
-    verif_flag_1profil(floatname,dacname,n_prof,'DEPTH_ZOOM',1000, 'REFERENCE','argo','REXTEND',50);
+    %verif_flag_1profil(floatname,dacname,n_prof,'CONFIG_OW',numconfig_ow','DIRECTION','A','REFERENCE','ctd','REXTEND',50, 'DATATYPE','raw','DATAREP','DIR_FTP','DEPTH_ZOOM',1000,'CHECK_REF',0);  % all options, default values
+    verif_flag_1profil(floatname,dacname,n_prof,DEPTH_ZOOM',1000, 'REFERENCE','argo','REXTEND',50);
     eval('cd ..');
     init_path('clear',rep,rdir);
 end

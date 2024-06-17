@@ -200,8 +200,11 @@ for ibox=1:nbox
         ( (PV_float-PV_hist)./sqrt( PV_float.^2+PV_hist.^2 )./phi_large ).^2 ;
     
     distance = andoyer(wmo.long,wmo.lat,F.longitude.data,F.latitude.data);
-    [d2,isort] = sort(distance);
-    %[d2,isort] = sort(correlation_large);
+    if PARAM.USE_PV==0
+        [d2,isort] = sort(distance);
+    else
+        [d2,isort] = sort(correlation_large);
+    end
     nprf = min(NPROFMAX,length(isort));
     [np,null] = size(wmo.pres);
     
@@ -247,9 +250,12 @@ la_grid_long1(gg)=CTD.longitude.data(gg)-360;
 correlation_large = (la_grid_long1-F.longitude.data).^2./longitude_large.^2 + (CTD.latitude.data-F.latitude.data).^2./latitude_large.^2 +...
     ( (PV_float-PV_hist)./sqrt( PV_float.^2+PV_hist.^2 )./phi_large ).^2 ;
 
-%distance=andoyer(CTD.longitude.data,CTD.latitude.data,F.longitude.data,F.latitude.data);
+distance=andoyer(F.longitude.data,F.latitude.data,CTD.longitude.data,CTD.latitude.data);
+if PARAM.USE_PV==0
+    [d2,isort]=sort(distance);
+else
 [d2,isort]=sort(correlation_large);
-%[d2,isort]=sort(distance);
+end
 
 index_sort_dist=isort;
 [CTD,DIM_CTD]=extract_profile_dim(CTD,DIM_CTD,'N_PROF',index_sort_dist(1:PARAM.REXTEND));

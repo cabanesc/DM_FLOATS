@@ -133,7 +133,7 @@ if irun.VERIF_FLAG
     rep='VERIF_FLAG';
     init_path('add',rep,rdir);
     eval(fullfile('cd ./',rep));
-    verif_flag_1profil(floatname,dacname,n_prof,'DEPTH_ZOOM',1000,'DATATYPE','adj','REFERENCE','ctd');  % DATATYPE adj (corrected with a new cpcor value)
+    verif_flag_1profil(floatname,dacname,n_prof,'CONFIG_OW',numconfig_ow,'DEPTH_ZOOM',1000,'DATATYPE','adj','REFERENCE','ctd');  % DATATYPE adj (corrected with a new cpcor value)
     eval('cd ..');
     init_path('clear',rep,rdir);
 end

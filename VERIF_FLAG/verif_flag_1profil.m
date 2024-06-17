@@ -9,6 +9,10 @@
 %                              see option 'DIRECTION' to consider descending profiles
 %    config_campaign_file (char)        e.g. 'config_rrex17.txt'
 %   OPTIONNAL INPUT :
+%    'CONFIG_OW'  (float)  give the config number for OW and retrieve
+%    the value of MAP_USE_PV set in the config file. This value will be used to select the reference data
+%    (PARAM.USE_PV=MAP_USE_PV). By default PARAM.USE_PV=1;
+%    
 %    'DIRECTION' (char)  'A'(default) or 'D' if you want to use ascending or descending profiles
 %    'REFERENCE' char)   'ctd'  if reference CTD are used for comparison (default)
 %                        'argo' if reference argo data are used for comparison
@@ -71,6 +75,7 @@ PARAM.DEPTH_ZOOM=1000;
 PARAM.CHECK_REF=0;
 PARAM.DATAREP='DIR_FTP';
 
+
 % Input CONFIG
 if isfield(s,'DIRECTION')==1;PARAM.DIRECTION=s.DIRECTION;end;
 if isfield(s,'REFERENCE')==1;PARAM.REFERENCE=s.REFERENCE;end;
@@ -85,8 +90,19 @@ else
 thepostfix='';
 end
 
-for ifloat=1:length(floatname)
+if isfield(s,'CONFIG_OW')==1
+    if exist([CONFIG.DIR_CODES 'LPO_CODES_ATLN_NEW/ow_config/ow_config_' num2str(s.CONFIG_OW) '.txt'],'file')
+        lo_system_configuration = load_configuration( [CONFIG.DIR_CODES 'LPO_CODES_ATLN_NEW/ow_config/ow_config_' num2str(s.CONFIG_OW) '.txt']);
+        PARAM.USE_PV= str2double(lo_system_configuration.MAP_USE_PV);
+    else
+        PARAM.USE_PV=1;
+    end
+else
+    PARAM.USE_PV=1;
+end
 
+for ifloat=1:length(floatname)
+    
 	floatname_i=strtrim(floatname{ifloat});
 	dacname_i =strtrim(dacname{ifloat});
 	tab=numcycle{ifloat};
