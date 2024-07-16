@@ -60,13 +60,16 @@ for k=1:length(param)
 
         if isempty(Co_best.([onechamp '_best_qc']).(fillval))==0
 
-            isfill=(qc==Co_best.([onechamp '_best_qc']).(fillval)|qc==9);
+            %isfill=(qc==Co_best.([onechamp '_best_qc']).(fillval)|qc==9);
+            isfill=(qc==Co_best.([onechamp '_best_qc']).(fillval)|qc==9|qc==0);%modif 07/24
         else
-            isfill=(qc==9);
+            isfill=(qc==9);%modif 07/24
+            isfill=(qc==9|qc==0);
         end
         
         qc(qc==1|qc==2|qc==5|qc==8)=1;
-        qc(qc==3|qc==4|qc==0)=2;
+        %qc(qc==3|qc==4|qc==0)=2;
+        qc(qc==3|qc==4)=2; %modif 07/24
         A=sum(qc==1,2);
         B=sum(~isfill,2);
         nf=B~=0;
