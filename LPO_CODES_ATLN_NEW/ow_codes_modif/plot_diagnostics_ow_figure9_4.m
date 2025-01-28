@@ -135,9 +135,9 @@ if(isempty(find(isnan(PRES)==0))==0) % if no data exists, terminate here, no plo
         miny = min(min(y),min(LAT))-5;
         maxy=  max(max(y),max(LAT))+5;
         
-        if maxy<75; maxy=maxy;end
+        if maxy<90; maxy=maxy;end
         
-        if  maxy>=75; maxy=75;end
+        if  maxy>=90; maxy=90;end
         
         
         axis([minx maxx miny maxy])
