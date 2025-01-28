@@ -289,6 +289,9 @@ if length( missing_profile_index )>0
     
     for i = 1 : length( missing_profile_index )
         %for i = 15:15
+        if i==39
+       %     keyboard
+        end
         tic
         disp(['UPDATE_SALINITY_MAPPING: Working on profile ' num2str(i)])
         
@@ -427,15 +430,14 @@ if length( missing_profile_index )>0
                         la_hist_Z = la_hist_Z(ii) ;
                         
                         % map historical data to float profiles -------------------------
-                        %if( length(la_hist_sal)>1 ) % only proceed with mapping if there are more than one data point
-                        %  change config 129 -> at least 5 points are required
-                        if( length(la_hist_sal)>5 ) % only proceed with mapping if there are more than five data point
-                            
-                            % check for outliers
-                            
-                            mean_sal = mean(la_hist_sal);
-                            signal_sal = signal( la_hist_sal ) ;
+                        
+                        % check for outliers
+                        mean_sal = mean(la_hist_sal);
+                        signal_sal = signal( la_hist_sal ) ;
+                        
+                        if signal_sal>0
                             bad = find(abs(la_hist_sal-mean_sal)/sqrt(signal_sal) >3);
+                            
                             if ~isempty(bad)
                                 la_hist_sal(bad)   = [];
                                 la_hist_long(bad)  = [];
@@ -443,9 +445,15 @@ if length( missing_profile_index )>0
                                 la_hist_dates(bad) = [];
                                 la_hist_Z(bad)     = [];
                             end
-                            
-                            % use large length scales to map original data
-                            % pass NaN for map_age to exclude temporal covariance for large scale mapping
+                        end
+                        
+                        % use large length scales to map original data
+                        % pass NaN for map_age to exclude temporal covariance for large scale mapping
+                        
+                        % require more than one historical salinity profile with unique position for noise.m; and
+                        % require more than five historical salinity profiles to produce realistic mapping error estimates
+                        if( (length(unique(la_hist_long)) > 1 || length(unique(la_hist_lat)) > 1) && length(la_hist_sal) > 5 )
+
                             
                             noise_sal  = noise( la_hist_sal, la_hist_lat, la_hist_long ) ;
                             signal_sal = signal( la_hist_sal ) ;
