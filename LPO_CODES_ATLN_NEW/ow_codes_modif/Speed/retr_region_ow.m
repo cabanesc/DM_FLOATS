@@ -49,7 +49,11 @@ for ln_index = 1:length(pa_wmo_numbers)
                 lo_box_data = load( strcat( po_config_data.HISTORICAL_DIRECTORY, po_config_data.HISTORICAL_CTD_PREFIX, sprintf( '%4d', pa_wmo_numbers(ln_index,1))));
                 if isempty(bad_ctd)==0
                     bad_source = bad_ctd.source(bad_ctd.wmo==pa_wmo_numbers(ln_index,1));
-                    not_use=find(ismember(lo_box_data.source,bad_source));
+                    if ~isempty(bad_source)
+                        not_use=find(ismember(lo_box_data.source,bad_source));
+                    else
+                        not_use=[];
+                    end
                 else
                     bad_source=[];
                     not_use=[];
