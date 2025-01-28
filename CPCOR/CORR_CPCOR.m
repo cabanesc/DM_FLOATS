@@ -131,16 +131,17 @@ for ifloat=1:length(floatname)
         tcyclp1=find(cycl==F.cycle_number.data(1)+1);
         if ~isempty(tcycl)&~isempty(tcyclp1)& ~findstr_tab(charcy,'1D')
             press_offset=-press_surf(tcycl)+press_surf(tcyclp1);
-            cor_pres=1;
+            press_offset=0;
+            cor_pres=0;
             if abs(press_offset)< PARAM.CORRECT_MINPRES
                 press_offset=0;
-                cor_pres=1;
+                cor_pres=0;
             end
         else
             press_offset=0;
             cor_pres=0;
         end
-        press_offset;
+        press_offset
         %         if F.cycle_number.data==1
         %             %press_offset= str2num(T.technical_parameter_value.data(isurf(cyc1),:));
         %             % Update 04/2021: ne tient pas compte de l'offset normalement c'est corrigé (voir le manuel utilisateur des deep aRG0
@@ -280,7 +281,7 @@ for ifloat=1:length(floatname)
             %             F.scientific_calib_date.data(notisprimary,n_calib,ind_pres,:)=thedate;
             %         end
         end
-        
+        %squeeze(F.scientific_calib_comment.data(isprimary,n_calib,ind_pres,:))'
         
         ind_temp = ismember(cellstr(theparameters),'TEMP');
         thestr=(['TEMP_ADJUSTED = TEMP']);
