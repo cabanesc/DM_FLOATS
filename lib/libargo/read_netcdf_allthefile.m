@@ -63,7 +63,7 @@ S.dimorder='C';  % indique que les dimensions sont ordonnees selon C (i.e unlimi
 
 % Noms possibles pour l'attribute _FillValue (permet de gerer des fichiers qui ne respectent pas tout a fait les convention CF pour cet attribut
 
-poss_fillval_name = {'FillValue','FillValue_','_FillValue','_fillvalue','fillvalue','missing_value'};
+poss_fillval_name = {'FillValue','FillValue_','_FillValue','_fillvalue','fillvalue','missing_value','NaN'};
 
 % 1. Open the netcdf file
 % ---------------------------------------------------------------------------
