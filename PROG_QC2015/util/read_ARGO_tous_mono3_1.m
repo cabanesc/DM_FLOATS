@@ -41,9 +41,12 @@ temp_qc = FLm.(['temp' adj '_qc']).data';
 psal_qc = FLm.(['psal' adj '_qc']).data';
 psal(find(psal==fillvalue))=NaN;
 temp(find(temp==fillvalue))=NaN;
+psalnodub=psal;
+
+psalnodub(find(psal<0))=NaN;
 
 tpot = sw_ptmp(psal,temp,pres,0);
-sig0 = sw_pden(psal,temp,pres,0) - 1000;
+sig0 = sw_pden(psalnodub,temp,pres,0) - 1000;  % if negatif values sig0 is complex!
 
 
 %-------------------------------------------------------

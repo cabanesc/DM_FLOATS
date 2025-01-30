@@ -52,6 +52,7 @@ for icyc=1:nprf
              disp(texte_sauve)
             h=figure('visible','off');
             hold on
+            if (niv_inv(ip))<=length(rhop_i)
             title(['WMO ' float ' - Cycle ' num2str(cycnum(icyc)) ' - Niveau ' num2str(niv_inv(ip))  ' - Ecart ' num2str(rhop_i(niv_inv(ip))-rhop_ip(niv_inv(ip)))]);
             ideb = niv_inv(ip)-10;
             ifin = niv_inv(ip)+10;
@@ -71,6 +72,7 @@ for icyc=1:nprf
             eval(['print -dpng ' plotpath float '/' float '_cyc' num2str(cycnum(icyc)) '_niv' num2str(niv_inv(ip)) '_densityanom.png']);
 
             close(h);
+            end
         end
     end
 
