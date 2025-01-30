@@ -24,6 +24,7 @@
 %    'CORR_UP_PRES' (float) 0 (default) : upper pressure used to calculate the correction, so that the correction is calculated 
 %                                          by averaging the PSAL difference on theta levels 
 %                                          between CORR_UP_PRES db and the bottom of the profile.The default value is 0 db
+%    'PLOT_PTEMP'  (logical) 1 (default): plot the potential temperature vs pressure in figure 4, otherwise plot in situ temperature vs pressure
 % -----------------------------------
 %   OUTPUT :
 % -----------------------------------
@@ -78,7 +79,7 @@ if isempty(config_campaign_file)==0
     PARAM.DATAREP='DIR_FTP';
     PARAM.NO_FLAG=0;
     PARAM.CORR_UP_PRES=0;
-    
+    PARAM.PLOT_PTEMP=1;
     % Input CONFIG
     if isfield(s,'DATATYPE')==1;PARAM.DATATYPE=s.DATATYPE;end;
     if isfield(s,'LIM_SURF_DEEP')==1;PARAM.LIM_SURF_DEEP=s.LIM_SURF_DEEP;end;
@@ -90,6 +91,7 @@ if isempty(config_campaign_file)==0
     if isfield(s,'DATAREP')==1;PARAM.DATAREP=s.DATAREP;end;
     if isfield(s,'NO_FLAG')==1;PARAM.NO_FLAG=s.NO_FLAG;end;
     if isfield(s,'CORR_UP_PRES')==1;PARAM.CORR_UP_PRES=s.CORR_UP_PRES;end;
+    if isfield(s,'PLOT_PTEMP')==1;PARAM.PLOT_PTEMP=s.PLOT_PTEMP;end;
     %--------------------------------------------------------------------------
     % Entree des parametres
     %--------------------------------------------------------------------------
@@ -103,10 +105,10 @@ if isempty(config_campaign_file)==0
     %      pas_fond = input('Quel est le pas en-dessous du palier ? ');
     
     
-    float = 6901720;
-    palier = 500;
-    pas_surface = 10;
-    pas_fond = 20;
+%     float = 6901720;
+%     palier = 500;
+%     pas_surface = 10;
+%     pas_fond = 20;
     
     
     %end

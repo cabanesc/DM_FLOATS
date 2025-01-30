@@ -139,6 +139,8 @@ for ikk=1:nn
                                     sub2(the_qc~=3)=NaN;
                                     hqc=plot(sub2,level ,colorp,'LineWidth',p.LineWidth) ;
                                     set(hqc,'color',[1 0.5 0],'markerfacecolor',[1 0.5 0]);
+                                    %set(hqc,'color','g','markerfacecolor','g');
+
 
                                     colorp=['r' p.Marker];
                                     sub2=subX;

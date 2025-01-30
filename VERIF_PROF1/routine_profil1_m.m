@@ -1,4 +1,4 @@
-% -========================================================
+ % -========================================================
 %   USAGE :   routine_profil1(floatname,dacname,profnum,PARAM,CONFIG,CAMPAIGN)
 %   PURPOSE : plot data from a given float
 % -----------------------------------
@@ -94,9 +94,9 @@ if strcmp(PARAM.DATATYPE,'adj')
 F.psal=F.psal_adjusted;
 F.psal_qc=F.psal_adjusted_qc;
 F.temp=F.temp_adjusted;
-F.temp_qc=F.temp_adjusted;
+F.temp_qc=F.temp_adjusted_qc;
 F.pres=F.pres_adjusted;
-F.pres_qc=F.pres_adjusted;
+F.pres_qc=F.pres_adjusted_qc;
 end
 if strcmp(PARAM.DATAREP,'DIR_DM_FILES')
 thepostfix='_adj';
@@ -256,9 +256,15 @@ h5 = figure;
 h5.Position(3)=h5.Position(3)+h5.Position(3)*65/100;
 h5.Position(4)=h5.Position(4)+h5.Position(4)*75/100;
 % flag color
-tabcol=[0 1 0 ; 1 1 0 ; 1 0.5 0 ; 1 0 0 ; 0.5 0.5 0 ; 0.5 0.5 0 ; 0.5 0.5 0 ; 0.5 0.5 0; 0.5 0.5 0 ; 0.65 0.65 0.65]; 
+%tabcol=[0 1 0 ; 1 1 0 ; 1 0.5 0 ; 1 0 0 ; 0.5 0.5 0 ; 0.5 0.5 0 ; 0.5 0.5 0 ; 0.5 0.5 0; 0.5 0.5 0 ; 0.65 0.65 0.65]; 
+tabcol=[0 1 0 ; 1 1 0 ; 0 1 0 ; 1 0 0 ; 0.5 0.5 0 ; 0.5 0.5 0 ; 0.5 0.5 0 ; 0.5 0.5 0; 0.5 0.5 0 ; 0.65 0.65 0.65]; 
+
 %keyboard
+if PARAM.PLOT_PTEMP==1
 PARAM.ptmpref='ptmp0';
+else
+PARAM.ptmpref='temp';   
+end
 [h5,l,b2]=init_figure(h5,F,CTD,floatname,nocycl,pfnu,tabcol,MAP_VISU,PARAM,CAMPAIGN);
 
 
@@ -395,7 +401,42 @@ end
 set(gcf,'papertype','usletter','paperunits','inches','paperorientation','landscape','paperposition',[.25,.75,9.5,8]);
 eval(['print  -dpsc2 ' [CONFIG.dir_enregistre '/' floatname '_profiles_' PARAM.ptmpref thepostfix]  '.eps']);
 eval(['print  -dpng ' [CONFIG.dir_enregistre '/' floatname '_profiles_' PARAM.ptmpref thepostfix]  '.png']);
+%--------------------------------------------------------------------------
+%  FIGURE 5 : delta P in 
+%--------------------------------------------------------------------------
+if PARAM.PLOT_PTEMP==0
+    h9 = figure;
+    id=findstr_tab(F.direction.data,'A');
+    p=F.pres.data(ideF,:)';
+    t_flo=F.temp.data(ideF,:)';
+    t_ctd=CTDi_on_pres.temp.data(ideF,:)';
+    for k=1:length(t_flo)
+        thediff=t_ctd-t_flo(k);
+        [val1,ind1]=sort(abs(thediff));
+        delta_p(k)=p((ind1(1)))-p(k);
+        sig=[NaN,thediff(3:size(p))'.*thediff(1:size(p)-2)',NaN];
+        cros=find(sig<0);
+        if isempty(cros)==0
+            allpcros=p(cros)-p(k);
+            thediffcros=thediff(cros);
+            [val,ind]=sort(abs(allpcros));
+            delta2_p(k)=p(cros(ind(1)))-p(k);
+        else
+            delta2_p(k)=NaN;
+        end
+    end
+    %plot(delta_p,p,'+')
+    hold on
+    plot(delta2_p,p,'+')
+    grid on
+    grid minor
+    title ({[floatname ': Pressure error infered from the comparison'] , 'between temperature measured by the float and measured by the deployement CTD'})
+    xlabel('Delta P= Pres_ctd -Pres_float','interpreter','none')
+    ylabel('Pressure reported by the float (db)')
+    set(gca,'Ydir','reverse')
+    set(gcf,'papertype','usletter','paperunits','inches','paperorientation','landscape','paperposition',[.25,.75,9.5,8]);
 
+end
 %--------------------------------------------------------------------------
 % THETA/S  with ZOOM
 %--------------------------------------------------------------------------
@@ -510,8 +551,8 @@ TheYLim=get(gca,'YLim');
 
 %ylim([1 6])
 if strcmp(PARAM.DATATYPE,'adj')
-xlabel([F.(PARAM.ptmpref).long_name ' Adjusted'])
-ylabel([F.psal.long_name ' Adjusted'])
+ylabel([F.(PARAM.ptmpref).long_name ' Adjusted'])
+xlabel([F.psal.long_name ' Adjusted'])
 else
 ylabel(F.(PARAM.ptmpref).long_name)
 xlabel(F.psal.long_name)
