@@ -789,13 +789,13 @@ end
 % carte 2 (positions)
 % -------------------
 
-zone_visu=[floor(min(lat))-10 ceil(max(lat))+10  floor(min(lon))-20 ceil(max(lon))+20];
+zone_visu=[max(floor(min(lat))-10,-90) min(ceil(max(lat))+10,90)  floor(min(lon))-20 ceil(max(lon))+20];
 
 reso='LR';proj='miller';
 [hf,ha]=fct_pltmap(zone_visu,reso,proj);
 
 %h=m_plot(lon,lat,'k-')
-[elev,lonbath,latbath]=m_tbase([floor(min(lon))-25 ceil(max(lon))+25 floor(min(lat))-10 ceil(max(lat))+10]);
+[elev,lonbath,latbath]=m_tbase([max(floor(min(lon))-25,-90) min(ceil(max(lon))+25,90) floor(min(lat))-10 ceil(max(lat))+10]);
 m_contour(lonbath,latbath,elev,[-4000:1000:0],'color',[0.5 0.5 0.5])
 for ii=2:length(lon)-1
     m_plot(lon(ii),lat(ii),'color',map(ii,:),'marker','o','markerfacecolor',map(ii,:),'markersize',8)
