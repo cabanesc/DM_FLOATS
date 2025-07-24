@@ -237,7 +237,14 @@ for ik=1:length(float_list)
     end
     
     if isempty(ikl)==0
-        P.duration=duration(P.config_mission_number.data);
+        id=P.config_mission_number.data;
+        for idk=1:length(id)
+            if id(idk)<=length(duration)
+                P.duration(idk)=duration(id(idk));
+            else
+                P.duration(idk)=NaN;
+            end
+        end
         if (P.juld.data(end)+3*duration(end))<( upload_date-datenum('19500101','YYYYmmdd'))
             str_act='NA';
         else
