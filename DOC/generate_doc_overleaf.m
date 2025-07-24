@@ -529,7 +529,7 @@ for ik=1:length(float_list)
     end
 end
 if comptitem==0
-    %fprintf(fw1,'%s\n', ['\item No density inversion was detected for the floats']);
+    fprintf(fw1,'%s\n', ['\item No density inversion was detected']);
 end
 fprintf(fw1,'%s\n',['\end{itemize}']);
 
