@@ -53,7 +53,7 @@ function fct_pltmap_new(zone_visu,reso,proj)
 
 %set(gca,'fontsize',12)
 m_proj(proj,'long',[zone_visu(3)-2 zone_visu(4)+2],...
-                 'lat',[zone_visu(1)-2 zone_visu(2)+2]);
+                 'lat',[max(zone_visu(1)-2,-90) min(zone_visu(2)+2,90)]);
 warning off
 m_grid('box','fancy','tickdir','out', 'linestyle', 'none','xtick',3);	     
 warning on

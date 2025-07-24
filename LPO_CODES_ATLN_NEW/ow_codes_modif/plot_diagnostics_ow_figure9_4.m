@@ -1,4 +1,3 @@
-
 function plot_diagnostics_ow_figure9_4( pn_float_dir, pn_float_name, po_system_configuration,dacname,C )
 
 %
@@ -14,7 +13,7 @@ function plot_diagnostics_ow_figure9_4( pn_float_dir, pn_float_name, po_system_c
 %close all
 
 DIR_FTP=C.DIR_FTP;
-
+POLAR_LAT=80;
 
 % Move in ini_path.m by T. Reynaud 21.09.2020
 %addpath('/home1/homedir5/perso/ccabanes/dvlpRD/Argo/Lib/ObsInSitu/General/')
@@ -124,13 +123,8 @@ if(isempty(find(isnan(PRES)==0))==0) % if no data exists, terminate here, no plo
             y=HIST.latitude.data;
         end
         
-        plot(x,y,'.','Color',[0.6 0.6 0.6],'MarkerSize',8)
-        hold on
-        plot(LONG,LAT,'r-','LineWidth',1);
         
-        
-        
-        minx = max(min(min(x),min(LONG))-5,-100);
+        minx = max(min(min(x),min(LONG))-5,-180);
         maxx = max(max(x),max(LONG))+5;
         miny = min(min(y),min(LAT))-5;
         maxy=  max(max(y),max(LAT))+5;
@@ -138,26 +132,46 @@ if(isempty(find(isnan(PRES)==0))==0) % if no data exists, terminate here, no plo
         if maxy<90; maxy=maxy;end
         
         if  maxy>=90; maxy=90;end
-        
-        
-        axis([minx maxx miny maxy])
+        if max(abs(LAT))>POLAR_LAT
+            m_proj('stereographic', 'lat', meanoutnan(LAT), 'long', meanoutnan(LONG), 'radius', max(LAT)+1- min(LAT)+1);
+            %m_proj('stereographic', 'lat', max(y), 'long', meanoutnan(x), 'radius', max(y)+1- min(y)+1);
+            minx=-180;
+            maxx=180;
+            
+            hold on
+            m_plot(x,y,'.','Color',[0.6 0.6 0.6],'MarkerSize',8)
+            m_plot(LONG,LAT,'r-','LineWidth',1);
+        else
+            plot(x,y,'.','Color',[0.6 0.6 0.6],'MarkerSize',8)
+            hold on
+            plot(LONG,LAT,'r-','LineWidth',1);
+        end
+
+        if max(abs(LAT))<=POLAR_LAT
+            axis([minx maxx miny maxy])
+        end
         
         %legend('float','historical points','Location','Best')
         %plot(coastdata_x,coastdata_y,'k.-');
         
         for i=1:n
-            h=plot(LONG(i),LAT(i),'+','MarkerSize',5);
+            if max(abs(LAT))>POLAR_LAT
+                h=m_plot(LONG(i),LAT(i),'+','MarkerSize',5);
+            else
+                h=plot(LONG(i),LAT(i),'+','MarkerSize',5);
+            end
             set(h,'color',c(i,:));
             % j=text(LONG(i),LAT(i),int2str(PROFILE_NO(i)));
             %set(j,'color',c(i,:),'fontsize',12,'hor','cen');
         end
         
-        
-        set(gca,'FontSize',11)
-        xlabel('Longitude');
-        ylabel('Latitude');
-        
-        
+        if max(abs(LAT))>POLAR_LAT
+            set(gca,'FontSize',8)
+        else
+            set(gca,'FontSize',11)
+            xlabel('Longitude');
+            ylabel('Latitude');
+        end
         
         %title( strcat(title_floatname, ' ARGO +CTD REF : ', po_system_configuration.CONFIGURATION_FILE(1:end-4), ',  (', strtrim(F.pi_name.data(1,:)), '---', strtrim(F.data_centre.data(1,:)),')' ),'interpreter','none' );
         
@@ -201,13 +215,25 @@ if(isempty(find(isnan(PRES)==0))==0) % if no data exists, terminate here, no plo
         %         contour(Topo.lon.data(jjy,iix),Topo.lat.data(jjy,iix),Topo.topo.data(jjy,iix),[0 0],'LineColor',[0 0 0]);
         
         % Added by T. Reynaud 02/11/2020
-        contour(bathy.lon.data(jjy,iix),bathy.lat.data(jjy,iix),bathy.topo.data(jjy,iix),[-1000 -1000],'LineColor',[0.6 0.5 0.4]);
-        contour(bathy.lon.data(jjy,iix),bathy.lat.data(jjy,iix),bathy.topo.data(jjy,iix),[-2000 -2000],'LineColor',[0.6 0.5 0.4]);
-        contour(bathy.lon.data(jjy,iix),bathy.lat.data(jjy,iix),bathy.topo.data(jjy,iix),[-3000 -3000],'LineColor',[0.8 0.7 0.6]);
-        contour(bathy.lon.data(jjy,iix),bathy.lat.data(jjy,iix),bathy.topo.data(jjy,iix),[-4000 -4000],'LineColor',[0.8 0.8 0.8]);
-        contour(bathy.lon.data(jjy,iix),bathy.lat.data(jjy,iix),bathy.topo.data(jjy,iix),[0 0],'LineColor',[0 0 0]);
-        
-        
+        %         contour(bathy.lon.data(jjy,iix),bathy.lat.data(jjy,iix),bathy.topo.data(jjy,iix),[-1000 -1000],'LineColor',[0.6 0.5 0.4]);
+        %         contour(bathy.lon.data(jjy,iix),bathy.lat.data(jjy,iix),bathy.topo.data(jjy,iix),[-2000 -2000],'LineColor',[0.6 0.5 0.4]);
+        %         contour(bathy.lon.data(jjy,iix),bathy.lat.data(jjy,iix),bathy.topo.data(jjy,iix),[-3000 -3000],'LineColor',[0.8 0.7 0.6]);
+        %         contour(bathy.lon.data(jjy,iix),bathy.lat.data(jjy,iix),bathy.topo.data(jjy,iix),[-4000 -4000],'LineColor',[0.8 0.8 0.8]);
+        %         contour(bathy.lon.data(jjy,iix),bathy.lat.data(jjy,iix),bathy.topo.data(jjy,iix),[0 0],'LineColor',[0 0 0]);
+        if max(abs(LAT))>POLAR_LAT
+            m_contour(bathy.lon.data(jjy,iix),bathy.lat.data(jjy,iix),bathy.topo.data(jjy,iix),[-1000 -1000],'LineColor',[0.6 0.5 0.4]);
+            m_contour(bathy.lon.data(jjy,iix),bathy.lat.data(jjy,iix),bathy.topo.data(jjy,iix),[-2000 -2000],'LineColor',[0.6 0.5 0.4]);
+            m_contour(bathy.lon.data(jjy,iix),bathy.lat.data(jjy,iix),bathy.topo.data(jjy,iix),[-3000 -3000],'LineColor',[0.8 0.7 0.6]);
+            m_contour(bathy.lon.data(jjy,iix),bathy.lat.data(jjy,iix),bathy.topo.data(jjy,iix),[-4000 -4000],'LineColor',[0.8 0.8 0.8]);
+            m_contour(bathy.lon.data(jjy,iix),bathy.lat.data(jjy,iix),bathy.topo.data(jjy,iix),[0 0],'LineColor',[0 0 0]);
+            m_grid
+        else
+            contour(bathy.lon.data(jjy,iix),bathy.lat.data(jjy,iix),bathy.topo.data(jjy,iix),[-1000 -1000],'LineColor',[0.6 0.5 0.4]);
+            contour(bathy.lon.data(jjy,iix),bathy.lat.data(jjy,iix),bathy.topo.data(jjy,iix),[-2000 -2000],'LineColor',[0.6 0.5 0.4]);
+            contour(bathy.lon.data(jjy,iix),bathy.lat.data(jjy,iix),bathy.topo.data(jjy,iix),[-3000 -3000],'LineColor',[0.8 0.7 0.6]);
+            contour(bathy.lon.data(jjy,iix),bathy.lat.data(jjy,iix),bathy.topo.data(jjy,iix),[-4000 -4000],'LineColor',[0.8 0.8 0.8]);
+            contour(bathy.lon.data(jjy,iix),bathy.lat.data(jjy,iix),bathy.topo.data(jjy,iix),[0 0],'LineColor',[0 0 0]);
+        end
         
         % calibration curve (figure 3) --------------------------
         
@@ -588,8 +614,8 @@ if(isempty(find(isnan(PRES)==0))==0) % if no data exists, terminate here, no plo
                     else
                         la_bhist_long1=la_bhist_long;
                     end
-                    
-                    m_proj('mercator','long', [min(fl_LONG1)-1, max(fl_LONG1)+1], 'lat', [min(fl_LAT)-1, max(fl_LAT)+1] );
+                    m_proj('mercator','long', [min(fl_LONG1)-1, max(fl_LONG1)+1], 'lat', [max(min(fl_LAT)-1,-90), min(max(fl_LAT)+1,90)] );% correction ccabanes : problem if LAT=90
+                    %m_proj('mercator','long', [min(fl_LONG1)-1, max(fl_LONG1)+1], 'lat', [min(fl_LAT)-1, max(fl_LAT)+1] );
                     [elev,x,y] = m_tbase( [min(fl_LONG1)-1, max(fl_LONG1)+1, min(fl_LAT)-1, max(fl_LAT)+1] );
                     fl_Z = -interp2( x,y,elev, fl_LONG1, fl_LAT, 'linear'); % -ve bathy values
                     
@@ -753,7 +779,10 @@ if(isempty(find(isnan(PRES)==0))==0) % if no data exists, terminate here, no plo
                     else
                         la_bhist_long1=la_bhist_long;
                     end
-                    m_proj('mercator','long', [min(fl_LONG1)-1, max(fl_LONG1)+1], 'lat', [min(fl_LAT)-1, max(fl_LAT)+1] );
+                    
+                    %m_proj('mercator','long', [min(fl_LONG1)-1, max(fl_LONG1)+1], 'lat', [min(fl_LAT)-1, max(fl_LAT)+1] );
+                    m_proj('mercator','long', [min(fl_LONG1)-1, max(fl_LONG1)+1], 'lat', [max(min(fl_LAT)-1,-90), min(max(fl_LAT)+1,90)] );% correction ccabanes : problem if LAT=90
+
                     [elev,x,y] = m_tbase( [min(fl_LONG1)-1, max(fl_LONG1)+1, min(fl_LAT)-1, max(fl_LAT)+1] );
                     fl_Z = -interp2( x,y,elev, fl_LONG1, fl_LAT, 'linear'); % -ve bathy values
                     

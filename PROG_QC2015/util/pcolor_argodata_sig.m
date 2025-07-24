@@ -134,13 +134,18 @@ end
 tabval=[floor(cmin*100)/100:pas*10:ceil(cmax*100)/100]; % pour les labels
 il=1;
 pas2=pas;
+if length(tabval)==1
+    cmin=cmin-1;
+    cmax=cmax+1;
+end
+
 if length(tabval)<5
     while length(tabval)<5
         il=il+1;
         pas2=pas/il;
         tabval=[floor(cmin*100)/100:pas2*10:ceil(cmax*100)/100]; % pour les labels
     end
-else
+else 
     while length(tabval)>5
         il=il+1;
         pas2=pas*il;
@@ -232,7 +237,9 @@ switch vshading
 end
 colorbar
 caxis([cmin cmax]);
+if 10*max(ceil(pres(:)/10)) >500
 set(gca,'ydir','reverse','ylim',[200 10*max(ceil(pres(:)/10))])
+end
 ztic=get(gca,'YTick');
 if ztic(1)>400
     set(gca,'YTick',[200 ztic])%keyboard

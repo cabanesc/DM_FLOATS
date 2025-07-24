@@ -40,6 +40,8 @@ config_campaign=''; % campaign config files are in VERIF_PROF1/config_campagne/
 %config_bocats.txt    config_geovide.txt  config_ovide18.txt  config_rrex15.txt
 %config_catarina.txt  config_ovide10.txt   config_pedro.txt    config_rrex17.txt
 %config_oblady18.txt  config_m16420.txt  config_msm9420.txt  config_bocats21.txt
+%config_bocats23.txt
+%config_arcticgo21.txt config_arcticgo22.txt config_arcticgo23.txt
 name_campaign  = 'OVIDE';          % title of the DM report.
 
 
@@ -48,6 +50,7 @@ n_prof=1; % profile number that we want to compare to the closest profiles in th
 
 
 irun.LOAD_float      = 1;  % Load data  : copy the file from DIR_FTP_CORIOLIS to DIR_FTP
+irun.CORRECT_position= 0;  % Correct the interpolated position (floats in region covered by ice )
 irun.PLOTDATA_raw    = 0;  % Preliminary diagnostic plots (theta/S, sections, bathy, flags...)
 irun.CORRECT_float   = 0;  % Visualization & correction of flags in netcdf files
 irun.VERIF_FLAG      = 0;  % Comparison of a raw Argo profile (n_prof) to the closest profiles in the reference database
@@ -69,6 +72,18 @@ if irun.LOAD_float
     % LOAD_float(floatname,dacname,'ERASE',1,'ASK',1)  % all options, default values
     LOAD_float(floatname,dacname,'ERASE',1)  % comment this line once the falgs are modified
     eval('cd ..');
+    init_path('clear',rep,rdir);
+end
+
+%===========================%
+% Correction of the interpolated positions (region covered by ice)
+if irun.CORRECT_position
+    rep='PROG_QC2015';
+    init_path('add',rep,rdir);
+    eval(fullfile('cd ./',rep));
+    %CORR_POSITION(floatname,dacname,'METHOD','original','CORR_NETCDF',0)
+    CORR_POSITION(floatname,dacname,'METHOD','sphere','CORR_NETCDF',0)  % to correct in netcdf files: CORR_NETCDF=1 
+    eval('cd ..'); 
     init_path('clear',rep,rdir);
 end
 

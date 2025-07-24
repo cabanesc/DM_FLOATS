@@ -40,6 +40,8 @@ config_campaign='config_saga21.txt'; % campaign config files are in VERIF_PROF1/
 % config_m16420.txt  config_msm9420.txt  config_oblady18.txt
 % config_bocats21.txt  config_pirata20.txt  config_so28021.txt config_saga21.txt
 % config_edmio22.txt config_sochic22.txt config_capricorn18.txt
+%config_bocats23.txt
+%config_arcticgo21.txt config_arcticgo22.txt config_arcticgo23.txt
 %name_campaign  = 'PRELIMINARY REPORT ';          % titre pour le rapport
 name_campaign  = 'SAGA 2021';         % title of the DM report.
 
@@ -51,6 +53,7 @@ NEW_CPCOR = -11.6e-8;  % New Cpcor value used to correct the salinity
 
 
 irun.LOAD_float      = 0;   % Load data  : copy the file from DIR_FTP_CORIOLIS to DIR_FTP
+irun.CORRECT_position= 0;  % Correct the interpolated position (floats in region covered by ice )
 irun.PLOTDATA_raw    = 0;  % Preliminary diagnostic plots (theta/S, sections, bathy, flags...)
 irun.CORRECT_float   = 0;  % Visualization & correction of flags in netcdf files
 irun.ANA_CPCOR       = 0;  % CPCor analyse
@@ -76,6 +79,18 @@ if irun.LOAD_float
     eval('cd ..');
     init_path('clear',rep,rdir);
    
+end
+
+%===========================%
+% Correction of the interpolated positions (region covered by ice)
+if irun.CORRECT_position
+    rep='PROG_QC2015';
+    init_path('add',rep,rdir);
+    eval(fullfile('cd ./',rep));
+    %CORR_POSITION(floatname,dacname,'METHOD','original','CORR_NETCDF',0)
+    CORR_POSITION(floatname,dacname,'METHOD','sphere','CORR_NETCDF',0)  % to correct in netcdf files: CORR_NETCDF=1 
+    eval('cd ..'); 
+    init_path('clear',rep,rdir);
 end
 
 %===========================%

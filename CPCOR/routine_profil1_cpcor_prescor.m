@@ -165,11 +165,17 @@ if nocycl<=length(F.cycle_number.data)
     else
         lat_campagne = lo_float_source_data.LAT;
         lon_campagne = lo_float_source_data.LONG;
+        juld_campagne = lo_float_source_data.DATES;
         
+        % selectionne les données de la meme année
+        sameyear = find(abs(juld_campagne-juld_argo)<=180);
+        if isempty(sameyear) % si pas meme annee prend simplement donnees les plus proches
+            sameyear=[1:length(juld_campagne)];
+        end
         dista1 = andoyer(lon_campagne,lat_campagne, lon_argo,lat_argo);
         [distascend,isort] = sort(dista1);
         iok=1;
-        profil_ok = isort(iok);
+        profil_ok = sameyear(isort(iok));
         disp(['Station de reference:' num2str(profil_ok)])
         lat_campagne = double(lo_float_source_data.LAT(profil_ok));
         lon_campagne = double(lo_float_source_data.LONG(profil_ok));

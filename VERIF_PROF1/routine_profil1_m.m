@@ -1,4 +1,4 @@
- % -========================================================
+% -========================================================
 %   USAGE :   routine_profil1(floatname,dacname,profnum,PARAM,CONFIG,CAMPAIGN)
 %   PURPOSE : plot data from a given float
 % -----------------------------------
@@ -6,10 +6,10 @@
 %    floatname  (char)  e.g. '690258'
 %    dacname    (char)  e.g.  'coriolis'
 %    numcycle   (float array)  e.g. 1 (first cycle 001) see option DIRECTION to consider descending profiles
-%                              
-%   PARAM   (structure)   input from verif_profil1.m%                            
+%
+%   PARAM   (structure)   input from verif_profil1.m%
 %   CONFIG   (structure)  general config variables (config.txt)
-%   CAMPAIGN  (structure) config variables specific to a campaign  
+%   CAMPAIGN  (structure) config variables specific to a campaign
 % -----------------------------------
 %   OUTPUT :
 % -----------------------------------
@@ -31,9 +31,9 @@ end
 % read the float data
 FLOAT_SOURCE_NETCDF = CONFIG.(PARAM.DATAREP);
 % if strcmp(PARAM.DATATYPE,'adj') == 1
-    % FLOAT_SOURCE_NETCDF = CONFIG.DIR_FTP;
+% FLOAT_SOURCE_NETCDF = CONFIG.DIR_FTP;
 % elseif strcmp(PARAM.DATATYPE,'raw') == 1
-    % FLOAT_SOURCE_NETCDF = CONFIG.DIR_FTP;
+% FLOAT_SOURCE_NETCDF = CONFIG.DIR_FTP;
 % end
 
 argopath = FLOAT_SOURCE_NETCDF;
@@ -41,22 +41,22 @@ repnc = [argopath dacname '/' floatname '/profiles/'];
 
 pfnu=sprintf('%3.3i',profnum);
 if strcmp(PARAM.DIRECTION,'D')
-pfnu=[pfnu 'D'];
+    pfnu=[pfnu 'D'];
 end
 
 fname=['D' floatname '_' pfnu '.nc'];
 if exist([repnc fname]) == 2
-   file_name=[repnc fname];
+    file_name=[repnc fname];
 else
-   fname=['R' floatname '_' pfnu '.nc'];
-   if exist([repnc fname]) == 2
-      file_name=[repnc fname];
-   else
-      disp(['Files ' fname  ' does not exist']);
-      disp([repnc]);
-       msg=['Profile does not exist'];
-   return 
-   end
+    fname=['R' floatname '_' pfnu '.nc'];
+    if exist([repnc fname]) == 2
+        file_name=[repnc fname];
+    else
+        disp(['Files ' fname  ' does not exist']);
+        disp([repnc]);
+        msg=['Profile does not exist'];
+        return
+    end
 end
 
 disp(file_name)
@@ -91,32 +91,39 @@ nocycl = find(strcmp(file_list,fname));
 
 
 if strcmp(PARAM.DATATYPE,'adj')
-F.psal=F.psal_adjusted;
-F.psal_qc=F.psal_adjusted_qc;
-F.temp=F.temp_adjusted;
-F.temp_qc=F.temp_adjusted_qc;
-F.pres=F.pres_adjusted;
-F.pres_qc=F.pres_adjusted_qc;
+    F.psal=F.psal_adjusted;
+    F.psal_qc=F.psal_adjusted_qc;
+    F.temp=F.temp_adjusted;
+    F.temp_qc=F.temp_adjusted_qc;
+    F.pres=F.pres_adjusted;
+    F.pres_qc=F.pres_adjusted_qc;
 end
 if strcmp(PARAM.DATAREP,'DIR_DM_FILES')
-thepostfix='_adj';
+    thepostfix='_adj';
 else
-thepostfix='';
+    thepostfix='';
 end
 
 
 if PARAM.NO_FLAG==0
-F.psal.data(F.psal_qc.data>3)=NaN;
+    F.psal.data(F.psal_qc.data>3)=NaN;
 elseif   PARAM.NO_FLAG==1
-F.psal.data(F.psal_qc.data>4)=NaN;
+    F.psal.data(F.psal_qc.data>4)=NaN;
 else
     warning('Bad value for the option NO_FLAG - should be 0 or 1')
 end
-  
-   
+
+
 
 F.date.data = datevec(datenum(1950,1,1,0,0,0) + F.juld.data);
-F.date_str.data = datestr(datenum(1950,1,1,0,0,0) + F.juld.data,1);
+for ik=1:length(F.juld.data)
+    if ~isnan(F.juld.data(ik))
+        F.date_str.data(ik,:)=datestr(datenum(1950,1,1,0,0,0) + F.juld.data(ik),1);
+    else
+        F.date_str.data(ik,:)='           ';
+    end
+end
+%F.date_str.data = datestr(datenum(1950,1,1,0,0,0) + F.juld.data,1);
 
 F.ptmp0.data = sw_ptmp(F.psal.data,F.temp.data,F.pres.data,0);
 F.ptmp0.long_name='Potential Temperature';
@@ -133,10 +140,15 @@ CTD_ALL = load( filename );
 
 %lat_campagne = CTD.LAT;
 %lon_campagne = CTD.LONG;
+% selectionne les données dont la date est +/- 6 mois
+sameyear = find(abs(CTD_ALL.DATES-F.juld.data(nocycl))<=180);
+if isempty(sameyear) % si pas meme annee prend simplement donnees les plus proches
+    sameyear=[1:length(CTD_ALL.DATES)];
+end
 
-dista1 = andoyer(CTD_ALL.LONG,CTD_ALL.LAT, F.longitude.data(nocycl,:),F.latitude.data(nocycl,:));
+dista1 = andoyer(CTD_ALL.LONG,CTD_ALL.LAT(sameyear), F.longitude.data(nocycl,:),F.latitude.data(nocycl,:));
 [distascend,isort]=sort(dista1);
-profil_ok=isort(1);
+profil_ok=sameyear(isort(1));
 CTD.latitude.data = CTD_ALL.LAT(profil_ok);
 CTD.longitude.data = CTD_ALL.LONG(profil_ok);
 CTD.juld.data = CTD_ALL.DATES(profil_ok);
@@ -150,7 +162,7 @@ CTD.date.data = datevec(double(datenum(1950,1,1,0,0,0) + CTD.juld.data));
 CTD.date_str.data = datestr(double(datenum(1950,1,1,0,0,0) + CTD.juld.data),1);
 
 %---------------
-% Interpolation 
+% Interpolation
 %---------------
 
 CTDi_on_pres = interpolation_m(CTD,F,'pres',PARAM); % interpolation of CTD variables on float presssure levels F.pres
@@ -218,9 +230,16 @@ MAP_VISU.max_lat = max(F.latitude.data(nocycl,:),CTD.latitude.data);
 MAP_VISU.max_lon = max(F.longitude.data(nocycl,:),CTD.longitude.data);
 MAP_VISU.min_lat = min(F.latitude.data(nocycl,:),CTD.latitude.data);
 MAP_VISU.min_lon = min(F.longitude.data(nocycl,:),CTD.longitude.data);
-MAP_VISU.zone_visu = [MAP_VISU.min_lat-2 MAP_VISU.max_lat+2 MAP_VISU.min_lon-2 MAP_VISU.max_lon+2];
-MAP_VISU.reso='LR';
-MAP_VISU.proj='mercator';
+MAP_VISU.zone_visu = [max(MAP_VISU.min_lat-2,-90) min(MAP_VISU.max_lat+2,90) MAP_VISU.min_lon-2 MAP_VISU.max_lon+2];
+
+if MAP_VISU.min_lat>=70|MAP_VISU.max_lat>=80
+    MAP_VISU.proj='stereographic';
+    PARAM.isarctic=1;
+else
+    MAP_VISU.reso='LR';
+    MAP_VISU.proj='mercator';
+    PARAM.isarctic=0;
+end
 
 %--------------------------------------------------------------------------
 %  FIGURE 1 : MAP
@@ -231,13 +250,35 @@ hf=figure;
 hf.Position(3)=hf.Position(3)+hf.Position(3)*65/100;
 hf.Position(4)=hf.Position(4)+hf.Position(4)*75/100;
 hold on
-[hf,ha]=fct_pltmap(hf,MAP_VISU.zone_visu,MAP_VISU.reso,MAP_VISU.proj);
+if PARAM.isarctic==0
+    fct_pltmap(hf,MAP_VISU.zone_visu,MAP_VISU.reso,MAP_VISU.proj);
+else
+    m_proj(MAP_VISU.proj,'lat',(MAP_VISU.max_lat+MAP_VISU.min_lat)/2,'lon',(MAP_VISU.max_lon+MAP_VISU.min_lon)/2,'radius',min(MAP_VISU.max_lat-MAP_VISU.min_lat+1,50));
+    m_coast('patch',[0.8 0.8 0.8],'edgecolor','none');
+    pas_large=max(ceil(min(MAP_VISU.max_lat-MAP_VISU.min_lat+1,50)/2),1);
+    hold on
+    m_grid('yTick',[5:pas_large:90]);
+    
+    if pas_large>3
+    if mod(pas_large,2)==0
+    m_grid('yTick',[5:2:90],'YTickLabel',[]);
+    else
+     m_grid('yTick',[4:2:90],'YTickLabel',[]);  
+    end
+    end
+    set(gca,'Position',[0.20 0.11 0.6 0.7])
+    ha=gca;
+end
 set(gca,'fontsize',18);
 m_plot(F.longitude.data(nocycl,:),F.latitude.data(nocycl,:),'g.','MarkerSize',20);
 m_plot(CTD.longitude.data,CTD.latitude.data,'m.','MarkerSize',20);
-title({['Float ' floatname ' cycle ' pfnu   ' (' F.date_str.data(nocycl,:) ')'];['vs  CTD from ' CAMPAIGN.camp_name '(' CTD.date_str.data ')']},'FontWeight','bold');
+t=title({['Float ' floatname ' cycle ' pfnu   ' (' F.date_str.data(nocycl,:) ')'];['vs  CTD from ' CAMPAIGN.camp_name '(' CTD.date_str.data ')']},'FontWeight','bold');
+post=get(t,'Position');post(2)=post(2)+0.05;
+set(t,'Position',post)
+if PARAM.isarctic==0
 xlabel('Longitude');
 ylabel('Latitude');
+end
 
 dista=andoyer(F.longitude.data(nocycl,:),F.latitude.data(nocycl,:),CTD.longitude.data,CTD.latitude.data);
 m_text(MAP_VISU.min_lon-1,MAP_VISU.min_lat-1,['Dist: ' num2str(round(dista)) ' km'],'HorizontalAlignment','left','VerticalAlignment','bottom','fontsize',14)
@@ -256,14 +297,14 @@ h5 = figure;
 h5.Position(3)=h5.Position(3)+h5.Position(3)*65/100;
 h5.Position(4)=h5.Position(4)+h5.Position(4)*75/100;
 % flag color
-%tabcol=[0 1 0 ; 1 1 0 ; 1 0.5 0 ; 1 0 0 ; 0.5 0.5 0 ; 0.5 0.5 0 ; 0.5 0.5 0 ; 0.5 0.5 0; 0.5 0.5 0 ; 0.65 0.65 0.65]; 
-tabcol=[0 1 0 ; 1 1 0 ; 0 1 0 ; 1 0 0 ; 0.5 0.5 0 ; 0.5 0.5 0 ; 0.5 0.5 0 ; 0.5 0.5 0; 0.5 0.5 0 ; 0.65 0.65 0.65]; 
+%tabcol=[0 1 0 ; 1 1 0 ; 1 0.5 0 ; 1 0 0 ; 0.5 0.5 0 ; 0.5 0.5 0 ; 0.5 0.5 0 ; 0.5 0.5 0; 0.5 0.5 0 ; 0.65 0.65 0.65];
+tabcol=[0 1 0 ; 1 1 0 ; 0 1 0 ; 1 0 0 ; 0.5 0.5 0 ; 0.5 0.5 0 ; 0.5 0.5 0 ; 0.5 0.5 0; 0.5 0.5 0 ; 0.65 0.65 0.65];
 
 %keyboard
 if PARAM.PLOT_PTEMP==1
-PARAM.ptmpref='ptmp0';
+    PARAM.ptmpref='ptmp0';
 else
-PARAM.ptmpref='temp';   
+    PARAM.ptmpref='temp';
 end
 [h5,l,b2]=init_figure(h5,F,CTD,floatname,nocycl,pfnu,tabcol,MAP_VISU,PARAM,CAMPAIGN);
 
@@ -291,11 +332,11 @@ TheYLim=get(gca,'YLim');
 
 plot(CTD.psal.data(kk1),CTD.(PARAM.ptmpref).data(kk1),'.m')
 if strcmp(PARAM.DATATYPE,'adj')
-ylabel([F.(PARAM.ptmpref).long_name ' Adjusted'])
-xlabel([F.psal.long_name ' Adjusted'])   
+    ylabel([F.(PARAM.ptmpref).long_name ' Adjusted'])
+    xlabel([F.psal.long_name ' Adjusted'])
 else
-ylabel(F.(PARAM.ptmpref).long_name)
-xlabel(F.psal.long_name)
+    ylabel(F.(PARAM.ptmpref).long_name)
+    xlabel(F.psal.long_name)
 end
 title({['Theta / S diagram '];['(Diff. PSAL on theta levels: ' num2str(correction_user) ')']},'FontWeight','bold','Fontsize',11);
 
@@ -308,7 +349,7 @@ axis([TheXLim TheYLim]);
 % set(l,'position',b);
 % subplot(1,3,1);
 % set(gca,'position',b2);
-set(gcf,'papertype','usletter','paperunits','inches','paperorientation','landscape','paperposition',[.25,.75,9.5,8]); 
+set(gcf,'papertype','usletter','paperunits','inches','paperorientation','landscape','paperposition',[.25,.75,9.5,8]);
 eval(['print  -dpsc2 ' [CONFIG.dir_enregistre '/' floatname '_T_S_bathy_' PARAM.ptmpref thepostfix ]  '.eps']);
 eval(['print   -dpng ' [CONFIG.dir_enregistre '/' floatname '_T_S_bathy_' PARAM.ptmpref thepostfix]  '.png']);
 
@@ -331,11 +372,11 @@ set(gca,'Ydir','reverse')
 grid on
 box on
 if strcmp(PARAM.DATATYPE,'adj')
-xlabel('PSAL_ADJ_argo -PSAL_CTD','interpreter','none')
-ylabel( [F.pres.long_name ' Adjusted'])
+    xlabel('PSAL_ADJ_argo -PSAL_CTD','interpreter','none')
+    ylabel( [F.pres.long_name ' Adjusted'])
 else
-xlabel('PSAL_argo -PSAL_CTD','interpreter','none')
-ylabel(F.pres.long_name)
+    xlabel('PSAL_argo -PSAL_CTD','interpreter','none')
+    ylabel(F.pres.long_name)
 end
 title({['Diff. PSAL on theta levels: ' num2str(correction_user)]},'FontWeight','bold','Fontsize',11);
 
@@ -344,7 +385,7 @@ eval(['print  -dpsc2 ' [CONFIG.dir_enregistre '/' floatname '_diffPSAL_' PARAM.p
 eval(['print  -dpng ' [CONFIG.dir_enregistre '/' floatname '_diffPSAL_' PARAM.ptmpref thepostfix]  '.png']);
 
 %--------------------------------------------------------------------------
-%  FIGURE 4 : MAP &  PTMP0, PSAL 
+%  FIGURE 4 : MAP &  PTMP0, PSAL
 %--------------------------------------------------------------------------
 
 h7 = figure;
@@ -369,13 +410,13 @@ plot_profile_with_flag(F,PARAM.ptmpref,'pres',nocycl,'LineWidth',1)
 grid on
 box on
 if strcmp(PARAM.DATATYPE,'adj')
-
-xlabel([F.(PARAM.ptmpref).long_name ' Adj.'])
-ylabel([F.pres.long_name ' Adj.'])
+    
+    xlabel([F.(PARAM.ptmpref).long_name ' Adj.'])
+    ylabel([F.pres.long_name ' Adj.'])
 else
-
-xlabel(F.(PARAM.ptmpref).long_name)
-ylabel(F.pres.long_name)    
+    
+    xlabel(F.(PARAM.ptmpref).long_name)
+    ylabel(F.pres.long_name)
 end
 subplot(1,12,[10:12])
 hold on
@@ -392,17 +433,17 @@ grid on
 box on
 
 if strcmp(PARAM.DATATYPE,'adj')
-xlabel([F.psal.long_name ' Adj.'])
-ylabel([F.pres.long_name ' Adj.'])
+    xlabel([F.psal.long_name ' Adj.'])
+    ylabel([F.pres.long_name ' Adj.'])
 else
- xlabel(F.psal.long_name)
-ylabel(F.pres.long_name)
+    xlabel(F.psal.long_name)
+    ylabel(F.pres.long_name)
 end
 set(gcf,'papertype','usletter','paperunits','inches','paperorientation','landscape','paperposition',[.25,.75,9.5,8]);
 eval(['print  -dpsc2 ' [CONFIG.dir_enregistre '/' floatname '_profiles_' PARAM.ptmpref thepostfix]  '.eps']);
 eval(['print  -dpng ' [CONFIG.dir_enregistre '/' floatname '_profiles_' PARAM.ptmpref thepostfix]  '.png']);
 %--------------------------------------------------------------------------
-%  FIGURE 5 : delta P in 
+%  FIGURE 5 : delta P in
 %--------------------------------------------------------------------------
 if PARAM.PLOT_PTEMP==0
     h9 = figure;
@@ -435,7 +476,7 @@ if PARAM.PLOT_PTEMP==0
     ylabel('Pressure reported by the float (db)')
     set(gca,'Ydir','reverse')
     set(gcf,'papertype','usletter','paperunits','inches','paperorientation','landscape','paperposition',[.25,.75,9.5,8]);
-
+    
 end
 %--------------------------------------------------------------------------
 % THETA/S  with ZOOM
@@ -451,13 +492,13 @@ set(gca,'Fontsize',10);
 hold on
 plot(CTD.psal.data,CTD.(PARAM.ptmpref).data,'.m')
 nstop=0;
-for vqc=1:10       
+for vqc=1:10
     iqc=find(F.psal_qc.data(nocycl,:)==vqc);
     if isempty(iqc)==0&nstop==0
-    hqc=plot(F.psal.data(nocycl,iqc),F.(PARAM.ptmpref).data(nocycl,iqc),'o');
-    set(hqc,'color',tabcol(vqc,:),'markerfacecolor',tabcol(vqc,:),'markersize',5);
-    hold on
-    nstop=1;
+        hqc=plot(F.psal.data(nocycl,iqc),F.(PARAM.ptmpref).data(nocycl,iqc),'o');
+        set(hqc,'color',tabcol(vqc,:),'markerfacecolor',tabcol(vqc,:),'markersize',5);
+        hold on
+        nstop=1;
     end
 end
 
@@ -474,33 +515,33 @@ for i=1:length(F.latitude.data)
     end
 end
 
-for vqc=1:10       
+for vqc=1:10
     iqc=find(F.psal_qc.data(nocycl,:)==vqc);
-	if isempty(iqc)==0
-    hqc=plot(F.psal.data(nocycl,iqc),F.(PARAM.ptmpref).data(nocycl,iqc),'o');
-    set(hqc,'color',tabcol(vqc,:),'markerfacecolor',tabcol(vqc,:),'markersize',5);
-    hold on
-	end
+    if isempty(iqc)==0
+        hqc=plot(F.psal.data(nocycl,iqc),F.(PARAM.ptmpref).data(nocycl,iqc),'o');
+        set(hqc,'color',tabcol(vqc,:),'markerfacecolor',tabcol(vqc,:),'markersize',5);
+        hold on
+    end
 end
 
 plot(CTD.psal.data,CTD.(PARAM.ptmpref).data,'.m')
 if strcmp(PARAM.DATATYPE,'adj')
-
-ylabel([F.(PARAM.ptmpref).long_name ' Adjusted'])
-xlabel([F.psal.long_name ' Adjusted'])
+    
+    ylabel([F.(PARAM.ptmpref).long_name ' Adjusted'])
+    xlabel([F.psal.long_name ' Adjusted'])
 else
- 
-ylabel(F.(PARAM.ptmpref).long_name)
-xlabel(F.psal.long_name)   
+    
+    ylabel(F.(PARAM.ptmpref).long_name)
+    xlabel(F.psal.long_name)
 end
 
-grid on 
+grid on
 box on
 axis([TheXLim TheYLim]);
 
 % Moved here by T. Reynaud 18.09.2020
 if ileg==1
-    legend([CAMPAIGN.camp_name],['Argo ' pfnu],['Argo profiles +/- ' num2str(PARAM.NB_PROF) ' cycle(s)'] ,'location','SouthOutside'); 
+    legend([CAMPAIGN.camp_name],['Argo ' pfnu],['Argo profiles +/- ' num2str(PARAM.NB_PROF) ' cycle(s)'] ,'location','SouthOutside');
 end
 
 title({['Float ' floatname ' cycle ' pfnu   ' (' F.date_str.data(nocycl,:) ')'];['vs  CTD from ' CAMPAIGN.camp_name '(' CTD.date_str.data ')']},'fontsize',11,'FontWeight','bold');
@@ -518,8 +559,8 @@ plot(CTD.psal.data(kk1),CTD.(PARAM.ptmpref).data(kk1),'.m')
 %plot(psal_campagne_interpole_brut(kk2),temp_campagne_interpole_compil(ind1,kk2),'k+')
 
 
-for vqc=1:10  
-%    iqc=find(max(flag) == vqc)
+for vqc=1:10
+    %    iqc=find(max(flag) == vqc)
     iqc=find(F.psal_qc.data(nocycl,:)==vqc&kk2);
     hqc=plot(F.psal.data(nocycl,iqc),F.(PARAM.ptmpref).data(nocycl,iqc),'o');
     set(hqc,'color',tabcol(vqc,:),'markerfacecolor',tabcol(vqc,:),'markersize',5);
@@ -531,12 +572,12 @@ nstop=0;
 for i=1:length(F.latitude.data)
     kk3=F.pres.data(i,:)>PARAM.ZOOM;
     h=plot(F.psal.data(i,kk3),F.(PARAM.ptmpref).data(i,kk3),'k');
-
+    
 end
 %plot(psal_campagne_interpole_brut(kk2),temp_campagne_interpole_compil(ind1,kk2),'k+')
 
-for vqc=1:10  
-%    iqc=find(max(flag) == vqc)
+for vqc=1:10
+    %    iqc=find(max(flag) == vqc)
     iqc=find(F.psal_qc.data(nocycl,:)==vqc&kk2);
     hqc=plot(F.psal.data(nocycl,iqc),F.(PARAM.ptmpref).data(nocycl,iqc),'o');
     set(hqc,'color',tabcol(vqc,:),'markerfacecolor',tabcol(vqc,:),'markersize',5);
@@ -551,11 +592,11 @@ TheYLim=get(gca,'YLim');
 
 %ylim([1 6])
 if strcmp(PARAM.DATATYPE,'adj')
-ylabel([F.(PARAM.ptmpref).long_name ' Adjusted'])
-xlabel([F.psal.long_name ' Adjusted'])
+    ylabel([F.(PARAM.ptmpref).long_name ' Adjusted'])
+    xlabel([F.psal.long_name ' Adjusted'])
 else
-ylabel(F.(PARAM.ptmpref).long_name)
-xlabel(F.psal.long_name)
+    ylabel(F.(PARAM.ptmpref).long_name)
+    xlabel(F.psal.long_name)
 end
 grid on
 box on
@@ -565,9 +606,9 @@ title({['Zoom on depths deeper than ' num2str(PARAM.ZOOM) 'm'];['Diff. PSAL on t
 set(gcf,'papertype','usletter','paperunits','inches','paperorientation','landscape','paperposition',[.25,.75,9.5,8]);
 eval(['print  -dpsc2 ' [CONFIG.dir_enregistre '/' floatname '_T_S_zoom_' PARAM.ptmpref thepostfix ]  '.eps']);
 eval(['print   -dpng ' [CONFIG.dir_enregistre '/' floatname '_T_S_zoom_' PARAM.ptmpref thepostfix]  '.png']);
-    
 
-	
+
+
 %%%% init_figure %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -592,15 +633,15 @@ hjb=plot(CTD.psal.data,CTD.(PARAM.ptmpref).data,'o');
 set(hjb,'color','m','markerfacecolor','m','markersize',5);
 nstop=0;
 
-for vqc=1:10       
+for vqc=1:10
     iqc=find(F.psal_qc.data(nocycl,:)==vqc);
     if isempty(iqc)==0& nstop==0
-		hqc = plot(F.psal.data(nocycl,iqc),F.(PARAM.ptmpref).data(nocycl,iqc),'b-+');
-		%set(hqc,'color',tabcol(vqc,:),'markerfacecolor',tabcol(vqc,:),'markersize',5);
-		%set(hqc,'markerfacecolor',tabcol(vqc,:),'markersize',5);
-		hold on
-		nstop=1;
-		vqc_save=vqc;
+        hqc = plot(F.psal.data(nocycl,iqc),F.(PARAM.ptmpref).data(nocycl,iqc),'b-+');
+        %set(hqc,'color',tabcol(vqc,:),'markerfacecolor',tabcol(vqc,:),'markersize',5);
+        %set(hqc,'markerfacecolor',tabcol(vqc,:),'markersize',5);
+        hold on
+        nstop=1;
+        vqc_save=vqc;
     end
 end
 
@@ -608,7 +649,7 @@ nstop=0;
 for i=1:length(F.latitude.data)
     kk3=F.pres.data(i,:)>0;
     h=plot(F.psal.data(i,kk3),F.(PARAM.ptmpref).data(i,kk3),'k');
-    if sum(kk3)~=0&nstop==0        
+    if sum(kk3)~=0&nstop==0
         if strcmp(surroundprof,'on')
             ileg=0;
             % T. Reynaud 18.09.2020
@@ -616,33 +657,51 @@ for i=1:length(F.latitude.data)
         else
             ileg=1;
             % T. Reynaud 18.09.2020
-            %l=legend([CAMPAIGN.camp_name],['Argo ' pfnu] ,'location','SouthOutside');          
+            %l=legend([CAMPAIGN.camp_name],['Argo ' pfnu] ,'location','SouthOutside');
         end
         nstop=1;
     end
-end   
+end
 
 
-for vqc=1:10       
+for vqc=1:10
     iqc=find(F.psal_qc.data(nocycl,:)==vqc);
-	hqc = plot(F.psal.data(nocycl,iqc),F.(PARAM.ptmpref).data(nocycl,iqc),'o');
-	set(hqc,'color',tabcol(vqc,:),'markerfacecolor',tabcol(vqc,:),'markersize',5);
-	hold on
+    hqc = plot(F.psal.data(nocycl,iqc),F.(PARAM.ptmpref).data(nocycl,iqc),'o');
+    set(hqc,'color',tabcol(vqc,:),'markerfacecolor',tabcol(vqc,:),'markersize',5);
+    hold on
 end
 
 % location MAP:
-MAP_VISU.zone_visu = [MAP_VISU.min_lat-1 MAP_VISU.max_lat+1 MAP_VISU.min_lon-1 MAP_VISU.max_lon+1];
-[h5,ha]=fct_pltmap(h5,MAP_VISU.zone_visu,MAP_VISU.reso,MAP_VISU.proj);
-b2=get(gca,'position');
+if PARAM.isarctic==0
+    MAP_VISU.zone_visu = [max(MAP_VISU.min_lat-1,-90) min(MAP_VISU.max_lat+1,90) MAP_VISU.min_lon-1 MAP_VISU.max_lon+1];
+    [h5,ha]=fct_pltmap(h5,MAP_VISU.zone_visu,MAP_VISU.reso,MAP_VISU.proj);
+    b2=get(gca,'position');
+else
+    m_proj(MAP_VISU.proj,'lat',MAP_VISU.max_lat,'lon',0,'radius',min(MAP_VISU.max_lat-MAP_VISU.min_lat+10,50));
+    m_coast('patch',[0.8 0.8 0.8],'edgecolor','none');
+    pas_large=max(ceil(min(MAP_VISU.max_lat-MAP_VISU.min_lat+10,50)/2),1);
+    
+    m_grid('yTick',[5:pas_large:85]);
+    if mod(pas_large,2)==0
+    m_grid('yTick',[5:2:90],'YTickLabel',[]);
+    else
+     m_grid('yTick',[4:2:90],'YTickLabel',[]);  
+    end
+    b2=get(gca,'position');
+    ha=gca;
+end
 
 m_plot(F.longitude.data(nocycl,:),F.latitude.data(nocycl,:),'b.','MarkerSize',20);
 m_plot(CTD.longitude.data,CTD.latitude.data,'m.','MarkerSize',20);
-title({['Float ' floatname ' cycle ' pfnu   ' (' F.date_str.data(nocycl,:) ')'];['vs  CTD from ' CAMPAIGN.camp_name '(' CTD.date_str.data ')']},'fontsize',11,'FontWeight','bold');
+t=title({['Float ' floatname ' cycle ' pfnu   ' (' F.date_str.data(nocycl,:) ')'];['vs  CTD from ' CAMPAIGN.camp_name '(' CTD.date_str.data ')']},'fontsize',11,'FontWeight','bold');
+post=get(t,'Position');post(2)=post(2)+0.05;
+set(t,'Position',post)
+if PARAM.isarctic==0
 xlabel('Longitude');
 ylabel('Latitude');
-
+end
 dista=andoyer(F.longitude.data(nocycl,:),F.latitude.data(nocycl,:),CTD.longitude.data,CTD.latitude.data);
-m_text(MAP_VISU.min_lon-0.25,MAP_VISU.min_lat-0.25,['Dist: ' num2str(round(dista)) ' km'],'HorizontalAlignment','left','VerticalAlignment','bottom','fontsize',10,'fontweight','bold')
+m_text(max(MAP_VISU.min_lon-0.25,-90),min(MAP_VISU.min_lat-0.25,90),['Dist: ' num2str(round(dista)) ' km'],'HorizontalAlignment','left','VerticalAlignment','bottom','fontsize',10,'fontweight','bold')
 
 % Legend moved here by T. Reynaud 18.09.2020
 if ileg==0

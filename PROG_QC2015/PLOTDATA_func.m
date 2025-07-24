@@ -222,6 +222,9 @@ FILENAME_TECH_AUX = [CONFIG.DIR_FTP dacname '/' floatname '/' floatname '_tech_a
 if exist(FILENAME_TECH_AUX)
     T = read_netcdf_allthefile(FILENAME_TECH_AUX);
     iice=find(findstr_tab(cellstr(T.technical_parameter_name.data),'TECH_FLAG_IceDetection_NUMBER')==1);
+    if isempty(iice)
+    iice=find(findstr_tab(cellstr(T.technical_parameter_name.data),'TECH_FLAG_FloatIceDetected_NUMBER')==1);
+    end
     icedetect_name = unique(cellstr(T.technical_parameter_name.data(iice,:)));
     iiceact=find(findstr_tab(cellstr(T.technical_parameter_name.data),'TECH_FLAG_IceAlgorithmActivated_LOGICAL')==1);
     iceactive_name = unique(cellstr(T.technical_parameter_name.data(iiceact,:)));
@@ -496,8 +499,8 @@ for iprof=1:ncyc
         % pause
     end
 end
-psal_tab(pres_tab<1500)=NaN;
-tpot_tab(pres_tab<1500)=NaN;
+psal_tab(pres_tab<1000)=NaN;
+tpot_tab(pres_tab<1000)=NaN;
 ctpot=[floor(min(tpot_tab(:)))-1:0.05:ceil(max(tpot_tab(:)))+1]';
 cpsal=[floor(10*min(psal_tab(:)))/10-0.1:0.05:ceil(max(psal_tab(:))*10)/10+0.1]';
 [tabct,tabcp]=meshgrid(ctpot,cpsal);
@@ -538,7 +541,7 @@ if ~isnan(vxmax*vxmin*vymax*vymin)
 end
 grid on
 box on
-title([ floatnum ', theta/S diagram (P>1500db)']);
+title([ floatnum ', theta/S diagram (P>1000db)']);
 if PARAM.PRINT==1
     set(gcf,'papertype','usletter','paperunits','inches','paperorientation','landscape','paperposition',[.25,.75,9.5,8]);
     %eval(['print -depsc2 ' plotpath floatnum '_thetaS_zoom_' titflag titsavedata '.eps']);
@@ -639,7 +642,15 @@ for icas=1:ncas
     end
     
     %keyboard
-    tabtime=(juld-juld(1))*ones(1,size(pres,2));
+    allNaNjul=0;
+    isjul=find(~isnan(juld));
+    if isempty(isjul)==0
+        juld1=juld(isjul(1));
+    else
+        juld1=juld(1);
+        allNaNjul=1;
+    end
+    tabtime=(juld-juld1)*ones(1,size(pres,2));
     if length(cycnum)>2
         if (sum(sum(isnan(sig0)))<numel(sig0))&(sum(sum(isnan(tabval)))<numel(tabval))
             [hf] = pcolor_argodata_sig(cycnum,tabtime(:,1),pres',sig0',tabval',nomval,'interp');
@@ -723,10 +734,30 @@ if isplot_ice>1 & length(cycnum)>2
 end
 % carte 1 (positions)
 % -------------------
+
+
 %keyboard
-zone_visu=[floor(min(lat))-0.2 ceil(max(lat))+0.2  floor(min(lon))-0.2 ceil(max(lon))+0.2];
-reso='LR';proj='miller';
-[hf,ha]=fct_pltmap_traj(zone_visu,reso,proj,park_press,prof_press);
+MAP_VISU.zone_visu=[floor(min(lat))-0.2 ceil(max(lat))+0.2  floor(min(lon))-0.2 ceil(max(lon))+0.2];
+fact=1;
+MAP_VISU.min_lat= max(floor(MAP_VISU.zone_visu(1)*fact)/fact,-90);
+MAP_VISU.max_lat= min(ceil( MAP_VISU.zone_visu(2)*fact)/fact,90);
+
+MAP_VISU.min_lon= floor(MAP_VISU.zone_visu(3)*fact)/fact;
+MAP_VISU.max_lon= ceil( MAP_VISU.zone_visu(4)*fact)/fact;
+
+% m_proj(proj,'long',[floor(zone_visu(3)) ceil(zone_visu(4))],...
+%                  'lat',[floor(zone_visu(1)) ceil(zone_visu(2))]);
+%m_grid('box','fancy','tickdir','in');
+%m_grid('tickdir','in');
+if MAP_VISU.min_lat>=70|MAP_VISU.max_lat>=80
+    MAP_VISU.proj='stereographic';
+    PARAM.isarctic=1;
+else
+    MAP_VISU.proj='miller'; MAP_VISU.reso='LR';
+    PARAM.isarctic=0;
+end
+%reso='LR';proj='miller';
+[hf,ha]=fct_pltmap_traj(MAP_VISU,PARAM,park_press,prof_press);
 
 %keyboard
 for ii=2:length(lon)-1
@@ -734,7 +765,11 @@ for ii=2:length(lon)-1
 end
 lonArrow = lon;
 latArrow= lat;
-tailleFleche = 0.761 * 0.005 * (zone_visu(4) -zone_visu(3))/16;
+if PARAM.isarctic==0
+    tailleFleche = 0.761 * 0.005 * (MAP_VISU.zone_visu(4) -MAP_VISU.zone_visu(3))/16;
+else
+    tailleFleche =  0.001 ;
+end
 [xArrow, yArrow] = m_ll2xy(lonArrow, latArrow);
 FLmc=format_flags_char2num(FLm);
 for ii=1:length(lon)-1
@@ -792,10 +827,10 @@ end
 zone_visu=[max(floor(min(lat))-10,-90) min(ceil(max(lat))+10,90)  floor(min(lon))-20 ceil(max(lon))+20];
 
 reso='LR';proj='miller';
-[hf,ha]=fct_pltmap(zone_visu,reso,proj);
+[hf,ha]=fct_pltmap(MAP_VISU,PARAM);
 
 %h=m_plot(lon,lat,'k-')
-[elev,lonbath,latbath]=m_tbase([max(floor(min(lon))-25,-90) min(ceil(max(lon))+25,90) floor(min(lat))-10 ceil(max(lat))+10]);
+[elev,lonbath,latbath]=m_tbase([floor(min(lon))-10 ceil(max(lon))+10 max(floor(min(lat))-10,-90) min(ceil(max(lat))+10,90)] );
 m_contour(lonbath,latbath,elev,[-4000:1000:0],'color',[0.5 0.5 0.5])
 for ii=2:length(lon)-1
     m_plot(lon(ii),lat(ii),'color',map(ii,:),'marker','o','markerfacecolor',map(ii,:),'markersize',8)
@@ -830,7 +865,9 @@ for ii=1:length(lon)
 end
 
 vtick=get(gca,'xtick');
-vticklabel=datestr(datenum(1950,1,1)+vtick+juld(1),12);
+if allNaNjul==0
+vticklabel=datestr(datenum(1950,1,1)+vtick+juld1,12);
+end
 set(gca,'xtick',vtick,'xticklabel',vticklabel);
 set(gca,'ylim',[-2 cycnum(end)]);
 grid

@@ -48,7 +48,9 @@ if isfield(FL,'longitude')
         region.lonmax = min([lonmax+10,180]);
         region.latmin = max([latmin-10,-90]);
         region.latmax = min([latmax+10,90]);
-        
+        if region.latmin==70
+            region.latmin=71
+        end
         if lonmin<-100 && lonmax>100
             Topo = shiftEW(Topo,'lon','pacif');
             FL = shiftEW(FL,'longitude','pacif');
@@ -64,23 +66,38 @@ if isfield(FL,'longitude')
             Topo.lon.data =repmat(Topo.lon.data',[size(Topo.lat.data,1),1]);
         end
         
-        iy = (Topo.lat.data(:,1)>= region.latmin & Topo.lat.data(:,1)<= region.latmax);
+        iy = (Topo.lat.data(:,1)>= region.latmin & Topo.lat.data(:,1)<=region.latmax );
         ix = (Topo.lon.data(1,:)>= region.lonmin & Topo.lon.data(1,:)<= region.lonmax);
         r=reshape(Topo.lat.data(iy,ix),sum(ix)*sum(iy),1);
         t=reshape(Topo.lon.data(iy,ix),sum(ix)*sum(iy),1);
         y=reshape(Topo.topo.data(iy,ix),sum(ix)*sum(iy),1);
         y(y>0)=NaN;
         
-        m_proj('miller','long',[region.lonmin,region.lonmax],...
-            'lati',[region.latmin,region.latmax]);
+        if  latmin>=70|latmax>=80
+            MAP_VISU.proj='stereographic';
+            PARAM.isarctic=1;
+            m_proj(MAP_VISU.proj,'lat',min((latmax+latmin)/2,90),'lon',max((lonmax+lonmin)/2,-180),'radius',min(latmax-latmin+5,30));
+            [bathy,lon_bathy,lat_bathy]=m_tbase( [-180 180 max(latmin-10, -90) min(latmax+10,90)]);
+            cvec=[-100000,-6500:500:1000,100000];
+            [c,h]=m_contourf(lon_bathy,lat_bathy,bathy,cvec);
+            %m_coast
+            m_grid
+        else
+            MAP_VISU.proj ='miller'; MAP_VISU.reso='LR';
+            PARAM.isarctic=0;
+            m_proj(MAP_VISU.proj,'long',[region.lonmin,region.lonmax],'lati',[region.latmin,region.latmax]);
+            cvec=[-100000,-6500:500:1000,100000];
+            [c,h]=m_contourf(Topo.lon.data(iy,ix),Topo.lat.data(iy,ix),Topo.topo.data(iy,ix),cvec);
+        end
+        
+        
         hold on;
                 
         box on
         grid on
+   
         
-        
-        cvec=[-100000,-6500:500:1000,100000];
-        [c,h]=m_contourf(Topo.lon.data(iy,ix),Topo.lat.data(iy,ix),Topo.topo.data(iy,ix),cvec);
+       
         set(h,'LineStyle','None');
         colormap(newmap);
 %         p = get(h,'Children');
@@ -115,16 +132,17 @@ if isfield(FL,'longitude')
         end
         
         colorbar('delete')
-        xlabel('Longitude')
         
         %c=colorbar('horiz')
         %xlabel(c,'Cycle Number')
         
         xth=get(gca,'XTick');
-            
         yth=get(gca,'YTick');
-        m_grid('xtick',4,'ytick',4);        
-        ylabel({'Latitude',' '})
+        if PARAM.isarctic==0
+            m_grid('xtick',4,'ytick',4);
+            xlabel('Longitude')
+            ylabel({'Latitude',' '})
+        end
         thetitle = [' '];
         info1  = {'platform_number','pi_name','data_centre','juld'};
         info2  = {'Platform: ', ', PI: ', ', ',', date of the first cycle: '};
