@@ -768,7 +768,7 @@ latArrow= lat;
 if PARAM.isarctic==0
     tailleFleche = 0.761 * 0.005 * (MAP_VISU.zone_visu(4) -MAP_VISU.zone_visu(3))/16;
 else
-    tailleFleche =  0.001 ;
+    tailleFleche =  0.1*0.761 * 0.005 * (MAP_VISU.zone_visu(4) -MAP_VISU.zone_visu(3))/16 ;
 end
 [xArrow, yArrow] = m_ll2xy(lonArrow, latArrow);
 FLmc=format_flags_char2num(FLm);
